@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Deploying RSA-Signed Applets in Java Plug-in</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Deploying RSA-Signed Applets in Java Plug-in</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Deploying RSA-Signed Applets in Java Plug-in</p>
+
+
+<p>The following topics are covered:</p>
+
+<ul>
+<li><a href="#deploy">How to deploy RSA Signed Applets</a></li>
+<li><a href="#certificate">Certificate Management</a></li>
+<li><a href="#disabling">Disabling RSA signed applet
+support</a></li>
+</ul>
+
+<h2><a name="deploy" id="deploy"></a>How to Deploy RSA Signed
+Applets</h2>
+<p>To deploy RSA signed applets:</p>
+<ol>
+<li>Reference the JAR from the HTML page using
+<code>archive</code>, <code>cache_archive</code>, or
+<code>cache_archive_ex</code> format.</li>
+<li>Place the JAR file and HTML page on the web server.</li>
+</ol>
+<p>When users of Java Plug-in encounter an RSA signed applet, the
+Plug-in will verify whether:</p>
+<ol>
+<li>The applet is correctly signed</li>
+<li>The RSA certificate chain and root CA are valid</li>
+</ol>
+<p>If the applet is correctly signed and the RSA certificate chain
+and root CA are valid, the Plug-in will pop-up a security dialog
+telling the user and providing four options:</p>
+<ol>
+<li><em>Grant always</em>: If selected, the applet will be granted
+the <code>AllPermission</code> permission. Any applet signed with
+the same certificate will be trusted automatically in the future,
+and no security dialog will pop up when the certificate is
+encountered again. This option selection can be changed from the
+Java Control Panel.<br /></li>
+<li><em>Grant this session</em>: If selected, the applet will be
+granted the <code>AllPermission</code> permission. Any applet
+signed with the same certificate will be trusted automatically
+within the same browser session.<br /></li>
+<li><em>Deny</em>: If selected, the applet will be treated as
+untrusted.<br /></li>
+<li><em>View Issuer</em>: If selected, the user can examine the
+attributes of each certificate in the certificate chain in the JAR
+file.</li>
+</ol>
+<p>Once the user selects the options from the security dialog, the
+applet will be run in the corresponding security context. Note that
+all options are selected on the fly; no preconfiguration is
+required.</p>
+<h2><a name="certificate" id="certificate"></a>Certificate
+Management</h2>
+<p>The Certificates dialog from the <a href="../jcp/jcp.html">Java Control Panel</a> manages RSA signed
+applets. (Access this dialog from the Security panel.) The Certificates dialog contains a list of certificates that received
+&quot;<em>Grant always</em>&quot; permission when the Java Plug-in
+security dialog (pop-up) ran. Users can remove any certificate from
+the list, and if an applet signed by a removed certificates is
+encountered again, a security dialog pop-up will appear asking for
+permission. Users can also export and view certificates through the
+Java Control Panel.</p>
+<h2><a name="disabling" id="disabling"></a>Disabling RSA Signed
+Applet Support</h2>
+<p>RSA signed applets can be entirely disabled in Java Plug-in by
+specifying the <code>usePolicy</code> permission in the policy
+file. If the <code>usePolicy</code> permission is among the
+permissions granted to the given codesource (by the configured
+security policy), user prompting will not take place, and only
+permissions specified in the security policy will be granted to the
+codesource. By default, RSA signed applets are enabled in the Java
+Plug-in.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

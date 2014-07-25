@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Rich Internet Applications Deployment Advice</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Rich Internet Applications Deployment Advice</h1>
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; Java Rich Internet Applications Deployment Advice</p>
+
+<p>The following topics are covered:</p>
+<ul>
+<li class="TOC"><a href="#jnlp">Unified Deployment Mechanism - Java
+Network Launch Protocol</a></li>
+<li class="TOC"><a href="#deplToolkit">Deployment Toolkit
+Script</a></li>
+
+<!--
+<li class="TOC"><a href="#deployingApplets">Deploying Java Plug-in
+Applets</a>
+<ul>
+<li class="TOC2"><a href="#appletTagAttributes">Using Applet Tag
+Attributes</a></li>
+<li class="TOC2"><a href="#usingJnlp">Using JNLP</a></li>
+<li class="TOC2"><a href="#tagAndJnlp">Using Applet Tag and JNLP
+Parameters</a></li>
+<li><a href="#finalDeplInfo" class="TOC2">Determining final
+deployment information</a></li>
+</ul>
+</li>
+<li class="TOC"><a href="#deployingApplications">Deploying Java Web
+Start Applications</a></li>
+<li class="TOC"><a href="#customizeLoading">Customizing the RIA
+Loading Experience</a></li>
+
+-->
+
+<li class="TOC"><a href="#otherDeplConsiderations">Other Deployment
+Considerations</a>
+<ul>
+<li><a href="#Order_of_Installation" class="TOC2">Order of
+Installation of JREs</a></li>
+<li><a href="#ClassLoader_and_Resources" class="TOC2">ClassLoader
+and Accessing Resources</a></li>
+<li><a href="#Lazy_Downloading" class="TOC2">Lazy
+Downloading</a></li>
+</ul>
+</li>
+<li><a href="#resources" class="TOC2">Resources</a></li>
+</ul>
+<h2><a name="jnlp" id="jnlp"></a>Unified Deployment Mechanism -
+Java Network Launch Protocol</h2>
+<p>Starting in release Java SE 6 update 10, Java Network Launch
+Protocol (JNLP) provides a unified mechanism for deploying rich
+internet applications (RIAs &ndash; applets and Java Web Start
+applications). RIAs launched using JNLP have the following powerful
+capabilities at their disposal:</p>
+<ul>
+<li><b>Access to JNLP extensions &ndash;</b> Powerful JNLP
+extensions such as <a href=
+"http://jogamp.org/jogl/www/" target="_blank">Java Binding for the Open GL OpenGL API</a> (JOGL),
+<a href="http://docs.oracle.com/javafx/2.0/scenegraph/jfxpub-scenegraph.htm" target="_blank">JavaFX Scene Graph</a>, and <a href=
+"http://worldwind.arc.nasa.gov/java/" target="_blank">NASA World
+Wind Java SDK</a> (a planetary and extra-planetary visualization system)
+can now be used from applets and Java Web Start applications.</li>
+<li><b>Access to the JNLP APIs &ndash;</b> Applets and Java Web
+Start applications have access to the JNLP APIs to gain
+user-controlled access to persistent storage (the
+PersistenceService), lazily-downloaded parts (the DownloadService),
+the local file system (the FileOpenService and FileSaveService),
+and much more. See the Java Tutorial lesson, <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/usingJNLPAPI.html">
+Accessing the Client Using JNLP API</a> for step-by-step
+instructions about using JNLP API.</li>
+<li><b>Version selection and more &ndash;</b>
+Building on the new Java Plug-in's architecture, applets launched
+via JNLP may utilize all of the features previously available to
+Java Web Start applications, such as JRE version selection,
+passing
+command-line arguments and system properties to the JVM, and much
+more.</li>
+</ul>
+<h2><a name="deplToolkit" id="deplToolkit"></a> Deployment Toolkit
+Script</h2>
+<p>To avoid browser compatibility issues, the <a href=
+"https://java.com/js/deployJava.js">Deployment Toolkit script</a>
+provides JavaScript functions that automatically generate the HTML
+required to deploy RIAs. Developers should invoke these functions
+to deploy their solutions in a consistent fashion across various
+browsers.</p>
+<p>The script exposes a single object, named <em>deployJava</em>,
+which contains the following public functions:</p>
+<ul>
+<li><code>createWebStartLaunchButton(jnlp, minimumVersion)</code> -
+Outputs a launch button for the specified JNLP URL. When clicked,
+the button will ensure that an appropriate JRE is installed and
+then launch the JNLP application.</li>
+<li style="list-style: none"><br /></li>
+<li><code>createWebStartLaunchButtonEx(jnlp, minimumVersion)</code>
+- Outputs a launch button for the specified JNLP URL. When clicked,
+the button will ensure that an appropriate JRE is installed and
+then launch the JNLP application. The JNLP file does not require a
+value for the <code>codebase</code> attribute. This function
+requires that the Java SE 6 update 18 release be present on the
+client. If the Java SE 6 update 18 release is not present on the
+client, then the user will be instructed to install the required
+software.</li>
+<li style="list-style: none"><br /></li>
+<li><code>getBrowser()</code> - Returns the name of the browser
+currently running.</li>
+<li style="list-style: none"><br /></li>
+<li><code>getJREs()</code> - Returns an array of
+currently-installed JRE version strings.</li>
+<li style="list-style: none"><br /></li>
+<li><code>installJRE(requestVersion)</code> - Triggers the
+installation of the specified <code>requestVersion</code>, the
+latest version matching the specified <code>requestVersion</code>,
+or the latest JRE.&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>installLatestJRE()</code> - Triggers the installation of
+the latest JRE&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>isPlugin2()</code> - Determines if the next generation
+Java Plug-in is the default.</li>
+<li style="list-style: none"><br /></li>
+<li><code>isWebStartInstalled(minimumVersion)</code> - Returns true
+if an installation of Java Web Start of the specified
+<code>minimumVersion</code> can be detected.&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>launch</code>- Launches JNLP application.</li>
+<li style="list-style: none"><br /></li>
+<li><code>runApplet(attributes, parameters, minimumVersion)</code>
+- Ensures that an appropriate JRE is installed and then runs an
+applet.&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>setAdditionalPackages(packageList)</code> - Sets
+additional package list to be used by kernel installer.&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>setInstallerType(type)</code> - Sets the preferred
+install type : null, online, kernel.</li>
+<li style="list-style: none"><br /></li>
+<li><code>versionCheck(version)</code> - Returns true if there is a
+matching JRE version currently installed (among those detected by
+the <code>getJREs()</code> function).&nbsp;</li>
+<li style="list-style: none"><br /></li>
+<li><code>writeAppletTag(attributes, parameters)</code> - Outputs
+an applet tag with the specified attributes and parameters. The
+parameters argument is optional.&nbsp;</li>
+<li style="list-style: none"><br /></li>
+</ul>
+<p>See <a href="http://www.java.com/js/deployJava.txt" target=
+"_blank">the human readable version of the Deployment Toolkit</a>
+for a detailed description of these public functions. See the
+following Java Tutorial lessons for more information about
+deploying RIAs:</p>
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/deployingApplet.html">
+Deploying an Applet</a></li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/webstart/deploying.html">
+Deploying a Java Web Start application</a></li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/index.html">
+Deployment In-Depth</a></li>
+</ul>
+
+
+
+<h2><a name="otherDeplConsiderations" id=
+"otherDeplConsiderations"></a>Other Deployment Considerations</h2>
+<h3><a name="Order_of_Installation" id="Order_of_Installation"></a>
+Order of Installation of JREs</h3>
+<p>If multiple JREs are required to run various Java Plug-in
+applets on the same machine, it is recommended to install the JREs
+in the order of their versions. The oldest version should be
+installed first and the newest version installed last. This will
+avoid the problem of the dynamic CLSID
+<em>{8AD9C840-044E-11D1-B3E9-00805F499D93}</em> being used in an
+object tag that is not using the latest version of the JRE on the
+computer.</p>
+<p>Starting from JRE 5.0u6 with SSV support, the above is not an
+issue because the latest version of JRE on the machine will be
+used. In addition, a new dynamic version CLSID
+<em>{CAFEEFAC-FFFF-FFFF-FFFF-ABCDEFFEDCBA}</em> has been added. If the new dynamic
+CLSID is used in the object tag, the latest version of the JRE will
+be used independently of the installation order of the JREs.</p>
+<p>Installation order should have no effect on Java Web Start. In
+any case the highest version of the JRE on the system will contain
+the version of Java Web Start that is run.</p>
+<h3><a name="ClassLoader_and_Resources" id=
+"ClassLoader_and_Resources"></a> ClassLoader and Accessing
+Resources</h3>
+<p>Resources accessed in a Java Web Start application or Java
+Plug-in applet may be cached on the client machine in the
+Deployment Cache. It is unwise to assume the format or content of
+this cache, as it may change between versions.</p>
+<p>When porting stand alone programs to Java Web Start or Java
+Plug-in, problems can occur when code has inherent assumptions that
+it is loaded by the <em>SystemClassLoader</em>. In Java Plug-in
+resources are loaded by the <em>PluginClassLoader</em> (which
+extends <em>sun.applet.AppletClassLoader</em>, which in turn
+extends <em>java.net.URLClassLoader</em>). In Java Web Start
+resources are loaded by the <em>JNLPClassLoader</em> (which as of
+JDK 6 extends <em>java.net.URLClassLoader</em>).</p>
+<p>Access the <em>ClassLoader</em> being used with:</p>
+<pre class="codeblock">
+    ClassLoader cl = Thread.getCurrent().getContextClassLoader();
+</pre>
+<p><em>ClassLoader.getResource()</em> returns a URL, but any code
+that assumes the URL is a JarURL to a FileURL, and then tries to
+decompose that FileURL to find the underlying file path will fail.
+The correct way to access resources is to use
+<em>getResourceAsStream()</em> which will return the correct
+content whatever type of <em>ClassLoader</em> is used to access the
+resource. If the resource is already cached, the contents of the
+resource will be returned from the cache directly, so there won't
+be extra network connections to the resource itself.</p>
+<p>We do not recommend modifying the contents of the Java
+deployment cache directly. The cache is a private implementation of
+Java Web Start / Java Plug-in, and is subject to change
+anytime.</p>
+<p>Many applications and libraries try to deploy properties files
+and other &quot;resources&quot; by including them in the same
+directory as the jar file that uses them, and then expect to be
+able to decompose the the URL returned from <em>getResource()</em>
+to construct the path to these files. Developers argue that this is
+needed so the application can later modify these property files or
+other "resources" for use in subsequent launchings of the app. When
+porting to web deployed applications, they then find they need to
+repackage these into the jar files of the app, and consider them
+only the &quot;default&quot; content, and use one of several other
+mechanisms to persist the modified versions on the client machine
+(by writing files or by using either the <a href=
+"../../../api/index.html" target="_top">Preference API</a> or the
+<a href="../../../jre/api/javaws/jnlp/index.html" target=
+"_top">JNLP PersistenceService</a>.)</p>
+<h3><a name="Lazy_Downloading" id="Lazy_Downloading"></a> Lazy
+Downloading</h3>
+<p>When applications are large, it can be useful to only download
+the part of the application that is required to start up, and then
+download the rest on demand. This process is referred to as lazy
+downloading.</p>
+<p>Java Web Start has support for lazy downloading, but few
+developers use it. It can be a way to significantly improve the
+download and startup time in some applications. To effectively use
+lazy downloading, Java Web Start must be aware which jar to
+download to resolve a request for a specific resource. Previous
+versions of Java Web Start required a complex specification of
+parts and packages to provide this information. Beginning with
+version 6.0, the same thing can be accomplished using Jar
+Indexing.</p>
+<p>Jar Indexing is a simple and effective way to download only the
+required jars, and avoid downloading everything when a nonexistent
+resource is requested. See <a href="../jar/jar.html#JAR_Index"
+target="_top">Jar Indexing</a>.</p>
+<p>Java Plug-in has built-in support for lazy downloading (that is,
+downloading is lazy by default), and also supports Jar Indexing.
+Developers should also try to <strong>NOT</strong> use individual
+classes but package them as JARs instead.</p>
+<h2><a name="resources" id="resources"></a>Resources</h2>
+<ul>
+<li><a href="clientJRECapabilitiesCheatSheet.html">Client JRE
+Capabilities - Quick Reference</a></li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/index.html">Deployment</a>
+trail in the Java Tutorials</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

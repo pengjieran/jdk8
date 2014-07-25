@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<!-- InstanceBegin template="/Templates/jweb_guide_template.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Java(TM) Rich Internet Applications Decision Guide</title>
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Rich Internet Applications Decision Guide</h1>
+<p><a name="PageTop" id="PageTop"></a></p>
+<!-- InstanceBeginEditable name="Content" -->
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; Rich Internet Applications Decision Guide</p>
+
+<h2><a name="overview" id="overview"></a>Applet or Java Web Start
+Application?</h2>
+
+<p>Both applets and Java Web Start applications are <i>rich
+internet applications (RIAs)</i>. RIAs are easier to distribute
+than standard applications, because they're launched over the web.
+They both require permission from the user to run, so it is important that they be 
+signed with a valid certificate from a trusted authority to enable the user to make 
+an informed decision about running the application. RIAs can only access the user's system in
+highly controlled ways, unless extended access is requested when launched and permitted by user.</p>
+
+<p>Here's a table that summarizes the differences:</p>
+
+<table border="1" summary=
+"Comparison of application, applet, and java web start security.">
+<tr>
+<th id="h1">Feature</th>
+<th id="h2">Applet</th>
+<th id="h3">Java Web Start</th>
+</tr>
+<tr>
+<td headers="h1">Java version</td>
+<td headers="h2">
+
+<p>Individual applets may specify the exact version, or version
+range, of the Java platform it will use. The Java Plug-in
+supports both static version
+requests (such as "5.0 update 9") and family version requests (such
+as "5.0 family"), and supports several backward compatibility
+mechanisms such as static and family ClassIDs in Internet Explorer.
+See <a href="applet/applet_deployment.html#JRE_VERSION">JRE Version Selection</a> in <a href="applet/applet_deployment.html">Applet Deployment</a> for details.</p>
+
+</td>
+<td headers="h3">
+
+<p>Java Web Start will also be used only from the latest Java
+version installed on a system, but the version of Java Web Start
+run is independent of the version of the Java platform used. A Java
+Web Start application can specify the exact version, or version
+range, of the Java platform that it will use.</p>
+
+</td>
+</tr>
+<tr>
+<td headers="h1">Cookies</td>
+<td headers="h2">
+<p>Java Plug-in applets run in the same session as the browser, and
+so have access to both "persistent" cookies and "session" cookies
+already stored in the browser session.</p>
+</td>
+<td headers="h3">
+<p>Java Web Start runs outside the browser process. It can access
+"persistent" cookies stored by the browser (it does this by using
+the WinINet API on Windows), but has no access to "session" cookies
+unless set in that application using the java.net.CookieManager and
+java.net.CookieHandler API's.</p>
+</td>
+</tr>
+<tr>
+<td headers="h1">Browser Interactions</td>
+<td headers="h2">
+<p>Java Plug-in includes the ability for applets to interact with
+the current browser session with the the <a href=
+"../../../jre/api/plugin/dom/index.html" target="_top">Common DOM
+API</a>. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/manipulatingDOMFromApplet.html" target="_top">Manipulating DOM of Applet's Web Page</a> from the Java Tutorials. In addition, Java applets can invoke JavaScript functions present in the same web page as the applet and JavaScript code on a web page can interact with Java applets embedded on the page. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/invokingJavaScriptFromApplet.html" target=
+"_top">Invoking JavaScript Code From an Applet</a> and <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/invokingAppletMethodsFromJavaScript.html" target=
+"_top">Invoking Applet Methods From JavaScript Code</a> from the Java Tutorials.</p>
+</td>
+<td headers="h3">
+<p>Java Web Start is limited to invoking the default browser to
+display specific URL's (see <a href=
+"../../../jre/api/javaws/jnlp/index.html" target="_top">JNLP
+API</a>).</p>
+</td>
+</tr>
+<tr>
+<td headers="h1">Java Runtime</td>
+<td headers="h2">
+
+<p>An applet may specify <a href=
+"applet/applet_deployment.html#JAVA_ARGUMENTS">Java Runtime
+parameters</a> used to launch that particular applet instance,
+without affecting the parameters used to launch other applets.
+Specifying Java Runtime parameters via the Java Control Panel is
+also supported for backward compatibility purposes.</p>
+</td>
+<td headers="h3">
+<p>Java Web Start applications have (limited) control over the Java
+Runtime parameters that is used to launch that application.</p>
+</td>
+</tr>
+<tr>
+<td headers="h1">JNLP API</td>
+<td headers="h2">
+<p>Applets launched using Java Network Launching Protocol (JNLP)
+have access to <a href="../../../jre/api/javaws/jnlp/index.html"
+target="_top">JNLP API</a> which allows sandbox applications
+access to persistent storage, download control, file I/O, and
+more.</p>
+</td>
+<td headers="h3">
+<p>Java Web Start includes access to the <a href=
+"../../../jre/api/javaws/jnlp/index.html" target="_top">JNLP
+API</a>,</p>
+</td>
+</tr>
+<tr>
+<td headers="h1">Shortcuts</td>
+<td headers="h2">
+<p>You can develop draggable applets. A Java applet that is deployed by specifying the <code>draggable</code> parameter can be dragged outside the browser and dynamically transformed into a Java Web Start application. The Java applet can be dragged by pressing the Alt key and the left mouse button and dragging the mouse. You can add a desktop shortcut that can be used to launch your application outside the browser. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/draggableApplet.html">Developing Draggable Applets</a> in the Java Tutorials for more information.</p>
+</td>
+<td headers="h3">
+<p>Java Web Start applications can install shortcuts that allow the
+application to be rerun, either online or offline, independent of
+the browser.</p>
+</td>
+</tr>
+</table>
+<h3>Other differences</h3>
+<p>There are several other minor differences caused by need to
+maintain compatibility with earlier versions. For further
+information on the specific differences between Java Web Start and
+Java Plug-in can be found in <a href=
+"applet_migration.html"
+target="_top">Migrating Java Applets to Java Web Start Applications</a>.</p>
+<!-- InstanceEndEditable -->
+<p><br />
+<br /></p>
+<!-- InstanceEnd -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

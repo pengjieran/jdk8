@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Tracing and Logging</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Tracing and Logging</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="jcp.html">Java Control Panel</a> &gt; Tracing and Logging</p>
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#tracing">Tracing</a></li>
+<li><a href="#logging">Logging</a></li>
+<li><a href="#other">Other Options</a></li>
+</ul>
+<h2><a name="tracing" id="tracing"></a>Tracing</h2>
+<p>Tracing is a facility to redirect any output in the Java Console
+  to a trace file.</p>
+<p>Tracing for Java Plug-in and Java Web Start can be turned on by setting the property <code>deployment.trace</code> property to <code>true</code>. This property turns on all tracing
+  facilities inside Java Plug-in and Java Web Start. To enable more fine-grained
+  tracing, the <code>deployment.trace.level</code> property can be used. The <code>deployment.trace.level</code> property can have one of the
+  following values:</p>
+<ul>
+  <li>basic</li>
+  <li>cache</li>
+  <li>net</li>
+  <li>security</li>
+  <li>ext</li>
+  <li>liveconnect</li>
+  <li>drs</li>
+</ul>
+<p>To use all of the tracing levels, set <code>deployment.trace.level</code> to <code>all</code>.</p>
+<p>To enable tracing on the fly, you can
+  set trace-level options (0-5) in the <a href="console.html">Java
+    Console</a>, shown in the previous chapter, with the following
+  meanings:</p>
+<ul>
+  <li>0: off</li>
+  <li>1: basic</li>
+  <li>2: network, cache, and basic</li>
+  <li>3: security, network and basic</li>
+  <li>4: extension, security, network and basic</li>
+  <li>5: LiveConnect, extension, security, network, temp,
+    basic, and Deployment Rule Set </li>
+</ul>
+<p>Another way to set fine-grained tracing is through the <a href=
+"jcp.html">Java Control Panel</a>. For instance, to enable tracing
+for everthing (option 5 above), enter the following in the
+&quot;Java Run Time Parameters&quot; textfield:</p>
+<pre class="codeblock">
+-Ddeployment.trace=true
+-Ddeployment.trace.level=all
+</pre>
+<p>Tracing set through the Control Panel takes effect when Java Plug-in or Java Web Start is launched, but changes made through the Control Panel
+  while Java Plug-in or Java Web Start is running has no effect until restarted.</p>
+<h2><a name="logging" id="logging"></a>Logging</h2>
+<p>Similar to tracing, logging is a facility to redirect any output
+in the Java Console to a log file using the Java Logging API. To
+enable logging perform the following actions:</p>
+<ul>
+<li>Open Java Control Panel</li>
+<li>Click <strong>Advanced</strong> tab.</li>
+<li>Select <strong>Enable Logging</strong> under the
+<strong>Debugging</strong> option</li>
+</ul>
+
+<h2><a name="other" id="other"></a>Other Options</h2>
+<h3>File Names</h3>
+<ul>
+  <li><code>plugin<var>&lt;random-number&gt;</var>.trace</code> - Name of the trace file for Java Plug-in.</li>
+  <li><code>plugin<var>&lt;random-number&gt;</var>.log</code> - Name of the log file for Java Plug-in.</li>
+  <li><code>javaws<var>&lt;random-number&gt;</var>.trace</code> - Name fo the trace file for Java Web Start.</li>
+  <li><code>javaws<var>&lt;random-number&gt;</var>.log</code> - Name of the log file for Java Web Start. </li>
+  <li><code>jcp.trace</code> - Name of the trace file that is created when the Java Control Panel is run. </li>
+</ul>
+<p><code><var>&lt;random-number&gt;</var></code> is a number that is generated when the file is created. </p>
+<h3>File Locations</h3>
+<p>The default location (directory) of the trace and log files
+  is:</p>
+<ul>
+  <li><code>&lt;user.home&gt;/.java/deployment/log</code> on UNIX, Linux</li>
+  <li><code>~/Library/Application Support/Oracle/Java/Deployment/log</code> on Mac OS X </li>
+  <li><code>&lt;User Application Data
+    Folder&gt;\Sun\Java\Deployment\log</code> on Windows</li>
+</ul>
+<p>If the environment variable <code>USER_JPI_PROFILE</code> is set
+to <code>&lt;user plugin home&gt;</code> then the trace and log
+files will be written to:</p>
+<ul>
+<li><code>&lt;user plugin home&gt;/.java/deployment/log</code> on
+UNIX, Linux</li>
+<li><code>&lt;user plugin home&gt;/Library/Application Support/Oracle/Java/Deployment/log</code> on Mac OS X </li>
+<li><code>&lt;user plugin home&gt;\Sun\Java\Deployment\log</code>
+on Windows</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

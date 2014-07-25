@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Setting the Security Level of the Java Client</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Setting the Security Level of the Java Client</h1>
+<p><b>Contents</b></p>
+<ul>
+<li><a href="#secure">Ensuring the Most Secure JRE</a></li>
+<li><a href="#jexpire">JRE Expiration Date</a>
+  <ul>
+    <li><a href="#jrebelow">Testing a JRE Below the Security Baseline</a></li>
+    <li><a href="#jreexpired">Testing an Expired JRE</a>  </li>
+  </ul>
+</li>
+<li><a href="#disable">Disabling Java in the Browser</a></li>
+<li><a href="#unsigned">Setting the Security Level</a></li>
+<li><a href="#signed">Security Options for a Secure Execution Environment</a></li>
+<li><a href="#install">Install Options</a></li>
+<li><a href="#mixed">Apps with Mixed Code</a></li>
+</ul>
+<p>As of the JDK 7u10 release, a user may control, via the Java
+Control Panel, the level of security that will be used when running
+Java apps in a browser. The user may select from four levels of security,
+including disabled, where no Java apps are allowed to run in the
+browser.</p>
+<p>These security levels apply to running <em>Java in the
+browser</em>, which includes plugin applets, Java Web Start
+applications, embedded JavaFX applications, and access to the
+native deployment toolkit plugins. Setting the security level does
+not affect desktop (also called stand-alone) applications. Note that applets and these
+various types of applications are collectively referred to as
+<em>apps</em> or <em>Java apps</em>.</p>
+<h2><a id="secure" name="secure"></a>Ensuring the Most Secure
+JRE</h2>
+<p>Before the browser plugin software attempts to run a Java app,
+it verifies that the JRE version is at or above the security
+baseline for that family and that the age of the JRE is recent. If
+the JRE is determined to be below the security baseline, or if unable to verify the baseline and the current date is past the <a href="#jexpire">JRE Expiration Date</a>, additional security warnings are displayed, or in some cases, the app is blocked. If the app is not automatically blocked, the user has the option to block the app, to continue running the app, or to go to
+<tt><a href="http://java.com">java.com</a></tt> to download the latest release.
+The <code>JRE Expiration Date</code> can be found in the <a href="http://www.oracle.com/technetwork/java/javase/jdk-relnotes-index-2162236.html">release notes</a> for JDK Update releases starting with JDK 7u21.</p>
+
+<h2><a id="jexpire" name="jexpire"></a>JRE Expiration Date</h2>
+<p>The JRE relies on periodic checks with an Oracle Server to determine if the JRE is still considered up-to-date with all the available security fixes (above the security baseline). In the past, if the JRE was unable to contact the Oracle Server, the JRE continued to behave as though it is the most recent version with regard to security for an indefinite period.</p> 
+
+<p>To avoid this problem, a secondary mechanism that does not rely on external communication has been added to the JDK 7u10 release. From the 7u10 release onwards, all JREs contain a hard-coded expiration date. The expiration date is calculated to end after the scheduled release of the next Critical Patch Update.</p>
+
+<p>JREs that are unable to contact Oracle Servers for an extended period of time now offer additional protection after a reasonable period and do not continue to behave as if they were up-to-date with regard to security fixes.</p>
+<p>To test what happens when the JRE falls below the security baseline or expires, see <a href="#jrebelow">Testing a JRE Below the Security Baseline</a> and <a href="#jreexpired">Testing an Expired JRE</a>.</p>
+<h3><a name="jrebelow" id="jrebelow"></a>Testing a JRE Below the Security Baseline</h3>
+<p>To see how applications behave when the JRE falls below the Security Baseline, follow these steps:</p>
+<ol>
+  <li>
+    <p>Install the JRE that you want to test.</p>
+  </li>
+  <li>
+    <p><a name="step2below" id="step2below"></a>Remove the following files, if they exist:    </p>
+    <ul>
+      <li><code><var>&lt;user-deployment-home&gt;</var>/deployment.properties</code></li>
+      <li><code><var>&lt;user-deployment-home&gt;</var>/security/baseline.versions</code></li>
+      <li><code><var>&lt;user-deployment-home&gt;</var>/security/update.timestamp</code></li>
+    </ul>
+    <p>See <a href="jcp/properties.html#location">Deployment Configuration File</a> for the location of 
+	the <code>deployment.properties</code> file on each supported platform. </p>
+  </li>
+  <li><a name="step3below" id="step3below"></a>From the command line, run the following command:
+      <p><code>javaws -SSVBaselineUpdate</code></p>
+	  <p>The <code><var>&lt;user-deployment-home&gt;</var>/security/baseline.versions</code> file is downloaded.</p>
+  </li>
+  <li>
+    <p>Edit the 
+  <code><var>&lt;user-deployment-home&gt;</var>/security/baseline.versions</code> file.</p>
+    <p>Set the version number of the JRE for the JRE family that you are testing to a value greater than the version that you are testing. For example, if you are testing JRE version 7u45, set the version in the file to <code>1.7.0_99</code>. The JRE periodically updates this file, so make the file read-only to prevent your changes from being overwritten. </p> 
+  </li>
+  <li><p>Run any Java applet or Java Web Start application.</p>
+      <p>The Java Update Needed prompt is shown. Click <strong>Later</strong> to continue running the application. See <a href="https://www.java.com/en/download/faq/expire_date.xml">Why do I see the Java Update Needed messages?</a> on <a href="https://www.java.com/">java.com</a> for information on this prompt. </p>
+  </li>
+  <li>When you are done testing, repeat <a href="#step2below">Step 2</a> and <a href="#step3below">Step 3</a> to restore the correct version of the files. </li>
+</ol>
+<h3><a name="jreexpired" id="jreexpired"></a>Testing an Expired JRE</h3>
+<p>To see how applications behave after the JRE has expired, follow these steps:</p>
+<ol>
+  <li>
+    <p>Install the JRE that you want to test.</p>
+  </li>
+  <li>
+    <p>Remove the following files, if they exist: </p>
+    <ul>
+      <li><code><var>&lt;user-deployment-home&gt;</var>/deployment.properties</code></li>
+      <li><code><var>&lt;user-deployment-home&gt;</var>/security/baseline.versions</code></li>
+    </ul>
+    <p>See <a href="jcp/properties.html#location">Deployment Configuration File</a> for the location of 
+      the <code>deployment.properties</code> file on each supported platform. </p>
+  </li>
+  <li>
+    <p>Set the system to a future date beyond the expiration date of the JRE. Get the expiration date from the <a href="http://www.oracle.com/technetwork/java/javase/jdk-relnotes-index-2162236.html">Release Notes</a> for the release that you are testing. </p>
+  </li>
+  <li>
+    <p>Run any Java applet or Java Web Start application.</p>
+    <p>The Java Update Needed prompt is shown. Click <strong>Later</strong> to continue running the application. See <a href="https://www.java.com/en/download/faq/expire_date.xml">Why do I see the Java Update Needed messages?</a> on <a href="https://www.java.com/">java.com</a> for information on this prompt. </p>
+  </li>
+</ol>
+<h2><a id="disable" name="disable"></a>Disabling Java in the
+Browser</h2>
+<p> If you  prefer to completely disable access to Java through the browser, de-select the <strong>Enable Java content in the browser</strong> option in the Java Control Panel under the <tt>Security</tt> tab. If you do not need to run Java through a browser, consider installing the Server JRE, which does not contain the Java Plug-In. See <a href="http://www.oracle.com/technetwork/java/javase/downloads/server-jre7-downloads-1931105.html">Server JRE (Java SE Runtime Environment) 7 Downloads</a> for information. </p>
+<h2><a id="unsigned" name="unsigned"></a>Setting the Security Level</h2>
+<hr />
+<p><strong>Note</strong>: These settings affect all browsers that use Oracle's Java browser plug-in. They do not affect stand-alone Java apps.</p>
+<hr />
+<p>The <tt>Security</tt> tab of the Java Control Panel
+contains a Security Level slider that controls the restrictions placed on any app that is run from the web or from the local system. The
+user can select medium, high or very high security settings.
+The settings determine if an app is allowed to run and if so, the warnings you must accept before the app is launched. The warnings contain information about the signing status of the app, the location of the app, and whether the app is requesting enhanced permissions to run outside the security sandbox.</p>
+<p>Unsigned apps that request enhanced permissions are not allowed to run, regardless of the Security Level setting. At the <tt>Very High</tt> setting, only apps signed with a valid certificate are allowed to run. For information on all security levels, see the <a href="jcp/jcp.html#security">Security</a> section of the Java Control Panel documentation. </p>
+<p>The default security level is <tt>High</tt>.</p>
+<p>The ability to run applications is also affected by the settings of the <a href="#signed">Security Options for a Secure Execution Environment</a>. </p>
+<h2><a id="signed" name="signed"></a>Security Options for a Secure Execution Environment
+</h2>
+<p>To select the behavior when attempting to run an app, there are several checkboxes available in the
+Java Control Panel (under the <tt>Advanced</tt> tab):</p>
+<ul>
+<li>Allow user to grant permissions to signed content</li>
+<li>Show sandbox warning banner</li>
+<li>Allow user to accept JNLP security requests</li>
+<li>Don't prompt for client certificate selection when no
+certificates or only one exists</li>
+<li>Warn if site certificate does not match hostname</li>
+<li>Show site certificate even if it is valid</li>
+</ul>
+
+<h2><a id="install" name="install"></a>Install Options</h2>
+<p>In the JDK 7u10 release, new arguments for command line
+installation are available for setting the security level for Java in the
+browser. Admin privileges are required to install the JRE. These arguments are available only on
+Microsoft Windows.</p>
+<ul>
+<li>On installation, the <tt>WEB_JAVA</tt> argument has the
+following effect:
+<dl>
+<dd><tt>WEB_JAVA=1</tt> enables Java in the browser</dd>
+<dd><tt>WEB_JAVA=0</tt> disables Java in the browser</dd>
+</dl>
+</li>
+<li>On installation, the <tt>WEB_JAVA_SECURITY_LEVEL</tt> argument
+has the following effect:
+<dl>
+<dd><tt>WEB_JAVA_SECURITY_LEVEL=VH</tt> sets the security level to
+very high</dd>
+<dd><tt>WEB_JAVA_SECURITY_LEVEL=H</tt> sets the security level to
+high</dd>
+<dd><tt>WEB_JAVA_SECURITY_LEVEL=M</tt> sets the security level to
+medium</dd>
+</dl>
+</li>
+</ul>
+<p>After installation of the JRE, you can check the Java Control Panel to verify that the security level
+settings are correct.</p>
+<h2><a id="mixed" name="mixed"></a>Apps with Mixed Code</h2>
+<p>This information also applies to untrusted apps that have signed
+trusted extensions, but not to signed trusted apps that have
+unsigned untrusted extensions. For more information, see <a href=
+"security/mixed_code.html">Mixing Privileged Code and Sandbox Code</a>. 
+<!-- InstanceEndEditable --></p>
+<p><br />
+<br /></p>
+<!-- InstanceEnd -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

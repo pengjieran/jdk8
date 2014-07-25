@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jar</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T23:26:35Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="jar" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-02" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="extcheck.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java.html">
+                Next</a><hr/><a id="BGBEJEEG" name="BGBEJEEG"/>
+
+<div><a id="BGBFFFGG" name="BGBFFFGG"/>
+<h1>jar</h1>
+<p>Manipulates Java Archive (JAR) files.</p>
+<a id="sthref37" name="sthref37"/>
+<h2>Synopsis</h2>
+<a id="sthref38" name="sthref38"/>
+<p><b>Create JAR file</b></p>
+<p><b>jar c</b>[<b>efmMnv0</b>] [<i>entrypoint</i>] [<i>jarfile</i>] [<i>manifest</i>] [<b>-C</b> <i>dir</i>] <i>file</i> ... [-J<i>option</i> ...] [@<i>arg-file</i> ...]</p>
+<a id="sthref39" name="sthref39"/>
+<p><b>Update JAR file</b></p>
+<p><b>jar u</b>[<b>efmMnv0</b>] [<i>entrypoint</i>] [<i>jarfile</i>] [<i>manifest</i>] [<b>-C</b> <i>dir</i>] <i>file</i> ... [-J<i>option</i> ...] [@<i>arg-file</i> ...]</p>
+<a id="sthref40" name="sthref40"/>
+<p><b>Extract JAR file</b></p>
+<p><b>jar</b> <b>x</b>[<b>vf</b>] [<i>jarfile</i>] <i>file</i> ... [-J<i>option</i> ...] [@<i>arg-file</i> ...]</p>
+<a id="sthref41" name="sthref41"/>
+<p><b>List Contents of JAR file</b></p>
+<p><b>jar</b> <b>t</b>[<b>vf</b>] [<i>jarfile</i>] <i>file</i> ... [-J<i>option</i> ...] [@<i>arg-file</i> ...]</p>
+<a id="sthref42" name="sthref42"/>
+<p><b>Add Index to JAR file</b></p>
+<p><b>jar</b> <b>i</b> <i>jarfile</i> [-J<i>option</i> ...] [@<i>arg-file</i> ...]</p>
+<a id="sthref43" name="sthref43"/>
+<h2>Description</h2>
+<p>The <code>jar</code> command is a general-purpose archiving and compression tool, based on ZIP and the ZLIB compression format. However, the <code>jar</code> command was designed mainly to package Java applets or applications into a single archive. When the components of an applet or application (files, images and sounds) are combined into a single archive, they can be downloaded by a Java agent (such as a browser) in a single HTTP transaction, rather than requiring a new connection for each piece. This dramatically improves download times. The <code>jar</code> command also compresses files, which further improves download time. The <code>jar</code> command also allows individual entries in a file to be signed by the applet author so that their origin can be authenticated. A JAR file can be used as a class path entry, whether or not it is compressed.</p>
+<p>The syntax for the <code>jar</code> command resembles the syntax for the <code>tar</code> command. It has several operation modes, defined by one of the mandatory <i>operation arguments</i>. Other arguments are either <i>options</i> that modify the behavior of the operation, or <i>operands</i> required to perform the operation.</p>
+<a id="sthref44" name="sthref44"/>
+<h2>Operation Arguments</h2>
+<p>When using the <code>jar</code> command, you have to select an operation to be performed by specifying one of the following operation arguments. You can mix them up with other one-letter options on the command line, but usually the operation argument is the first argument specified.</p>
+<dl>
+<dt>c</dt>
+<dd>
+<p>Create a new JAR archive.</p>
+</dd>
+<dt>i</dt>
+<dd>
+<p>Generate index information for a JAR archive.</p>
+</dd>
+<dt>t</dt>
+<dd>
+<p>List the contents of a JAR archive.</p>
+</dd>
+<dt>u</dt>
+<dd>
+<p>Update a JAR archive.</p>
+</dd>
+<dt>x</dt>
+<dd>
+<p>Extract files from a JAR archive.</p>
+</dd>
+</dl>
+<a id="sthref45" name="sthref45"/>
+<h2>Options</h2>
+<p>Use the following options to customize how the JAR file is created, updated, extracted, or viewed:</p>
+<dl>
+<dt>e</dt>
+<dd>
+<p>Sets the class specified by the <i>entrypoint</i> operand to be the entry point for a standalone Java application bundled into an executable JAR file. The use of this option creates or overrides the <code>Main-Class</code> attribute value in the manifest file. The <code>e</code> option can be used when creating (<code>c</code>) or updating (<code>u</code>) the JAR file.</p>
+<p>For example, the following command creates the <code>Main.jar</code> archive with the <code>Main.class</code> file where the <code>Main-Clas</code>s attribute value in the manifest is set to <code>Main</code>:</p>
+<pre xml:space="preserve">
+jar cfe Main.jar Main Main.class
+</pre>
+<p>The Java Runtime Environment (JRE) can directly call this application by running the following command:</p>
+<pre xml:space="preserve">
+java -jar Main.jar
+</pre>
+<p>If the entry point class name is in a package, then it could use either the dot (.) or slash (/) as the delimiter. For example, if <code>Main.class</code> is in a package called <code>mydir</code>, then the entry point can be specified in one of the following ways:</p>
+<pre xml:space="preserve">
+jar -cfe Main.jar mydir/Main mydir/Main.class
+jar -cfe Main.jar mydir.Main mydir/Main.class
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>Specifying both <code>m</code> and <code>e</code> options together when a particular manifest also contains the <code>Main-Class</code> attribute results in an ambiguous <code>Main-Class</code> specification. The ambiguity leads to an error and the <code>jar</code> command creation or update operation is terminated.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</dd>
+<dt>f</dt>
+<dd>
+<p>Sets the file specified by the <i>jarfile</i> operand to be the name of the JAR file that is created (<code>c</code>), updated (<code>u</code>), extracted (<code>x</code>) from, or viewed (<code>t</code>). Omitting the <code>f</code> option and the <i>jarfile</i> operand instructs the <code>jar</code> command to accept the JAR file name from <code>stdin</code> (for <code>x</code> and <code>t</code>) or send the JAR file to <code>stdout</code> (for <code>c</code> and <code>u</code>).</p>
+</dd>
+<dt>m</dt>
+<dd>
+<p>Includes names and values of attributes from the file specified by the <code>manifest</code> operand in the manifest file of the <code>jar</code> command (located in the archive at <code>META-INF/MANIFEST.MF</code>). The <code>jar</code> command adds the attribute's name and value to the JAR file unless an entry already exists with the same name, in which case the <code>jar</code> command updates the value of the attribute. The <code>m</code> option can be used when creating (<code>c</code>) or updating (<code>u</code>) the JAR file.</p>
+<p>You can add special-purpose name-value attribute pairs to the manifest that are not contained in the default manifest file. For example, you can add attributes that specify vendor information, release information, package sealing, or to make JAR-bundled applications executable. For examples of using the <code>m</code> option, see Packaging Programs at<br/>
+<code><a href="http://docs.oracle.com/javase/tutorial/deployment/jar/index.html">http://docs.oracle.com/javase/tutorial/deployment/jar/index.html</a></code></p>
+</dd>
+<dt>M</dt>
+<dd>
+<p>Does not create a manifest file entry (for <code>c</code> and <code>u</code>), or delete a manifest file entry when one exists (for <code>u</code>). The <code>M</code> option can be used when creating (<code>c</code>) or updating (<code>u</code>) the JAR file.</p>
+</dd>
+<dt>n</dt>
+<dd>
+<p>When creating (<code>c</code>) a JAR file, this option normalizes the archive so that the content is not affected by the packing and unpacking operations of the <a href="pack200.html#CHDIIIFE">pack200(1)</a> command. Without this normalization, the signature of a signed JAR can become invalid.</p>
+</dd>
+<dt>v</dt>
+<dd>
+<p>Generates verbose output to standard output. See <a href="#CHDJAEBE">Examples</a>.</p>
+</dd>
+<dt>0</dt>
+<dd>
+<p>(Zero) Creates (<code>c</code>) or updates (<code>u</code>) the JAR file without using ZIP compression.</p>
+</dd>
+<dt>-C <i>dir</i></dt>
+<dd>
+<p>When creating (<code>c</code>) or updating (<code>u</code>) a JAR file, this option temporarily changes the directory while processing files specified by the <i>file</i> operands. Its operation is intended to be similar to the <code>-C</code> option of the UNIX <code>tar</code> utility.For example, the following command changes to the <code>classes</code> directory and adds the <code>Bar.class</code> file from that directory to <code>my.jar</code>:</p>
+<pre xml:space="preserve">
+jar uf my.jar -C classes Bar.class
+</pre>
+<p>The following command changes to the <code>classes</code> directory and adds to <code>my.jar</code> all files within the classes directory (without creating a <code>classes</code> directory in the JAR file), then changes back to the original directory before changing to the <code>bin</code> directory to add <code>Xyz.class</code> to <code>my.jar</code>.</p>
+<pre xml:space="preserve">
+jar uf my.jar -C classes . -C bin Xyz.class
+</pre>
+<p>If <code>classes</code> contained files <code>bar1</code> and <code>bar2</code>, then the JAR file will contain the following after running the previous command:</p>
+<pre xml:space="preserve">
+% <code><span>jar tf my.jar</span></code>
+META-INF/
+META-INF/MANIFEST.MF
+bar1
+bar2
+Xyz.class
+</pre></dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Sets the specified JVM option to be used when the JRE runs the JAR file. JVM options are described on the reference page for the <a href="java.html#CBBFHAJA">java(1)</a> command. For example, <code>-J-Xms48m</code> sets the startup memory to 48 MB.</p>
+</dd>
+</dl>
+<a id="sthref46" name="sthref46"/>
+<h2>Operands</h2>
+<p>The following operands are recognized by the <code>jar</code> command.</p>
+<dl>
+<dt><i>file</i></dt>
+<dd>
+<p>When creating (<code>c</code>) or updating (<code>u</code>) a JAR file, the <i>file</i> operand defines the path and name of the file or directory that should be added to the archive. When extracting (<code>x</code>) or listing the contents (<code>t</code>) of a JAR file, the <i>file</i> operand defines the path and name of the file to be extracted or listed. At least one valid file or directory must be specified. Separate multiple <i>file</i> operands with spaces. If the <i>entrypoint</i>, <i>jarfile</i>, or <i>manifest</i> operands are used, the <i>file</i> operands must be specified after them.</p>
+</dd>
+<dd><a id="BGBFHCAF" name="BGBFHCAF"/></dd>
+<dt><i>entrypoint</i></dt>
+<dd>
+<p>When creating (<code>c</code>) or updating (<code>u</code>) a JAR file, the <i>entrypoint</i> operand defines the name of the class that should be the entry point for a standalone Java application bundled into an executable JAR file. The <i>entrypoint</i> operand must be specified if the <code>e</code> option is present.</p>
+</dd>
+<dd><a id="BGBGDCHC" name="BGBGDCHC"/></dd>
+<dt><i>jarfile</i></dt>
+<dd>
+<p>Defines the name of the file to be created (<code>c</code>), updated (<code>u</code>), extracted (<code>x</code>), or viewed (<code>t</code>). The <i>jarfile</i> operand must be specified if the <code>f</code> option is present. Omitting the <code>f</code> option and the <i>jarfile</i> operand instructs the <code>jar</code> command to accept the JAR file name from <code>stdin</code> (for <code>x</code> and <code>t</code>) or send the JAR file to <code>stdout</code> (for <code>c</code> and <code>u</code>).</p>
+<p>When indexing (<code>i</code>) a JAR file, specify the <i>jarfile</i> operand without the <code>f</code> option.</p>
+</dd>
+<dt><i>manifest</i></dt>
+<dd>
+<p>When creating (<code>c</code>) or updating (<code>u</code>) a JAR file, the <i>manifest</i> operand defines the preexisting manifest files with names and values of attributes to be included in <code>MANIFEST.MF</code> in the JAR file. The <i>manifest</i> operand must be specified if the <code>f</code> option is present.</p>
+</dd>
+<dt><i>@arg-file</i></dt>
+<dd>
+<p>To shorten or simplify the <code>jar</code> command, you can specify arguments in a separate text file and pass it to the <code>jar</code> command with the at sign (@) as a prefix. When the <code>jar</code> command encounters an argument beginning with the at sign, it expands the contents of that file into the argument list.</p>
+<p>An argument file can include options and arguments of the <code>jar</code> command (except the <code>-J</code> options, because they are passed to the launcher, which does not support argument files). The arguments within a file can be separated by spaces or newline characters. File names within an argument file are relative to the current directory from which you run the <code>jar</code> command, not relative to the location of the argument file. Wild cards, such as the asterisk (*), that might otherwise be expanded by the operating system shell, are not expanded.</p>
+<p>The following example, shows how to create a <code>classes.list</code> file with names of files from the current directory output by the <code>find</code> command:</p>
+<pre xml:space="preserve">
+find . -name '*.class' -print &gt; classes.list
+</pre>
+<p>You can then execute the <code>jar</code> command and pass the <code>classes.list</code> file to it using the <i>@arg-file</i> syntax:</p>
+<pre xml:space="preserve">
+jar cf my.jar @classes.list
+</pre>
+<p>An argument file can be specified with a path, but any file names inside the argument file that have relative paths are relative to the current working directory of the <code>jar</code> command, not to the path passed in, for example:</p>
+<pre xml:space="preserve">
+jar @dir/classes.list
+</pre></dd>
+</dl>
+<a id="sthref47" name="sthref47"/>
+<h2>Notes</h2>
+<p>The <code>e</code>, <code>f</code>, and <code>m</code> options must appear in the same order on the command line as the <i>entrypoint</i>, <i>jarfile</i>, and <i>manifest</i> operands, for example:</p>
+<pre xml:space="preserve">
+jar cmef myManifestFile MyMainClass myFile.jar *.class
+</pre>
+<a id="CHDJAEBE" name="CHDJAEBE"/><a id="BGBIGIED" name="BGBIGIED"/>
+<h2>Examples</h2>
+<dl>
+<dd><a id="sthref48" name="sthref48"/></dd>
+<dt>Example 1Adding All Files From the Current Directory With Verbose Output</dt>
+<dd>
+<pre xml:space="preserve">
+% ls
+1.au          Animator.class    monkey.jpg
+2.au          Wave.class        spacemusic.au
+3.au          at_work.gif
+
+% jar cvf bundle.jar *
+added manifest
+adding: 1.au(in = 2324) (out= 67)(deflated 97%)
+adding: 2.au(in = 6970) (out= 90)(deflated 98%)
+adding: 3.au(in = 11616) (out= 108)(deflated 99%)
+adding: Animator.class(in = 2266) (out= 66)(deflated 97%)
+adding: Wave.class(in = 3778) (out= 81)(deflated 97%)
+adding: at_work.gif(in = 6621) (out= 89)(deflated 98%)
+adding: monkey.jpg(in = 7667) (out= 91)(deflated 98%)
+adding: spacemusic.au(in = 3079) (out= 73)(deflated 97%)
+</pre></dd>
+<dd><a id="BGBHHBGH" name="BGBHHBGH"/></dd>
+<dt>Example 2Adding Files From Subdirectories</dt>
+<dd>
+<pre xml:space="preserve">
+% ls -F
+audio/ classes/ images/
+% jar cvf bundle.jar audio classes images
+added manifest
+adding: audio/(in = 0) (out= 0)(stored 0%)
+adding: audio/1.au(in = 2324) (out= 67)(deflated 97%)
+adding: audio/2.au(in = 6970) (out= 90)(deflated 98%)
+adding: audio/3.au(in = 11616) (out= 108)(deflated 99%)
+adding: audio/spacemusic.au(in = 3079) (out= 73)(deflated 97%)
+adding: classes/(in = 0) (out= 0)(stored 0%)
+adding: classes/Animator.class(in = 2266) (out= 66)(deflated 97%)
+adding: classes/Wave.class(in = 3778) (out= 81)(deflated 97%)
+adding: images/(in = 0) (out= 0)(stored 0%)
+adding: images/monkey.jpg(in = 7667) (out= 91)(deflated 98%)
+adding: images/at_work.gif(in = 6621) (out= 89)(deflated 98%)
+
+% ls -F
+audio/ bundle.jar classes/ images/
+</pre></dd>
+<dd><a id="sthref49" name="sthref49"/></dd>
+<dt>Example 3Listing the Contents of JAR</dt>
+<dd>
+<pre xml:space="preserve">
+% jar tf bundle.jar
+</pre>
+<pre xml:space="preserve">
+META-INF/
+META-INF/MANIFEST.MF
+audio/1.au
+audio/2.au
+audio/3.au
+audio/spacemusic.au
+classes/Animator.class
+classes/Wave.class
+images/monkey.jpg
+images/at_work.gif
+</pre></dd>
+<dd><a id="sthref50" name="sthref50"/></dd>
+<dt>Example 4Adding an Index</dt>
+<dd>
+<p>Use the <code>i</code> option when you split the interdependent classes for a stock trade application into three JAR files: <code>main.jar</code>, <code>buy.jar</code>, and <code>sell.jar</code>. If you specify the <code>Class-Path</code> attribute in the <code>main.jar</code> manifest, then you can use the <code>i</code> option to speed up the class loading time for your application:</p>
+<pre xml:space="preserve">
+Class-Path: buy.jar sell.jar
+jar i main.jar
+</pre>
+<p>An <code>INDEX.LIST</code> file is inserted to the <code>META-INF</code> directory. This enables the application class loader to download the specified JAR files when it is searching for classes or resources.</p>
+<p>The application class loader uses the information stored in this file for efficient class loading. To copy directories, first compress files in <code>dir1</code> to <code>stdout</code>, then pipeline and extract from <code>stdin</code> to <code>dir2</code> (omitting the <code>-f</code> option from both <code>jar</code> commands):</p>
+<pre xml:space="preserve">
+(cd dir1; jar c .) | (cd dir2; jar x)
+</pre></dd>
+</dl>
+<a id="sthref51" name="sthref51"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="pack200.html#CHDIIIFE">pack200(1)</a>.</p>
+</li>
+<li>
+<p>The JAR section of The Java Tutorials at<br/>
+<code><a href="http://docs.oracle.com/javase/tutorial/deployment/jar/index.html">http://docs.oracle.com/javase/tutorial/deployment/jar/index.html</a></code></p>
+</li>
+</ul>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="extcheck.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

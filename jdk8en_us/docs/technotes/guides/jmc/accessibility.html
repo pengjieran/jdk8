@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Accessibility in Java Mission Control</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-04T2:3:8Z" name="date"/>
+<meta content="This chapter describes the accessibility features provided by Java Mission Control." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Accessibility in Java Mission Control" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E28023-04" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Mission Control User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="logging.html">
+                Next</a><hr/><a id="CIHCGHGA" name="CIHCGHGA"/>
+<h1><span>3</span> Accessibility in Java Mission Control</h1>
+<p>This chapter describes the accessibility features provided by Java Mission Control.</p>
+<p>Oracle is dedicated to providing high quality information technology that is accessible to people with disabilities. To this end, Oracle has undertaken a substantial project to ensure the accessibility of Java Mission Control. Oracle is implementing these enhancements and will continue to address all accessibility issues that arise.</p>
+<a id="A132186526" name="A132186526"/>
+<div>
+<h2><span>3.1</span> Screen Readers</h2>
+<p>Oracle supports a number of screen readers that translate screen-based information into spoken words to assist vision-impaired users.</p>
+<p>Configuration options are currently available for the JAWS screen reader produced by Freedom Scientific, Inc. For information on configuring this product, please refer to the Freedom Scientific screen reader website at<br/>
+<code><a href="http://www.freedomscientific.com/documentation/screen-readers.asp">http://www.freedomscientific.com/documentation/screen-readers.asp</a></code></p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>If you are using JAWS, be aware that switching tabs does not work as expected. For a workaround, see <a href="#CDDHBCIJ">"Switching Between Tabs"</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="A999694" name="A999694"/>
+<div>
+<h2><span>3.2</span> Java Mission Control Accessibility Mode</h2>
+<p>Java Mission Control displays performance data dials and graphs that provide a valuable graphical view of the data that can reveal trends and help identify minimum and maximum values for performance metrics. However, dials and graphs do not convey information in a manner that can be read by a screen reader. To remedy this problem, Java Mission Control provides a way to view dial and graph data in tabular format, which is more accessible for users with visual impairment. To toggle the accessibility mode, click the <b>Accessibility mode</b> button in the top-right corner of the relevant panel with dials or graphs.</p>
+<p>To enable accessibility mode for all panels in Java Mission Control:</p>
+<ol>
+<li>
+<p>Open the <b>Window</b> menu and select <b>Preferences</b>.</p>
+</li>
+<li>
+<p>Select <b>Java Mission Control</b> in the left pane.</p>
+</li>
+<li>
+<p>Under <b>Accessibility Options</b>, select <b>Use accessibility mode</b>.</p>
+</li>
+<li>
+<p>Click <b>Apply</b>.</p>
+</li>
+</ol>
+</div>
+
+<div><a id="sthref15" name="sthref15"/>
+<h2><span>3.3</span> Showing Text Labels on Buttons</h2>
+<p>Java Mission Control contains a lot of buttons with graphics and no text labels. To show the text labels that can be read by screen readers:</p>
+<ol>
+<li>
+<p>Open the <b>Window</b> menu and select <b>Preferences</b>.</p>
+</li>
+<li>
+<p>Select <b>Java Mission Control</b> in the left pane.</p>
+</li>
+<li>
+<p>Under <b>Accessibility Options</b>, select <b>Show text labels on buttons</b>.</p>
+</li>
+<li>
+<p>Click <b>Apply</b>.</p>
+<p>Restart any running plug-ins to see the text labels on buttons.</p>
+</li>
+</ol>
+</div>
+
+<div><a id="sthref16" name="sthref16"/>
+<h2><span>3.4</span> Resizing Online Help Text</h2>
+<p>Vision-impaired users might find it difficult to read the online help documents in the standalone (RCP) version of Java Mission Control unless the text size is increased. Due to a limitation in the Eclipse help viewer, currently you cannot resize its text. To change the font size, view the help in an external browser.</p>
+<p>To change the default viewer for Java Mission Control Help:</p>
+<ol>
+<li>
+<p>Open the <b>Window</b> menu and select <b>Preferences</b>.</p>
+</li>
+<li>
+<p>Select <b>Help</b> in the left pane.</p>
+</li>
+<li>
+<p>Under <b>Open Modes</b>, select to open help contents in an external browser.</p>
+</li>
+<li>
+<p>Click <b>Apply</b>.</p>
+</li>
+</ol>
+<p>Java Mission Control will use the default web browser specified in the operating system, and you cannot specify a different web browser from within Java Mission Control. How you specify a browser in the operating system depends on the operating system.</p>
+</div>
+
+<a id="A132187809" name="A132187809"/>
+<div>
+<h2><span>3.5</span> Known Issues and Workarounds</h2>
+<p>This section contains additional instructions for enhancing your experience with Java Mission Control's accessibility features.</p>
+<a id="sthref17" name="sthref17"/>
+<p><b>Navigating in a Tree Table with Only One Row</b></p>
+<p>When navigating in a tree table component containing only one row, press the Space key or the Shift key and use the Up and Down keys to get to the row.</p>
+<a id="CDDHBCIJ" name="CDDHBCIJ"/>
+<p><b>Switching Between Tabs</b></p>
+<p>When reaching a tab component, JAWS erroneously tells the user to switch pages, press Ctrl+Tab. The correct way to switch between tabs is to use the left or right arrow keys.</p>
+<a id="sthref18" name="sthref18"/>
+<p><b>Reading Table Data with a Screen Reader</b></p>
+<p>To read table data more efficiently with screen reading software, copy and paste the table data into a text editor and read it from there. To copy the data, select the rows that you are interested in, right-click and select <b>Copy</b>. Then paste the data into a text editor.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="logging.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

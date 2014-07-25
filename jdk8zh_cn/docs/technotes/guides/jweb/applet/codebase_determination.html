@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<!-- InstanceBegin template="/Templates/jweb_guide_template.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Codebase Determination</title>
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Codebase Determination</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="applet_dev_guide.html">Applet Developer's Guide</a> &gt; Codebase Determination</p>
+
+<p>The following topics are covered:</p>
+
+<ul>
+<li class="TOC"><a href="#intro">Codebase Computation Rules</a>
+<ul>
+<li><a href="#CODEBASE_EXAMPLES">Examples</a></li>
+</ul>
+</li>
+<li class="TOC"><a href="#CODEBASE_BEST_PRACTICES">Best
+Practices</a></li>
+</ul>
+
+<h2><a name="intro" id="intro"></a>Codebase Computation Rules</h2>
+<p>In a JNLP file, the codebase is an optional parameter to the
+<code>&lt;jnlp&gt;</code> tag. It is used both to locate resources
+described in that JNLP file, as well as to find the JNLP file
+itself. For technical reasons, Java Web Start is not able to
+refresh the contents of the JNLP file from the server unless an
+absolute codebase is specified.</p>
+<p>A codebase is always provided by the browser, either
+because it was explicitly specified, or implicitly obtained from
+the location of the HTML document. This allows relative URLs to be
+used in JNLP files, which is very useful for moving an entire tree
+of content from one server to another.</p>
+<p>JNLP files reference other JNLP files in a tree structure. The
+root JNLP file for a JNLP applet is referenced by an
+<code>&lt;applet&gt;</code> tag. The applet tag's codebase helps
+define the location of the <em>root JNLP file</em>.</p>
+<p>The rules for codebase computation are as follows:</p>
+<ul>
+<li>If an absolute codebase is specified in the JNLP file, it is
+used. This is required for backward compatibility reasons.</li>
+<li>If the JNLP codebase is not specified, the directory containing
+the JNLP file is used.</li>
+<li>Otherwise, merge the JNLP's codebase into the directory
+containing the JNLP file.</li>
+</ul>
+<p>In simple Java terms, this can be expressed as</p>
+<pre>
+   URL new_codebase = new URL(current_jnlp_dir, current_jnlp_codebase);
+</pre>
+<p>This codebase computation is not an extension of JSR-56. JSR-56
+does not restrict the codebase to be <b>absolute</b>, and therefore
+it <em>may</em> be <b>relative</b>.</p>
+<h3><a name="CODEBASE_EXAMPLES" id=
+"CODEBASE_EXAMPLES">Examples</a></h3>
+<p>Example 1:</p>
+<pre>
+   this JNLP's location:   http://someserver.example.com/this.jnlp
+   this JNLP's codebase:   http://www.example.com/test/
+   resulting codebase for
+     parsing this JNLP:    http://www.example.com/test/
+</pre>
+<p>Example 2:</p>
+<pre>
+   this JNLP's location:   http://www.example.com/test2/this.jnlp
+   this JNLP's codebase:   &lt;none&gt;
+   resulting codebase for
+     parsing this JNLP:    http://www.example.com/test2/
+</pre>
+<p>Example 3:</p>
+<pre>
+   this JNLP's location:   http://www.example.com/this.jnlp
+   this JNLP's codebase:   codebasedir
+   resulting codebase for
+     parsing this JNLP:    http://www.example.com/codebasedir
+</pre>
+<p>Example 4:</p>
+<p>Relative paths are used to refer to each nested JNLP, just as in
+a tree of HTML files.</p>
+<pre>
+   www.example.com/html/my_applet.html
+     refers to: my_applet.jnlp
+     codebase:  www.example.com/html
+
+     my_applet.jnlp:
+       codebase not specified
+       inherits "www.example.com/html"
+       references JNLP extension "jogl/jogl.jnlp"
+
+     jogl/
+       jogl.jnlp
+       codebase not specified
+       inherits "www.example.com/html/jogl"
+         (the directory containing jogl.jnlp)
+       references gluegen-rt/gluegen-rt.jnlp
+
+       gluegen-rt/
+         gluegen-rt.jnlp
+         codebase not specified
+         inherits "www.example.com/html/jogl/gluegen-rt"
+           (the directory containing gluegen-rt.jnlp)
+</pre>
+<h2><a name="CODEBASE_BEST_PRACTICES" id=
+"CODEBASE_BEST_PRACTICES">Best Practices</a></h2>
+<p>We recommend either:</p>
+<ul>
+<li>Leaving the codebase empty for both the main or extension JNLP
+file, allowing the referencing JNLP file or
+<code>&lt;applet&gt;</code> tag to implicitly specify the
+codebase.</li>
+<li>Specifying an absolute URL for the codebase of any main or
+extension JNLP file.</li>
+</ul>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Time Zone Settings in the JRE</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T13:53:12Z" name="date"/>
+<meta content="This chapter describes some issues that can arise with time zone settings with the Java Runtime Environment (JRE) on the Windows operating system. It also describes troubleshooting techniques and workarounds to solve these issues." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Time Zone Settings in the JRE" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38386-01" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Desktop Technologies Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="sound.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin.html">
+                Next</a><hr/><a id="sthref87" name="sthref87"/>
+<h1><span>7</span> Time Zone Settings in the JRE</h1>
+<p>This chapter describes some issues that can arise with time zone settings with the Java Runtime Environment (JRE) on the Windows operating system. It also describes troubleshooting techniques and workarounds to solve these issues.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A9999112">"Native Time Zone Information and the JRE"</a></p>
+</li>
+<li>
+<p><a href="#A9990909">"Determining the Default Time Zone on Windows"</a></p>
+</li>
+</ul>
+<a id="A9999112" name="A9999112"/>
+<div>
+<h2>Native Time Zone Information and the JRE</h2>
+<p>The JRE reads the native time zone information to determine your default time zone. For example, on Windows, the JRE queries the registry to determine the default time zone.</p>
+<p>However, the JRE also maintains its own time zone database. This provides cross-platform support because the different operating system APIs are not sufficient to support the Java APIs. The Java time zone database supports time zone IDs and determines daylight saving time rules for all the time zones that the JRE supports. The Java time zone database can be found in <span>&lt;install_dir&gt;</span><code>/jre/lib/zi</code>. The <code>tzupdater</code> tool is available to update the Java time zone database.</p>
+<p>Modifications to the JRE for each specific operating system are necessary so that the operating system can deliver the system time to the JRE. Then, if a Java application requests the system date by calling date and time related constructors, the system time is returned.</p>
+<p>Examples of such constructors are:</p>
+<br/>
+<code>java.util.Date()</code><br/>
+<code>java.util.GregorianCalendar()</code><br/>
+<p>Constructors related to date and time include:</p>
+<br/>
+<code>System.currentTimeMillis()</code><br/>
+<code>System.nanoTime()</code><br/>
+<p>Operating system-specific patches might be required to ensure that the correct system time is delivered to the JRE.</p>
+<div><a id="sthref88" name="sthref88"/>
+<h3>Determine the Time Zone Data Version in Use</h3>
+<p>The time zone database version that ships in any JRE from Oracle is documented in the Release Notes. However, the actual version can be different from the version mentioned there if the JRE has been patched using the <code>tzupdater</code> tool.</p>
+<p>To determine the current time zone data version of your JRE either run the <code>tzupdater</code> tool with the Version option, or examine the header of the <code>ZoneInfoMappings</code> file.</p>
+<div><a id="sthref89" name="sthref89"/>
+<h4>Determine the Time Zone with Tzupdater</h4>
+<p>The Java time zone updater tool is called <code>tzupdater</code>. To determine the time zone database version of your JRE, run this tool as follows:</p>
+<pre xml:space="preserve">
+java -jar tzupdater.jar -V
+</pre>
+<p>Here is a typical output from running the <code>tzupdater</code> tool.</p>
+<pre xml:space="preserve">
+tzupdater version 1.3.33-b01JRE time zone data version: tzdata2010iEmbedded time zone data version: tzdata2010l
+</pre>
+<p>You can download the <code>tzupdater</code> tool from this web page: <code>http://www.oracle.com/technetwork/java/javase/tzupdater-readme-136440.html</code></p>
+</div>
+
+<div><a id="sthref90" name="sthref90"/>
+<h4>Examining the ZoneInfoMappings File</h4>
+<p>Even without the <code>tzupdater</code> tool, you can quickly check the version by examining the header of the file <span>&lt;java-home&gt;</span><code>/lib/zi/ZoneInfoMappings</code>. This data is stored in a binary format that is specific to Java. On Linux, Solaris, and Mac OS X operating systems, you can use the octal dump command to see the header of this file. Here is the octal dump command format:</p>
+<pre xml:space="preserve">
+/usr/bin/od -c -j 11 -N 11 &lt;java-home&gt;/lib/zi/ZoneInfoMappings
+</pre>
+<p>Here is a typical result of such a dump command:</p>
+<pre xml:space="preserve">
+/usr/bin/od -c -j 11 -N 11 /farfaraway/jdks/jdk1.6.0_21/jre/lib/zi/ZoneInfoMappings0000000   t   z   d   a   t   a   2   0   1   0   i0000013
+</pre>
+<p>In this example the time zone data version that is embedded in that JRE is <code>tzdata2010i</code>.</p>
+<p>On Microsoft Windows, you can use the <code>findstr</code> command to examine the <code>ZoneInfoMappings</code> file. Here is an example.</p>
+<pre xml:space="preserve">
+findstr tzdata &lt;java-home&gt;\lib\zi\ZoneInfoMappings
+</pre></div>
+</div>
+
+<div><a id="sthref91" name="sthref91"/>
+<h3>Troubleshooting Problems with Tzupdater</h3>
+<p>Sometimes when you run <code>tzupdater</code> it quits with the message: There's no tzdata available for this Java runtime. Here are two examples.</p>
+<pre xml:space="preserve">
+$ java -jar tzupdater.jar -Vtzupdater version 1.3.39-b01JRE time zone data version: tzdata2009iThere's no tzdata available for this Java runtime.
+</pre>
+<pre xml:space="preserve">
+$ java -jar tzupdater.jar -u
+There's no tzdata available for this Java runtime.
+</pre>
+<p>The likely cause is that you are using a JRE that is not from Oracle. Oracle provides the JRE for Solaris (x86, x64, SPARC), Linux (x86, x64, ARM), Microsoft Windows (x86, x64), and Mac OS X (x64). The <code>java.vendor</code> property value for these is Sun Microsystems Inc., Oracle Corporation or BEA Systems, Inc. Oracle does not provide the JRE for other platforms.</p>
+<p>The output of running the <code>java -version</code> command does not provide enough information to determine the actual vendor of a JRE. However, running <code>tzupdater</code> in update mode with the <code>-v</code> option does print out the <code>java.vendor</code> property. Here is an example of attempting to run tzupdater when the environment is HP_UX from Hewlett Packard.</p>
+<pre xml:space="preserve">
+root@my_server:/opt/java6/bin&gt; uname -a
+HP-UX my_server B.11.23 U ia64 1114591084 unlimited-user license
+root@my_server:/opt/java6/bin&gt; ./java -version
+java version "1.6.0.05"
+Java(TM) SE Runtime Environment (build 1.6.0.05-jinteg_14_oct_2009_01_44-b00)
+Java HotSpot(TM) Server VM (build 14.2-b01-jre1.6.0.05-rc5, mixed mode)
+root@my_server:/opt/java6/bin&gt; ./java -jar tzupdater.jar -v -u
+java.home: /opt/java6/jre
+java.vendor: Hewlett-Packard Co.
+java.version: 1.6.0.05
+JRE time zone data version: tzdata2009i
+There's no tzdata available for this Java runtime.
+</pre>
+<p>In this example, <code>java.vendor</code> is set to Hewlett-Packard Co. The JRE that you are trying to update using <code>tzupdater</code> is not supported by Oracle.</p>
+<p>A possible solution is visit the website of your JRE vendor and determine whether a time zone updater tool is available there. For example, the Hewlett-Packard version of the tzupdater tool is available at this URL:</p>
+<pre xml:space="preserve">
+http://h18012.www1.hp.com/java/DST/ivms/README.html
+</pre></div>
+</div>
+
+<a id="A9990909" name="A9990909"/>
+<div>
+<h2>Determining the Default Time Zone on Windows</h2>
+<p>This section clarifies how the JRE determines the default time zone on the Windows Vista and Windows 7 operating systems. If Java doesn't report the expected time zone, use the troubleshooting techniques provided in the following sections:</p>
+<ul>
+<li>
+<p>Check which time zone the JRE reports as default</p>
+</li>
+<li>
+<p>Determine the time zone setting in the Control Panel</p>
+</li>
+<li>
+<p>Check whether automatic daylight saving time adjustment is enabled</p>
+</li>
+<li>
+<p>Check whether you can use <code>-Duser.timezone</code></p>
+</li>
+<li>
+<p>Use the tzutil.exe tool in Windows 7</p>
+</li>
+</ul>
+<div><a id="sthref92" name="sthref92"/>
+<h3>Check Which Time Zone the JRE Reports as Default</h3>
+<p>You can write a simple program to determine which time zone the JRE reports as the default time zone, based on a check with the native operating system.</p>
+<p>The Java program in <a href="#CACFDIFG">Example 7-1</a> returns the default time zone:</p>
+<div><a id="CACFDIFG" name="CACFDIFG"/>
+<p>Example 7-1 Java Code Snippet to Check the Time Zone Setting in the JRE</p>
+<pre xml:space="preserve">
+public class DefaultTimeZone {
+    public static void main(String[] args) {
+        System.out.println(java.util.TimeZone.getDefault().getID());
+    }
+}
+</pre></div>
+
+<p>You can save the code snippet in <a href="#CACFDIFG">Example 7-1</a> to a file named <code>DefaultTimeZone.java</code> and compile it using the <code>javac</code> command. Then you can run the compiled <code>DefaultTimeZone</code> class, as shown in <a href="#CACEEFBH">Example 7-2</a>.</p>
+<div><a id="CACEEFBH" name="CACEEFBH"/>
+<p>Example 7-2 Compiling and Running the DefaultTimeZone Program</p>
+<pre xml:space="preserve">
+c:\tztest&gt; javac DefaultTimeZone.java
+c:\tztest&gt; java DefaultTimeZone
+Europe/Berlin
+</pre></div>
+
+<p>In <a href="#CACEEFBH">Example 7-2</a>, the default time zone is Europe/Berlin. Running the program should display your local time zone. If the output is not the expected time zone, then continue with the following troubleshooting steps.</p>
+</div>
+
+<a id="CBBHFHJG" name="CBBHFHJG"/>
+<div>
+<h3>Determine the Setting in the Control Panel</h3>
+<p>You can change or examine the system's default time zone using the Windows Control Panel. For example, you can select this time zone setting in Windows 7:</p>
+<p>(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</p>
+<p>The corresponding value for the Registry key <code>TimeZoneKeyName</code> is W. Europe Standard Time.</p>
+</div>
+
+<div><a id="sthref93" name="sthref93"/>
+<h3>Check Whether Automatic Daylight Saving Time Adjustment is Enabled</h3>
+<p>You can check whether automatic adjustment of daylight saving time is enabled through the graphical user interface (GUI) or through the Windows registry.</p>
+<div><a id="sthref94" name="sthref94"/>
+<h4>GUI Method</h4>
+<p>To use the Control Panel to check whether automatic adjustment of daylight saving time is enabled, follow these steps.</p>
+<ol>
+<li>
+<p>Click the Windows <b>Start</b> button and then click <b>Control Panel</b>.</p>
+</li>
+<li>
+<p>Click <b>Date and Time</b>.</p>
+</li>
+<li>
+<p>Click the <b>Change Time Zone</b> button.</p>
+</li>
+<li>
+<p>There is a click box labeled Automatically adjust time for Daylight Savings Time. Observe whether or not this click box is clicked, and change the setting if you desire.</p>
+</li>
+<li>
+<p>Click <b>OK</b>. This returns you to the Date and Time dialog box.</p>
+</li>
+</ol>
+</div>
+
+<div><a id="sthref95" name="sthref95"/>
+<h4>Windows Registry Method</h4>
+<p>You can run Windows Registry Editor to check whether automatic adjustment of daylight saving time is enabled.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Caution:</b></p>
+<p>It is a good practice to back up the Windows registry before examining or editing it. If you make a mistake in editing, you can damage the Windows registry.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>To enable automatic adjustment of daylight saving time from the Windows registry:</p>
+<ol>
+<li>
+<p>Click the Windows Start button.</p>
+</li>
+<li>
+<p>In the Search programs and files field, type regedit and then press Enter to open the Registry Editor.</p>
+</li>
+<li>
+<p>In the Registry Editor, search for the key DynamicDaylightTimeDisabled and examine the setting.</p>
+<ul>
+<li>
+<p>If the registry setting is 1, then dynamic daylight time is disabled.</p>
+</li>
+<li>
+<p>If the registry setting is 0, then dynamic daylight time is enabled.</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>If you prefer, you can access the Windows registry from the Windows command window.</p>
+<p>In <a href="#CACEHGBD">Example 7-3</a>, the registry setting is 1. With this setting, the clock is not automatically adjusted for daylight saving time.</p>
+<div><a id="CACEHGBD" name="CACEHGBD"/>
+<p>Example 7-3 DynamicDaylightTimeDisabled Registry Key Set to True</p>
+<pre xml:space="preserve">
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation]
+"DynamicDaylightTimeDisabled"=dword:00000001
+</pre></div>
+
+<p>If you have disabled the <code>DynamicDaylightTimeDisabled</code> option, then Java always returns a GMT (Greenwich mean time) offset and not a time zone ID that is compatible with the uniform naming convention (such as Europe/Berlin). For example, the offset will be expressed as GMT+01 and not Europe/Berlin.</p>
+</div>
+</div>
+
+<div><a id="sthref96" name="sthref96"/>
+<h3>Set the Default Time Zone in the Control Panel</h3>
+<p>You can change or examine the system's default time zone by using the Windows Control Panel.</p>
+<p>To set the system's default time zone from the Control Panel:</p>
+<ol>
+<li>
+<p>Click the Windows <b>Start</b> button and then click <b>Control Panel</b>.</p>
+</li>
+<li>
+<p>Click <b>Date and Time</b>.</p>
+</li>
+<li>
+<p>Click the <b>Change Time Zone</b> button.</p>
+</li>
+<li>
+<p>From the <b>Time Zone</b> menu, select your preferred time zone.</p>
+</li>
+<li>
+<p>Click <b>OK</b>. This returns you to the Date and Time dialog box.</p>
+</li>
+<li>
+<p>Click <b>OK</b> to close the Date and Time dialog box.</p>
+</li>
+</ol>
+<p>For example, you can select this time zone in Windows 7:</p>
+<pre xml:space="preserve">
+(UTC)+1:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna.
+</pre>
+<p>The corresponding value for the Registry key <code>TimeZoneKeyName</code> is W. Europe Standard Time.</p>
+</div>
+
+<div><a id="sthref97" name="sthref97"/>
+<h3>Check Whether You Can Use -Duser.timezone</h3>
+<p>You can explicitly set a default time zone on the command line by using the Java system property called <code>user.timezone</code>. This bypasses the settings in the Windows operating system and can be a workaround in some cases. For instance, this setting is useful if you want DST (daylight saving time) only for a single Java program running on the system.</p>
+<p>The following example examines the system property -Duser.timezone by running a Java program called DefaultTimeTestZone from the Windows Command Prompt window.</p>
+<p><code>c:\tztest&gt; java -Duser.timezone=America/New_York DefaultTimeZone<br/>
+America/New_York</code></p>
+<p>If setting a default time zone explicitly by specifying <code>-Duser.timezone</code> works for the <code>DefaultTimeTestZone</code> program, but does not work for your program, you should check whether your code overwrites the default Java time zone during runtime, with a method call such as this:</p>
+<pre xml:space="preserve">
+TimeZone.setDefault(TimeZone zone)
+</pre></div>
+
+<div><a id="sthref98" name="sthref98"/>
+<h3>Special Tools in Windows 7</h3>
+<p>With Windows 7, a tool called <code>tzutil.exe</code> is available. With this tool, you can request the current time zone ID abbreviation without manually reading the registry.</p>
+<p>Here is an example of running <code>tzutil.exe</code>. The first line is the command that you enter in Windows Command Prompt window. The second line is the system response.</p>
+<pre xml:space="preserve">
+tzutil /g
+
+W. Europe Standard Time
+</pre></div>
+
+<div><a id="sthref99" name="sthref99"/>
+<h3>JRE Internal Representation of Time Zone Mappings</h3>
+<p>On Windows, the JRE uses a file <span>&lt;java-home&gt;</span><code>\lib\tzmappings</code> to represent the mapping between Windows and Java time zones. Each line in the file has four tokens. The first token is the Windows time zone registry key called <code>TimeZoneKeyName</code>. (See <a href="#CBBHFHJG">Determine the Setting in the Control Panel</a>)</p>
+<p>The second token is a time zone map ID. (This is not used in Windows Vista and Windows 7.) The third token is the locale. The fourth token represents the Java time zone ID. The important tokens are token number one, number three (which can be empty), and number four. (Note that this file is not a public interface.)</p>
+<p>If you select the time zone called (UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna in the Windows Control Panel, then the relevant line in the file <code>tzmappings</code> is:</p>
+<p><code>W. Europe Standard Time:2,3::Europe/Berlin:</code></p>
+<p>In this example, the JRE recognizes your default time zone (token number four) as Europe/Berlin.</p>
+<p>If there is no appropriate mapping entry in the tzmappings file, then it is possible that Microsoft introduced a new time zone in a Windows update, and that the new time zone is not available to the JRE. In this situation, you can file a bug report for the JRE and request a new entry in the tzmappings file from the following URL:</p>
+<pre xml:space="preserve">
+<code><a href="http://bugs.sun.com">http://bugs.sun.com</a></code>
+</pre>
+<p>A similar disconnect between the operating system and the JRE is possible if you have run the tool <code>tzedit.exe.</code> This tool is posted by Microsoft on the Internet, and allows users to add new time zones. The JRE is unlikely to have a time zone introduced into the system by this tool. Again, the solution is to file a bug to request that a new entry be added to the <code>tzmappings</code> file.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="sound.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

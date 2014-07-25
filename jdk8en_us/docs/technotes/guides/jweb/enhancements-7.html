@@ -1,0 +1,485 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Rich Internet Applications Enhancements in Java SE
+7</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Rich Internet Applications Enhancements in JDK 7</h1>
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#javase7u51">Enhancements in JDK 7 Update 51</a></li>
+<li><a href="#javase7u45">Enhancements in JDK 7 Update 45</a></li>
+<li><a href="#javase7u40">Enhancements in JDK 7 Update 40</a></li>
+<li><a href="#javase7u25">Enhancements in JDK 7 Update 25</a></li>
+<li><a href="#javase7u21">Enhancements in JDK 7 Update 21</a></li>
+<li><a href="#javase7u10">Enhancements in JDK 7 Update 10</a></li>
+<li><a href="#javase7u6">Enhancements in JDK 7 Update 6</a></li>
+<li><a href="#javase7u2">Enhancements in JDK 7 Update 2</a></li>
+<li><a href="#javase7">Enhancements in JDK 7</a></li>
+</ul>
+
+<h2><a name="javase7u51" id="javase7u51">Enhancements in JDK 7 Update 51</a></h2>
+<p>The JDK 7u51 release includes the following enhancements:</p>
+<ul>
+  <li>
+    <p>The <a href="security/exception_site_list.html">Exception Site List</a> feature provides a way for users to run Java applets and Java Web Start applications that do not meet the latest security requirements. RIAs that are hosted on a site in the exception site list are allowed to run with the applicable security prompts. </p>
+  </li>
+  <li>
+    <p>Unsigned and self-signed RIAs are blocked when the security level is set to <code>Very High</code> or <code>High</code>. </p>
+  </li>
+  <li>
+    <p>The Permissions attribute is required in the JAR file manifest of the main JAR file when the security level is set to <code>Very High</code> or <code>High</code>. </p>
+  </li>
+</ul>
+<h2><a name="javase7u45" id="javase7u45">Enhancements in JDK 7 Update 45</a></h2>
+<p>The JDK 7u45 release includes the following enhancements:</p>
+<ul>
+  <li>
+    <p>JAR file manifest attributes are available to enhance the security of running Java applets and applications in a browser. The <code>Application-Name</code> attribute provides a secure title for your RIA. The <code>Application-Library-Allowable-Codebase</code> identifies the locations from which your RIA can be started if the JNLP file or HTML page is in a different location than the JAR file. The <code>Caller-Allowable-Codebase</code> attribute identifies the locations from which JavaScript code can call methods in your RIA. See <a href="security/manifest.html">JAR File Manifest Attributes for Security</a> for more information. </p>
+  </li>
+  <li>
+    <p>The Java Control Panel has an option for restoring the security prompts that were hidden when the option to not show the prompt again was selected. See the documentation for the <a href="jcp/jcp.html#security">Security</a> tab of the Java Control Panel for more information. </p>
+  </li>
+</ul>
+<h2><a name="javase7u40" id="javase7u40">Enhancements in JDK 7 Update 40</a></h2>
+<p>The JDK 7u40 release includes the following enhancements:</p>
+<ul>
+  <li>
+    <p>For enterprises that provide a common execution environment and manage the applications that employees access, the Deployment Rule Set feature enables the creation of rules that allow some applications to be run without security prompts while automatically blocking other applications. This feature is intended to be used internally in an organization. See <a href="security/deployment_rules.html">Deployment Rule Set</a> for more information. </p>
+  </li>
+  <li>
+    <p>When a RIA is started, the JRE is checked to see if it is expired or below the security baseline. If so, the user is warned and given the opportunity to upgrade the JRE. For enterprises that manage the update process of user's systems, the <code>deployment.expiration.check.enabled</code> property can be set to suppress this check. See <a href="jcp/properties.html">Deployment Configuration File and Properties</a> for more information. </p>
+  </li>
+</ul>
+<p>In addition, the <a href="security/deployment_flow.html">Rich Internet Application Deployment Process</a> section in this guide provides a look at how the deployment of RIAs is handled. </p>
+<h2><a name="javase7u25" id="javase7u25">Enhancements in JDK 7 Update 25</a></h2>
+<p>The JDK 7u25 release includes the following security enhancements:</p>
+<ul>
+  <li>
+    <p>Before Java applets and Java Web Start applications are run, the signing certificates are checked to ensure that one hasn't been revoked. Advanced options in the Java Control Panel can be set to manage if the checking is done and what services are used for making the checks. The default is now to check all certificates using both OCSP and CRLs. See the <a href="jcp/jcp.html#dorevcheck">Perform Certificate Checks</a> and <a href="jcp/jcp.html#revcheckuse">Check for Certificate Revocation Using</a> sections of the Java Control Panel documentation for more information. </p>
+  </li>
+  <li><code>Permissions</code> and <code>Codebase</code> are new attributes for the JAR file manifest that are used to defend RIAs against unauthorized code repurposing.  These attributes are used with signed JAR files for applets and Java Web Start applications. See <a href="security/no_redeploy.html">Preventing a RIA from Being Repurposed</a> for more information on these attributes. Steps 2 and 3 in the <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/deployingApplet.html">Deploying an Applet</a> and <a href="http://docs.oracle.com/javase/tutorial/deployment/webstart/deploying.html">Deploying a Java Web Start Application</a> lessons in the Java Tutorial describe how to include these attributes in the  manifest. </li>
+</ul>
+<p>In addition, the <a href="security/securityDialogs.html">Security Dialogs</a> section  provides  information on the prompts that are shown when a RIA is started, and <a href="http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/bestPractices.html">Deployment Best Practices</a> in the Java Tutorial provide suggestions for deploying your RIA. </p>
+<h2><a name="javase7u21" id="javase7u21">Enhancements in JDK 7 Update 21</a></h2>
+<p>This release includes the following security enhancements for running rich internet applications (RIAs), which are Java applets and Java Web Start applications:</p>
+<ul>
+  <li>
+    <p>RIAs prompt the user for permission to run the first time the RIA is launched. The prompt includes information on the certificate used to sign the application, the location of the application, and the level of access that the application requests. In most cases, users can turn off the prompts for future launches of the same application. See <a href="http://java.com/faq-securityprompts">What should I do when I see a security prompt from Java?</a> for a description of the prompts. </p>
+  </li>
+  <li>
+    <p>RIAs that are signed with a certificate issued by a recognized certificate authority require a single click by the user to run the application. Self-signed and unsigned applications require additional steps by the user before the application is launched. Therefore, for the best user experience, sign your RIAs with a trusted certificate before deploying to the end user. For information on signing JAR files, see <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/signindex.html">Signing and Verifying JAR Files</a>.</p> 
+  </li>
+  <li>
+    <p>Depending on the security level set in the Java Control Panel and the user's version of the JRE, self-signed or unsigned applications might not be allowed to run. The default setting of High permits all but local applets to run on a secure JRE. If the user is running an insecure JRE, only applications that are signed with a certificate issued by a recognized certificate authority are allowed to run. </p>
+	<p>The Low and Custom settings are no longer available. </p>
+	<p>For more information, see the <a href="jcp/jcp.html#security">Security</a> section of the Java Control Panel.</p>
+  </li>
+  <li>
+    <p>Sandbox applications (previously called &quot;unsigned&quot; or &quot;untrusted&quot; applications) are restricted to the security sandbox. Privileged applications (previously called &quot;signed&quot; applications) are provided unrestricted access to a user's system.</p> 
+      <p>For Java Web Start applications, including applets that are launched using JNLP, the <code>security</code> element in the <code>.jnlp</code> file is used to set the level of access. If the element is not present, access is restricted to the sandbox. See <a href="http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/security.html">Security in Rich Internet Applications</a> for more information.</p> 
+	  <p>For applets that are not launched using JNLP, the <code>permissions</code> element is added to the <code>applet</code> or <code>object</code> element to set the level of access to either sandbox or all-permissions. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/html.html">Deploying With the Applet Tag</a> for more information.</p>
+  </li>
+  <li> JavaScript code that calls code within a privileged applet (an applet that runs outside the sandbox) is treated as mixed code. Warning dialogs are raised if the signed JAR files are not tagged with the <code>Trusted-Library</code> attribute. See <a href="security/mixed_code.html">Mixing Privileged Code and Sandbox Code</a> for more information. </li>
+</ul>
+
+<h2><a name="javase7u10" id="javase7u10">Enhancements in JDK 7 Update 10</a></h2>
+<p>
+The JDK 7u10 release includes the following enhancements:</p>
+<ul>
+<li>The ability to disable any Java app from running in the browser. This mode can be set in the Java Control Panel or using a command-line install argument (Microsoft Windows only).</li>
+<li>The ability to select the desired level of security for unsigned applets, Java Web Start applications, and embedded JavaFX applications that run in a browser. Four levels of security are supported. This feature can be set in the Java Control Panel, or using a command-line install argument (Microsoft Windows only).</li>
+<li>New dialogs warn you when the JRE is insecure (either expired or below the security baseline) and needs to be updated.</li>
+</ul>
+<p>For more information, see <a href="client-security.html">Setting the Level of Security for the Java Client</a> and <a href="jcp/jcp.html">Java Control Panel</a>.</p>
+
+<h2><a name="javase7u6" id="javase7u6">Enhancements in JDK 7 Update 6</a></h2>
+<p>This release includes Oracle's release of the JRE and JDK for
+the Mac. Here is related information:</p>
+<ul>
+<li><a href="mac-faq.html">Mac FAQ</a></li>
+<li><a href="packagingAppsForMac.html">Packaging a Java App for
+Distribution on a Mac</a></li>
+<li><a href="http://docs.oracle.com/javase/7/docs/webnotes/install/index.html#mac">
+JDK 7 and JRE 7 Installation Guide for the Mac</a> which includes
+the <a href="http://docs.oracle.com/javase/7/docs/webnotes/install/mac/mac-install-faq.html">
+Mac Install FAQ</a></li>
+</ul>
+<h2><a name="javase7u2" id="javase7u2">Enhancements in JDK 7 Update 2</a></h2>
+<p>This release introduces the following improvements for
+web-deployed applications:</p>
+<ul>
+<li>
+<p><strong>Java SE includes JavaFX</strong>: JDK 7 Update 2 and
+later includes the JavaFX SDK. See <a href=
+"http://docs.oracle.com/javafx/2.0/release_notes_2-0-2/jfxpub-release_notes_2-0-2.htm">
+JavaFX 2.0.2 Release Notes</a> for more information.</p>
+</li>
+<li>
+<p><strong>Non-blocking installation of JRE and JavaFX using
+Deployment Toolkit</strong>: The web page continues to accept user
+input while Deployment Toolkit downloads and installs the required
+components. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7052499">7052499</a>
+for details.</p>
+</li>
+<li>
+<p><strong>Reduced footprint of signed JAR files</strong>: This
+release provides a new signing method that enables you to sign a
+JAR file as one large object instead of signing every JAR entry
+individually. This saves up to 10% of the total JAR size.
+<strong>Note</strong>: Users must run JRE 7 Update 2 or later to be
+able to use these JARs. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7049193">7049193</a>
+and the section <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/packaging.htm#BABJGFBH">
+Sign the JAR Files</a> in <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/packaging.htm">Packaging</a>
+(the information in this section also applies to Java SE).</p>
+</li>
+<li>
+<p><strong>Caching certificate details in the JNLP file for signed
+applications</strong>: For an application that uses security, a
+security dialog will present the cached certificates immediately
+for user approval while downloading the application in the
+background. An older JRE will ignore this functionality; it will
+present the certificate information after the application is
+downloaded. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7049169">7049169</a>
+and the section <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/packaging.htm#BABGGIHD">
+Embed Signing Certificate into Deployment Descriptor</a> in
+<a href="http://docs.oracle.com/javafx/2.0/deployment/packaging.htm">
+Packaging</a> (the information in this section also applies to Java
+SE).</p>
+</li>
+<li>
+<p><strong>Caching enabled by default</strong>: Caching of network
+content for application code running in Web Start mode is now
+enabled by default. This allows application improved performance
+and consistency with applet execution mode. To ensure the latest
+copy of content is used, the application can use <a href=
+"../../../api/java/net/URLConnection.html#setUseCaches-boolean-"><code>
+URLConnection.setUseCaches(false)</code></a> or request header
+<code>Cache-Control</code> values
+<code>no-cache</code>/<code>no-store</code>.</p>
+</li>
+<li>
+<p><strong>Embedded JNLP support for Web Start</strong>: The
+Deployment Toolkit can use a copy of a JNLP file embedded into a
+web page to launch an application. This helps to reduce number of
+network connections needed for the first start of a Web Start
+application from the browser. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7052492">7052492</a>
+and the section <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/packaging.htm#sthref34">
+Embed Deployment Descriptor into Web Page</a> in <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/packaging.htm">Packaging</a>
+(the information in this section also applies to Java SE).</p>
+</li>
+<li>
+<p><strong>Ability to pass secure JVM arguments to the Web Start
+application from inside the web page using Deployment
+Toolkit</strong>: This helps to avoid JVM relaunch due to JVM
+configuration mismatch and also helps to pass dynamic parameters
+from the web page. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7072364">7072364</a>
+and the section <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/deployment_toolkit.htm#sthref40">
+Platform</a> in <a href=
+"http://docs.oracle.com/javafx/2.0/deployment/deployment_toolkit.htm">
+Deployment in the Browser</a> (the information in this section also
+applies to Java SE).</p>
+</li>
+<li>
+<p><strong>Improvements for handling content with gzip
+encoding</strong>: The deployment cache will keep application
+content in compressed form and return it to the application as-is
+with gzip content-encoding in the HTTP header. This makes behavior
+more consistent across different execution modes (first launch
+versus subsequent launch, cache enabled versus cache disabled). See
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6575586">6575586</a>
+for more details.</p>
+</li>
+<li>
+<p><strong>Improved support for JNLP applications</strong>: JavaFX
+applications are more cleanly uninstalled; see <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7085171">7085171</a>
+and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7053087">7053087</a>.
+Recognition of JNLP install hints is improved; see <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7046670">7046670</a>.</p>
+</li>
+<li>
+<p><strong>Startup improvements</strong>: Startup has been improved
+for specific scenarios; see <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7099086">7099086</a>
+and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7098160">7098160</a>
+for details.</p>
+</li>
+<li>
+<p><strong>New setting, Insecure JRE versions, in Java Control
+Panel</strong>: If users have a version of Java on their system
+that is below the security baseline, a warning message is displayed
+before an application or an applet can be run using that version.
+You can control this warning message with the <a href= "jcp/jcp.html">Java
+Control Panel</a>
+Advanced tab setting, <strong>Insecure JRE versions</strong>, which
+will set the property <code>deployment.insecure.jres</code> in the
+<code>deployment.properties</code> file to one of the following
+values:</p>
+<table cellspacing="0" cellpadding="5" border="1" summary=
+"Possible values of deployment.insecure.jres property">
+<thead>
+<tr>
+<th id="h1" rowspan="1" colspan="1">Value of
+<code>deployment.insecure.jres</code> property</th>
+<th id="h2" rowspan="1" colspan="1">Value of Insecure JRE versions
+setting</th>
+<th id="h3" rowspan="1" colspan="1">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1"><code>NEVER</code></td>
+<td headers="h2">Do not use insecure JRE versions</td>
+<td headers="h3">Untrusted content will always run with the default JRE.</td>
+</tr>
+<tr>
+<td headers="h1"><code>PROMPT</code></td>
+<td headers="h2">Prompt user before using insecure JRE versions</td>
+<td headers="h3">Users will see warning dialogs; this is the default value.</td>
+</tr>
+<tr>
+<td headers="h1"><code>ALWAYS</code></td>
+<td headers="h2">Allow using insecure JRE versions (not recommended)</td>
+<td headers="h3">Untrusted content will run with the requested JRE without any
+prompting.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="jcp/properties.html">Deployment
+Configuration File and Properties</a> for more information about
+the <code>deployment.properties</code> file.</p>
+</li>
+</ul>
+<h2><a name="javase7" id="javase7">Enhancements in Java SE
+7</a></h2>
+<ul>
+<li>The following enhancements have been made to the syntax of JNLP
+files; see <a href="../javaws/developersguide/syntax.html">JNLP
+File Syntax</a>:
+<ul>
+<li>The <code>os</code> attribute in the <code>information</code>
+and <code>resources</code> elements can now contain specific
+versions of Windows, such as Windows Vista or Windows 7.</li>
+<li>Applications can use the <code>install</code> attribute in the
+<code>shortcut</code> element to specify their their desire to be
+installed. Installed applications are not removed when the Java Web
+Start cache is cleared, but can be explicitly removed using the
+Java Control Panel.</li>
+<li>Java Web Start applications can be deployed without specifying
+the <code>codebase</code> attribute; see <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/deployingWithoutCodebase.html">
+Deploying Without Codebase</a></li>
+</ul>
+</li>
+<li>A JNLP file can be embedded into an HTML page; see <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/embeddingJNLPFileInWebPage.html">
+Embedding JNLP File in Applet Tag</a>.</li>
+<li>You can check the status variable of the applet while it is
+loading to determine if the applet is ready to handle requests from
+JavaScript code; see <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/appletStatus.html">
+Handling Initialization Status With Event Handlers</a>.</li>
+<li>You now have control of the window decoration style and title
+of an applet launched from a shortcut or dragged out of the
+browser; see <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/draggableApplet.html#decoration">
+Requesting and Customizing Applet Decoration</a> in <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/draggableApplet.html">
+Developing Draggable Applets</a>.</li>
+<li>In order to make it easier to re-distribute an application that
+is deployed using a signed jar file, a JNLP template can be used.
+The JNLP template allows the developer to specify what parts of a
+JNLP file may be changed without resigning the main jar. For more
+information, see <a href="security/signedJNLP.html">Signing JAR Files with a
+JNLP Template</a>.</li>
+</ul>
+<p>In addition, the following enhancements are introduced:</p>
+<p><b>Area</b>: Deployment<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Previously, the <tt>pack200</tt> tool segmented
+its output by default. As of this release, the <tt>pack200</tt>
+tool will create one large segment per jar file. Therefore, if
+deployers have jar files larger than the virtual memory available
+on the end-user's systems, it is recommended that either the input
+jar file be split, or suitably segmented by using the command-line
+flag "<tt>--segment-limit=nnnnn</tt>" or the equivalent property
+"<tt>SEGMENT_LIMIT</tt>".<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6575373">6575357</a></p>
+<p><b>Area</b>: Deployment<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: On Windows XP machines, the default cache
+directory is now under <tt>$USER\Local Settings\Application
+Data\Sun\Java\Deployment\cache</tt>. If needed, you may customize
+it to point to a network share folder for a single application
+cache across domain machines.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7012538">7012538</a></p>
+<p><b>Area</b>: Deployment<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The optional applet parameter,
+<tt>jnlp_embedded</tt>, provides the option to cache JNLP content
+on the HTML page and shortens applet launch time by skipping
+network access. The <tt>jnlp_embedded</tt> parameter has as its
+value the base64 encoded content of the applet JNLP file. For
+example:</p>
+<pre>
+&lt;applet  width="710" height="540" &gt;
+    &lt;param name="jnlp_href" value="launch.jnlp"/&gt;
+    &lt;param name="jnlp_embedded"
+        value="PD94bWwgdmVyc2lvbj0iMS4wIiB . . . dC1kZXNjPg0KPC9qbmxwPg0K"/&gt;
+    &lt;param name="draggable" value="true"/&gt;
+&lt;/applet&gt;
+</pre>
+When present, the <tt>jnlp_embedded</tt> parameter value replaces
+the content of the JNLP value pointed to by the <tt>jn.p_href</tt>
+parameter. The value of <tt>jnlp_ref</tt> is then optional and only
+used as a backup when the content of <tt>jnlp_embedded</tt> is
+invalid. There are a few restrictions on the embedded JNLP content:
+<ul>
+<li>The attribute <tt>href</tt> from element <tt>jnlp</tt> should
+be relative.</li>
+<li>The attribute <tt>codebase</tt> from element <tt>jnlp</tt>
+should be empty (which means the codebase value will be derived
+from the document base URL).</li>
+</ul>
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6990877">6990877</a>
+<p><b>Area</b>: Deployment<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: As of JDK 7, clearing the cache works as
+follows:</p>
+<ul>
+<li>Only non-installed resources are removed from the cache when
+invoking <tt>javaws -XClearCache</tt>.</li>
+<li>Both installed and non-installed resources are removed by
+invoking <tt>javaws -uninstall</tt>.</li>
+<li>The "Delete Temporary Files" dialog, in JCP, previously had two
+checkboxes, both checked by default: "Applications and Applets",
+and "Trace and Log files". As of JDK 7, there will be three
+checkboxes, with the first two checked by default: "Trace and Log
+Files", "Cached Applications and Applets", and "Installed
+Applications and Applets".</li>
+<li>Only installed applications will have an entry in the
+Add/Remove panel.</li>
+</ul>
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6873615">6873615</a>
+<p><b>Area</b>: JNLP Files<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: In order to support debugging of Java Web Start
+applications, the <tt>-XX:HeapDumpOnOutOfMemoryError</tt> flag is
+now supported in JNLP files for trusted applications.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6664424">6664424</a></p>
+<p><b>Area</b>: JNLP Files<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Previous versions of Java Web Start did not
+correctly implement section 6.0.10 of the JNLP Specification. With
+this fix, fine-grained values for the "os" attribute, such as
+<tt>os="Windows\ XP"</tt>, <tt>os="Windows\ Vista"</tt>, and
+<tt>os="Windows\ 7"</tt>, will work as expected. Values such as
+<tt>os="Win"</tt>, and <tt>os="Windows"</tt> will continue to match
+all Windows platforms. As of this release, <tt>os="Windows\ Vista
+Windows\ 7"</tt> will only match Vista or Windows 7 and not Windows
+XP.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7014170">7014170</a></p>
+<p><b>Area</b>: Plugin<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: A message stating that the first generation of the
+Java plugin is deprecated is now printed to the log file and to the
+Java console whenever plugin 1 is used.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7027792">7027792</a></p>
+<p><b>Area</b>: Plugin<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: On Windows, the tray icon is now disabled by
+default. To enable the tray icon, use the Windows Start menu.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6694710">6694710</a></p>
+<p><b>Area</b>: Plugin<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The 64-bit toolkit is now supported on 64-bit
+Windows platforms.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6492139">6492139</a></p>
+<p><b>Area</b>: Plugin<br />
+<b>Standard/Platform</b> JDK 7<br />
+<b>Synopsis</b>: Previously, the persistence API provided only
+temporary persistence for applets. When the VM exited, the data was
+lost. Data can be persisted via any of the standard Java
+mechanisms, through the use of LiveConnect to store data in the
+page DOM, or using one of the JNLP services.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6992419">6992419</a></p>
+<p><b>Area</b>: Plugin<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Google Chrome is now supported by the DT
+Plugin.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6907245">6907245</a></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

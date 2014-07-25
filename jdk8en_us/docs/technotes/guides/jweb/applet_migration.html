@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head><title>Migrating Java Applets to Java Web Start Applications</title<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Migrating Java Applets to Java Web Start Applications</h1>
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; Migrating Java Applets to Java Web Start Applications</p>
+
+<p>This guide is intended to help developers migrate their existing Java Plug-in applets to Java Web Start applications. While it should be possible to migrate most applets without problem, there are some considerations for developers to be aware of when making the migration. The following guide describes details of the migration process.</p>
+
+<p>The following topics are covered:</p>
+<ul>
+  <li><a href="#advantages">Advantages of Migrating to Java Web Start Technology</a></li>
+  <li><a href="#migrating_existing">Migrating an Existing Java Applet</a>
+    <ul>
+      <li><a href="#targeting_jre">Targeting to a Specific JRE</a></li>
+    </ul>
+  </li>
+  <li><a href="#rewriting">Re-writing a Java Applet as a Java Web Start Application</a></li>
+  <li><a href="#considerations">Special Considerations</a></li>
+</ul>
+
+<!-- *********************************************************************** -->
+
+<h2><a name="advantages">Advantages of Migrating to Java Web Start Technology</a></h2>
+
+<p>Migrating provides the ability to target to a specific Java Runtime Environment (JRE) version or a specific version range. Java Web Start technology supports multiple, simultaneous versions of the Java Standard Edition platform. Specific applications can request specific Java versions without conflicting with the different needs of other applications. Java Web Start technology automatically downloads and installs the correct version of the Java platform as necessary, based on the application's needs and the user's environment.</p>
+
+<p>Another advantage is that users can launch a Java Web Start application independent of a Web browser. A user can be off-line or unable to access the browser. Desktop shortcuts can also launch the application, providing the user with the same experience as that of a native application.</p>
+
+<!-- *********************************************************************** -->
+
+<h2><a name="migrating_existing">Migrating an Existing Java Applet</a></h2>
+
+<p>Java Web Start technology has built-in support for applets. It is possible to run your applet directly with Java Web Start technology without any re-compilation of the applet. All you need do is to convert your applet HTML tags to a Java Network Launching Protocol (JNLP) file, using the JNLP               <code>applet-desc</code> element. For example:</p>
+<pre>
+&lt;resources&gt;
+  &lt;java version=&quot;1.5+&quot;/&gt;
+  &lt;jar href=&quot;SwingSet2.jar&quot;/&gt;
+&lt;/resources&gt;
+&lt;applet-desc main-class=&quot;SwingSet2Applet&quot; name=&quot;SwingSet&quot; width=&quot;625&quot; height=&quot;595&quot;&gt;
+  &lt;param name=&quot;param1&quot; value=&quot;value1&quot;/&gt;
+  &lt;param name=&quot;param2&quot; value=&quot;value2&quot;/&gt;
+&lt;/applet-desc&gt;
+</pre>
+
+<!-- *********************************************************************** -->
+
+<h3><a name="targeting_jre">Targeting to a Specific JRE</a></h3>
+
+<p>You can specify the targeted JRE versions using the               <code>java</code> element and its version attribute. It supports the               <code>+</code> and <code>*</code> operators, and you can even list out the exact version. Some examples follow:</p>
+
+<ul>
+  <li>Run with Java 5 or above: <code>&lt;java version=&quot;1.5+&quot;/&gt;</code></li>
+  <li>Run with anything in the Java 5 family: <code>&lt;java version=&quot;1.5*&quot;/&gt;</code></li>
+  <li>Run with Java 5 update 12 or above, or with Java 1.4.2 update 20 only: <code>&lt;java version=&quot;1.5.0_12+ 1.4.2_20&quot;/&gt;</code></li>
+</ul>
+            
+<p>All your applet resources must be packaged inside a JAR (Java archive file), and have the JAR file listed using the <code>jar</code> element.</p>
+
+<p>The <code>applet-desc</code> element contains all the applet's information such as applet parameters, width, height, etc. For more information regarding the <code>applet-desc</code> element, refer to the JNLP specification, section 3.6.2, &quot;Application descriptor for an Applet.&quot;</p>
+
+<p>With the <code>applet-desc</code> tag, Java Web Start technology uses its own version of the applet viewer to start your applet.</p>
+
+<!-- *********************************************************************** -->
+
+<h2><a name="rewriting">Re-writing a Java Applet as a Java Web Start Application</a></h2>
+
+<p>The best way to migrate your applet is to re-write it as a standalone Java application, and then deploy it with Java Web Start technology. Re-writing your applet and testing the resulting application ensures that your converted applet works fully as expected. And your application can take advantage of the Java Web Start features.</p>
+
+<p>The re-write should be fairly straight forward. The major work needed is to convert your <code>applet</code> class to the <code>main</code> class of the application. The applet <code>init</code> and <code>start</code> methods are no longer present, instead, you should initialize the application at the beginning of the application's <code>main</code> method.</p>
+
+<p>To quickly begin the migration, you can just add the <code>main</code> method to your original <code>applet</code> class, and then start calling your applet initialization code where it normally gets called from the applet's               <code>init</code> and <code>start</code> methods. Once there is a               <code>main</code> method in the <code>applet</code> class, you can begin launching it by means of Java Web Start technology, and then slowly remove the dependency on the <code>Applet</code> class and convert it completely to your application's <code>main</code> class.</p>
+
+<p>For more information, refer to <a href="../javaws/developersguide/syntax.html">JNLP File Syntax</a>.</p>
+
+<!-- *********************************************************************** -->
+
+<h2><a name="considerations">Special Considerations</a></h2>
+
+<p>Following is a list of considerations that may be important when migrating.</p>
+
+<ul>
+    <li><p>A Java Web Start application does not run within the web browser. So if your applet has any dependency on the browser (for example, Java to JavaScript / JavaScript to Java communications by means of the browser), the communication code will no longer work. The APIs that are affected include:</p>
+    <ul>
+        <li><p><code>JSObject</code> API (<code>netscape.javascript.JSObject.*</code>) for Java to JavaScript communication does not work for Java Web Start applications.</p></li>
+
+        <li><p>Common Document Object Model (DOM) API (<code>com.sun.java.browser.dom.*</code> and                     <code>org.w3c.dom.*</code>) available for Java Plug-in applets are not available to Java Web Start applications.</p></li>
+    </ul>
+    
+    </li>
+    <li><p>Similar to Java Plug-in technology, Java Web Start technology will cache your application JARs for faster start-up performance. However, resources downloaded by your own application code will not be cached by Java Web Start technology.</p></li>
+
+    <li><p>Java Web Start technology provides permanent cookie support on Windows using the cookie store in Internet Explorer, and the cookie-handling behavior is determined by the cookie control in IE. On Linux/Solaris, Java Web Start technology provides permanent cookie support using its own cookie store implementation. For more information, see  <a href="http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/cookies.html">Cookies</a> in the Java Tutorials.</p></li>
+
+    <li><p>If you deploy an applet with the JNLP                 <code>applet-desc</code> element, your applet will be created using the                 <code>AppletContainer</code> provided by Java Web Start technology. When your applet calls <code>Applet.getAppletContext()</code>, it returns the                 <code>AppletContainerContext</code> provided by Java Web Start technology. There are some minor differences in implementation between the Java Plug-in                 <code>AppletContext</code> and the Java Web Start                 <code>AppletContext</code>. The differences are:</p>
+    
+    <ul>
+        <li><p>The following Applet Persistence API methods are not implemented by Java Web Start technology:</p>
+<pre>
+AppletContext.getStream(String key)
+AppletContext.getStreamKeys()
+AppletContext.setStream(String key, InputStream s)
+</pre>
+        <p>For Java Web Start applications, you can use the JNLP Persistence Service API for storing data locally on the client's system. For more information, see the <a href="../../../jre/api/javaws/jnlp/javax/jnlp/PersistenceService.html">                       <code>PersistenceService</code></a> interface.</p>
+        </li>
+        <li><p>For <code>AppletContext.showDocument(URL url, String target)</code>, the target argument will be ignored by Java Web Start technology.</p></li>
+        
+        <li><p>For <code>AppletContext.showStatus(String status)</code>, when launched with Java Web Start technology, this will set the                     <code>JLabel</code> text that is below the applet, hosted by the Java Web Start <code>AppletContainer</code>.</p></li>
+
+    </ul>
+
+    </li>
+    
+    <li><p>Similar to <code>AppletContext.showDocument</code>, Java Web Start applications are capabile of showing an HTML page using the system's default web browser by using the <code>BasicService.showDocument</code> API.</p>
+
+    <p>For a Java Plug-in applet:</p>
+    <pre>
+AppletContext.showDocument(URL url)
+AppletContext.showDocument(URL url, String target)
+</pre>
+    <p>For a Java Web Start application:</p>
+<pre>
+BasicService.showDocument(URL url)
+</pre>
+    <p>For more information, see the                   <a href="../../../jre/api/javaws/jnlp/javax/jnlp/BasicService.html">                   <code>BasicService</code></a> interface.</p>
+    </li>
+    
+    <li>
+    <p>In an applet, if you obtain a resource by means of these calls:</p>
+    <pre>
+Applet.getImage(URL url)
+Applet.getImage(URL url, String name)
+Applet.getAudioClip(URL url)
+Applet.getAudioClip(URL url, String name)
+AppletContext.getAudioClip(URL url)
+AppletContext.getImage(URL url)
+</pre>
+    <p>Then in Java Web Start technology, the best practice is to include the resources in your application JAR files, and access the resources using the                 <code>JNLPClassLoader</code>:</p>
+<pre>
+ClassLoader cl = this.getClass().getClassLoader();
+URL url = cl.getResource(url);
+Image im = Toolkit.getDefaultToolkit().createImage(url);
+</pre>
+    
+    <p>For more information, see <a href="../javaws/developersguide/development.html#retrieving">Retrieving Resources from JAR Files</a>.</p></li>
+    <li><p>The pack200 JAR packing tool is supported by both the Java Web Start and the Java Plug-in technologies. If you are already deploying your applet JARs with pack200, no change should be needed when migrating to Java Web Start technology. For more information, see <a href="tools/pack200.html">Deploying JAR Files Compressed with Pack200</a>.</p></li>
+    
+    <li><p>By using the <code>OBJECT</code> tag in Java Plug-in technology, you can detect whether Java is avaliable on the client's machine with the Plug-in <code>CLSID</code> and then auto-download Java if necessary. The same support is available with Java Web Start technology by using the Java Web Start <code>CLSID</code>. For more information, see <a href="http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/ensuringJRE.html">Ensuring the Presence of the JRE Software</a> in the Java Tutorials.</p></li>
+
+    <li> 
+    <p>If you want to deploy extensions for your Java Web Start application, use the JNLP extension protocol mechanism.</p>
+    
+    <p>One advantage of the JNLP extensions mechanism over Java Plug-in technology is that the installed extensions will be available to all Java Web Start applications running on the system, no matter what version of JRE the application is running with. While for Java Plug-in technology, only applets running in the same JRE version can make use of the installed extensions.</p>
+    </li>
+
+    <li><p>For signed JAR files, similar to Java Plug-in technology, you can sign your application JAR files and request your application to be run with all-permissions by means of the JNLP file. In Java Plug-in technology, your applet JARs can be signed by different certificates. In Java Web Start technology, the same certificate must be used to sign all JAR files (<code>jar</code> and <code>nativelib</code> elements) that are part of a single JNLP file. This simplifies user management since only one certificate must be presented to the user during a launch per JNLP file. If you need to use JARs signed with different certificates, you can put them in a component extension JNLP file, and reference it from the main JNLP file.</p></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+
+</html>

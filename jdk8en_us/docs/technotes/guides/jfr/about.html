@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>About Java Flight Recorder</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-03T11:24:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="About Java Flight Recorder" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E28976-01" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Flight Recorder Runtime Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface_jfrrt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="run.html">
+                Next</a><hr/><a id="sthref7" name="sthref7"/>
+<h1><span>1</span> About Java Flight Recorder</h1>
+<p>Java Flight Recorder (JFR) is a tool for collecting diagnostic and profiling data about a running Java application. It is integrated into the Java Virtual Machine (JVM) and causes almost no performance overhead, so it can be used even in heavily loaded production environments. When default settings are used, both internal testing and customer feedback indicate that performance impact is less than one percent. For some applications, it can be significantly lower. However, for short-running applications (which are not the kind of applications running in production environments), relative startup and warmup times can be larger, which might impact the performance by more than one percent. JFR collects data about the JVM as well as the Java application running on it.</p>
+<p>Compared to other similar tools, JFR has the following benefits:</p>
+<ul>
+<li>
+<p><b>Provides better data</b>: A coherent data model used by JFR makes it easier to cross reference and filter events.</p>
+</li>
+<li>
+<p><b>Allows for third-party event providers</b>: A set of APIs allow JFR to monitor third-party applications, including WebLogic Server and other Oracle products.</p>
+</li>
+<li>
+<p><b>Reduces total cost of ownership</b>: JFR enables you to spend less time diagnosing and troubleshooting problems, reduces operating costs and business interrupts, provides faster resolution time when problems occur, and improves system efficiency.</p>
+</li>
+</ul>
+<p>JFR is primarily used for:</p>
+<ul>
+<li>
+<p><b>Profiling</b></p>
+<p>JFR continuously saves large amounts of data about the running system. This profiling information includes thread samples (which show where the program spends its time), lock profiles, and garbage collection details.</p>
+</li>
+<li>
+<p><b>Black Box Analysis</b></p>
+<p>JFR continuously saves information to a circular buffer. This information can be accessed when an anomaly is detected to find the cause.</p>
+</li>
+<li>
+<p><b>Support and Debugging</b></p>
+<p>Data collected by JFR can be essential when contacting Oracle support to help diagnose issues with your Java application.</p>
+</li>
+</ul>
+<a id="CHDHAGAF" name="CHDHAGAF"/>
+<div>
+<h2><span>1.1</span> Understanding Events</h2>
+<p>Java Flight Recorder collects data about <i>events</i>. Events occur in the JVM or the Java application at a specific point in time. Each event has a name, a time stamp, and an optional <i>payload</i>. The payload is the data associated with an event, for example, the CPU usage, the Java heap size before and after the event, the thread ID of the lock holder, and so on.</p>
+<p>Most events also have information about the thread in which the event occurred, the stack trace at the time of the event, and the duration of the event. Using the information available in events, you can reconstruct the runtime details for the JVM and the Java application.</p>
+<p>JFR collects information about three types of events:</p>
+<ul>
+<li>
+<p>A <i>duration event</i> takes some time to occur, and is logged when it completes. You can set a threshold for duration events, so that only events lasting longer than the specified period of time are recorded. This is not possible for other types of events.</p>
+</li>
+<li>
+<p>An <i>instant event</i> occurs instantly, and is logged right away.</p>
+</li>
+<li>
+<p>A <i>sample event</i> (also called <i>requestable event</i>) is logged at a regular interval to provide a sample of system activity. You can configure how often sampling occurs.</p>
+</li>
+</ul>
+<p>JFR monitors the running system at an extremely high level of detail. This produces an enormous amount of data. To keep the overhead as low as possible, limit the type of recorded events to those you actually need. In most cases, very short duration events are of no interest, so limit the recording to events with a duration exceeding a certain meaningful threshold.</p>
+</div>
+
+<div><a id="sthref8" name="sthref8"/>
+<h2><span>1.2</span> Understanding Data Flow</h2>
+<p>JFR collects data from the JVM (through internal APIs) and from the Java application (through the JFR APIs). This data is stored in small thread-local buffers that are flushed to a global in-memory buffer. Data in the global in-memory buffer is then written to disk. Disk write operations are expensive, so you should try to minimize them by carefully selecting the event data you enable for recording. The format of the binary recording files is very compact and efficient for applications to read and write.</p>
+<p>There is no information overlap between the various buffers. A particular chunk of data is available either in memory or on disk, but never in both places. This has the following implications:</p>
+<ul>
+<li>
+<p>Data not yet flushed to a disk buffer will not be available in the event of a power failure.</p>
+</li>
+<li>
+<p>A JVM crash can result in some data being available in the core file (that is, the in-memory buffer) and some in the disk buffer. JFR does not provide the capability to merge such buffers.</p>
+</li>
+<li>
+<p>There may be a small delay before data collected by JFR is available to you (for example, when it has to be moved to a different buffer before it can be made visible).</p>
+</li>
+<li>
+<p>The data in the recording file may not be in time sequential order as the data is collected in chunks from several thread buffers.</p>
+</li>
+</ul>
+<p>In some cases, the JVM drops the event order to ensure that it does not crash. Any data that cannot be written fast enough to disk is discarded. When this happens, the recording file will include information on which time period was affected. This information will also be logged to the logging facility of the JVM.</p>
+<p>You can configure JFR to not write any data to disk. In this mode, the global buffer acts as a circular buffer and the oldest data is dropped when the buffer is full. This very low-overhead operating mode still collects all the vital data necessary for root-cause problem analysis. Because the most recent data is always available in the global buffer, it can be written to disk on demand whenever operations or surveillance systems detect a problem. However, in this mode, only the last few minutes of data is available, so it only contains the most recent events. If you need to get the full history of operation for a long period of time, use the default mode when events are written to disk regularly.</p>
+</div>
+
+<div><a id="sthref9" name="sthref9"/>
+<h2><span>1.3</span> Java Flight Recorder Architecture</h2>
+<p>JFR is comprised of the following components:</p>
+<ul>
+<li>
+<p><i>JFR runtime</i> is the recording engine inside the JVM that produces the recordings. The runtime engine itself is comprised of the following components:</p>
+<ul>
+<li>
+<p>The <i>agent</i> controls buffers, disk I/O, MBeans, and so on. This component provides a dynamic library written in C and Java code, and also provides a JVM-independent pure Java implementation.</p>
+</li>
+<li>
+<p>The <i>producers</i> insert data into the buffers. They can collect events from the JVM and the Java application, and (through a Java API) from third-party applications.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><i>Flight Recorder plugin</i> for Java Mission Control (JMC) enables you to work with JFR from the JMC client, using a graphical user interface (GUI) to start, stop, and configure recordings, as well as view recording files.</p>
+</li>
+</ul>
+</div>
+
+<a id="CHDHFFGE" name="CHDHFFGE"/>
+<div>
+<h2><span>1.4</span> Enabling Java Flight Recorder</h2>
+<p>By default, JFR is disabled in the JVM. To enable JFR, you must launch your Java application with the <code>-XX:+FlightRecorder</code> option. Because JFR is a commercial feature, available only in the commercial packages based on Java Platform, Standard Edition (<i>Oracle Java SE Advanced</i> and <i>Oracle Java SE Suite</i>), you also have to enable commercial features using the <code>-XX:+UnlockCommercialFeatures</code> options.</p>
+<p>For example, to enable JFR when launching a Java application named <code>MyApp</code>, use the following command:</p>
+<pre xml:space="preserve">
+java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder MyApp
+</pre>
+<p>For more information about these and other options of the <code>java</code> command, see the reference pages at <code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html</a></code> (Solaris, Linux, OS X)<br/>
+<code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html</a></code> (Windows)</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface_jfrrt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="run.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

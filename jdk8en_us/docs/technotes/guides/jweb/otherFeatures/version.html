@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Multi-Version Support</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Multi-Version Support</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="../index.html#otherFeatures">Enhancements and Other Features</a> &gt; Protocol Support</p>
+
+
+<p>The following topics are covered:</p>
+
+<ul>
+<li><a href="#mime">Unique MIME Type</a></li>
+<li><a href="#registry">Unique Java Plug-in Registry Key</a></li>
+<li><a href="#property">Unique Java Plug-in Property File</a></li>
+<li><a href="#trace">Unique Java Plug-in Trace and Log Files</a></li>
+<li><a href="#control">Unique Java Control Panel</a></li>
+<li><a href="#jre-jdk">Unique Registry Keys for JRE/JDK</a></li>
+<li><a href="#collision">Multi-version Support in Browser Sessions</a></li>
+</ul>
+
+<h2><a name="mime" id="mime"></a>Unique MIME Type</h2>
+
+<p>There is a unique MIME type for every new or patch version of Java Plug-in. MIME type identifies the type or version of the Java executable to be loaded and initialized by Java Plug-in. It is specified with the element type in the <code>embed</code> tag with Firefox and with <code>&lt;param name=&quot;type&quot;&gt;</code> in the <code>object</code> tag for Internet Explorer. If you want to use a minimum version of Java Plug-in with Firefox, specify the unique MIME type in the <code>embed</code> tag.</p>
+
+<p>The MIME type corresponding to the version of Java Plug-in installed in your computer looks like the following:</p>
+
+<pre class="codeblock">
+application/x-java-applet;jpi-version=<em>&lt;version&gt;</em>
+</pre>
+
+<p>where <code><i>version</i></code> includes the major, minor and patch version numbers.</p>
+
+<p>The Java Plug-in supports supports the latest MIME type version (corresponding to the version of the Java Plug-in) and all previous MIME type versions.</p> 
+
+<p>Other MIME types supported by the Java Plug-in look like the following:</p>
+
+<pre class="codeblock">
+application/x-java-applet;version=<em>&lt;version&gt;</em>
+</pre>
+
+<p>To determine which MIME types are supported by the version of the Java Plug-in installed on your computer, enter <code>about:plugins</code> in the Firefox location bar. This displays a list of installed and detected plugins. Look for the Java Plug-in entry; it will list all supported MIME types. See <a href="http://kb.mozillazine.org/About:plugins"><code>about:plugins</code></a> in the MozillaZine Knowledge Base for more information.
+
+<h3>Example:</h3>
+
+<p>For Java Plug-in 1.7.0, the unique MIME type would be:</p>
+
+<pre class="codeblock">
+application/x-java-applet;jpi-version=1.7
+</pre>
+
+<p><strong>Note</strong>: If you have different versions of the JRE installed, only the latest version of the Java Plug-in will be installed. As mentioned previously, this version of the Java Plug-in supports all previous versions of the Java Plug-in MIME type. These MIME types are supported by the file <code>npjp2.dll</code>. The location of this file is listed in the <a href="http://kb.mozillazine.org/About:plugins"><code>about:plugins</code></a> page.</p>
+
+<h2><a name="registry" id="registry"></a>Unique Java Plug-in Registry Key</h2>
+
+<p>There is a unique Java Plug-in registry key for every new or patch version of Java Plug-in. The main Java Plug-in registry key is as follows:</p>
+
+<pre class="codeblock">
+HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Plug-in\<i>&lt;version number&gt;</i>
+</pre>
+
+<p><strong>Note</strong>: If you installed a 32-bit JRE in a 64-bit operating system, then the Java Plug-in registry key is <code>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft\Java Plug-in\<i>&lt;version number&gt;</i></code>.</p>
+
+<p>To determine <code><em>&lt;version number&gt;</em></code>, refer to the Java Plug-in entry in the Firefox <a href="http://kb.mozillazine.org/About:plugins"><code>about:plugins</code></a> page.</p>
+
+<h3>Example:</h3>
+
+<p>For the Java Plug-in that comes with JRE 7u3, you will find the following in your registry:</p>
+<pre class="codeblock">
+HKEY_LOCAL_MACHINE\Software\JavaSoft\Java Plug-in\10.3.0
+</pre>
+
+<h2><a name="property" id="property"></a>Unique Java Plug-in Property File</h2>
+
+<p>The property file is named <code>deployment.properties</code>. It is located in the following directory:</p>
+
+<pre class="codeblock">
+<em>&lt;User Application Data Folder&gt;</em>\Sun\Java\Deployment
+</pre>
+
+<p>where <em><code>&lt;User Application Data Folder&gt;</code></em> is an
+application data folder specific to the user.</p>
+
+<p>As an example, for a user <code>testuser</code> on a Windows 7 system, the value of <em><code>&lt;User Application Data Folder&gt;</code></em> would be <code>C:\Users\testuser\AppData\LocalLow</code></p>
+
+<p>The value of <code>&lt;User Application Data Folder&gt;</code> is obtained from the Win32 API function call <code>SHGetFolderPath()</code> with <code>CSIDL_APPDATA</code>.</p>
+
+<h2><a name="trace" id="trace"></a>Unique Java Plug-in Trace and Log Files</h2>
+
+<p>The default location for trace and log files is <code>&lt;User Application Data Folder&gt;\Sun\Java\Deployment\log</code></p>
+
+<p>where <code>&lt;User Application Data Folder&gt;</code> is as defined in <a href="#property">Unique Java Plug-in Property File</a>.</p>
+
+<p>The property <code>javaplugin.outputfiles.path</code> can be
+used to override the default location for the trace and log files. See <a href="../jcp/tracing_logging.html">Tracing and Logging</a> for more information.</p>
+
+<h2><a name="control" id="control"></a>Unique Java Control Panel</h2>
+
+<p>There is a unique Java Control Panel for every new or patch
+release. The filename for the Java Control Panel is
+<code>javacpl.exe</code>, which is located in the directory <code><em>&lt;JRE installation directory&gt;</em>\bin</code>.</p>
+
+<p>Only the latest installed version of the Java Control Panel is
+available from the Windows Control Panel.</p>
+
+<h2><a name="jre-jdk" id="jre-jdk"></a>Unique Registry Keys for
+JRE/JDK</h2>
+
+<p>There are unique registry keys for every new or patch release of
+the JRE/JDK. These registry keys are located as follows:</p>
+
+<pre class="codeblock">
+HKEY_LOCAL_MACHINE\Software\JavaSoft\Java Runtime Environment\<i>&lt;version number&gt;</i>
+HKEY_LOCAL_MACHINE\Software\JavaSoft\Java Development Kit\<i>&lt;version number&gt;</i>
+</pre>
+
+<p>where the <i><code>&lt;version number&gt;</code></i> includes
+the major, minor and the patch version numbers; for example:
+<code>1.7.0</code>.</p>
+
+<p><strong>Note</strong>: If you installed a 32-bit JRE in a 64-bit operating system, then the registry keys are located in Java Plug-in registry key is <code>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\JavaSoft</code>.</p>
+
+
+
+
+<p>These keys allow Java Plug-in to locate the proper version of
+the JRE.</p>
+
+<h2><a name="collision" id="collision"></a>Multi Version Support in
+Browser Sessions</h2>
+
+<p>Multiple JRE versions can be installed on the Windows platform. With
+multiple JRE's applets using MIME type <code>jpi-version</code>
+will work with Firefox browsers only if you enable the following
+options:</p>
+
+<ul>
+<li>To enable the <strong>Mozilla Family</strong> option for JRE 6 and later, open <strong>Java Control Panel</strong> and click <strong>Advanced</strong> &gt; <strong>Default Java for browsers</strong> &gt; <strong>Mozilla family</strong>.</li>
+
+<li>To enable the <strong>Mozilla and Netscape</strong> option for JRE 1.5.0 or earlier, open <strong>Java Control Panel</strong> and click <strong>Advanced</strong> &gt; <strong>&lt;Applet&gt; tag support</strong> &gt;
+<strong>Mozilla and Netscape</strong>.</li>
+
+</ul>
+
+<p>To invoke Java Control Panel for a specific version of the JRE
+browse to the <code><em>&lt;JRE_HOME&gt;</em>/bin</code> directory of that
+version and run <code>javacpl.exe</code>.</p>
+
+<p><strong>Note</strong>: Multiple versions of the JRE can be run in different browser sessions. However, multiple versions cannot be run in the same browser session. Should this be attempted, the user is warned and the attempt will fail.</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

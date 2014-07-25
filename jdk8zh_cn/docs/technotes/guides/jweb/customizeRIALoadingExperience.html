@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Customizing the RIA Loading Experience</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Customizing the Rich Internet Application Loading
+Experience</h1>
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; Customizing the Rich Internet Application Loading
+Experience</p>
+
+<p>The following topics are covered:</p>
+
+<ul>
+<li><a href="#loadingexp">The RIA Loading Experience</a></li>
+<li><a href="#loadingproc">The RIA Loading Process</a></li>
+<li><a href="#custoptions">Customization Options</a>
+<ul>
+<li><a href="#splash">Adding a Splash Screen for an Applet</a></li>
+<li><a href="#progress">Implementing a Customized Loading Progress
+Indicator</a>
+<ul>
+<li><a href="#interface">The
+<code>javax.jnlp.DownloadServiceListener</code> Interface</a></li>
+<li><a href="#constructor">Constructors of the Loading Progress
+Indicator Class</a></li>
+<li><a href="#methods">Methods of the
+javax.jnlp.DownloadServiceListener Interface</a></li>
+<li><a href="#jnlpfile">Specifying the Custom Progress Indicator in
+the JNLP File</a></li>
+<li><a href="#commprogress">How the RIA Software Communicates
+Progress</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#tips">Best Practices and Tips</a></li>
+</ul>
+<h2><a id="loadingexp" name="loadingexp"></a>The RIA Loading
+Experience</h2>
+<p>Java Rich Internet applications (RIAs) are downloaded over the
+internet and displayed to the end user. The speed of the download
+may vary depending on various criteria such as the size of the RIA
+JAR file, any external dependencies, and the speed of the internet
+connection.</p>
+<p>When the RIA is being downloaded, by default, the RIA software
+(Java Plug-in and Java Web Start software) will display the
+standard progress indicators, such as the spinning Java logo and
+progress bars. End users may get impatient when confronted with
+large downloads. With improvements in RIA software technology in
+the Java SE 6 update 18 and Java SE 6 update 21 releases, you can
+keep the end user engaged by providing a creative, captivating, and
+meaningful RIA loading experience. You can customize the RIA
+loading experience in several ways as described next.</p>
+<ul>
+<li>By providing a splash screen</li>
+<li>By creating a customized loading progress indicator</li>
+<li>By leveraging one progress indicator to reflect progress of RIA
+download and the loading of RIA-specific data</li>
+</ul>
+<p>You can also use a combination of the above options to accomodate
+older versions of the Java Runtime Environment (JRE) software
+on the client machine.</p>
+<p>Note: Certain customization options are specific to applets or
+to Java Web Start applications. Such cases will be identified in
+this topic.</p>
+<h2><a id="loadingproc" name="loadingproc"></a>The RIA Loading
+Process</h2>
+<p>This section describes the process by which RIAs are loaded.</p>
+<p>RIA software initiates a series of steps to download, validate,
+and execute a RIA. The RIA loading process can be broadly broken
+down into the following stages. RIA software provides varying
+levels of progress-related feedback during these stages.</p>
+<ul>
+<li>Initialization &ndash; During this stage, RIA software performs
+an assessment of the resources required to launch the RIA. The
+amount of work required to download, validate, and execute the RIA
+is indeterminate at this time.</li>
+<li>Loading and validation &ndash; RIA software downloads the
+required resources (JAR files) over the Internet, if necessary. If
+the RIA has been previously cached, RIA software loads the
+resources from the local cache. RIA software validates the
+resources. Deterministic feedback is communicated by the RIA
+software during the resource loading and validation process.
+Deterministic feedback implies that percent completion rates are
+calculated and communicated by the RIA software.</li>
+<li>RIA Execution &ndash; During this stage, RIA software executes
+the RIA. The RIA is now fully functional. The RIA can load
+application-specific data at this time.</li>
+</ul>
+<h2><a id="custoptions" name="custoptions"></a>Customization Options</h2>
+
+<h3><a id="splash" name="splash"></a>Adding a Splash Screen</h3>
+<p>The simplest way to customize a RIA's loading experience is to
+provide a splash screen. Specify the image that should be displayed
+in the splash screen. No changes are required in the RIA itself.
+RIA software displays the splash screen when the RIA is being
+loaded and hides it when the RIA's resources have been downloaded
+and validated. See the following topics for more information:</p>
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/customizeLoadingScreen.html">
+Creating a Splash Screen for an Applet</a> topic in the Java
+Tutorials to view an example</li>
+<li><a href=
+"../javaws/developersguide/faq.html#s206">Java
+Web Start FAQ</a> and the <a href=
+"../../../technotes/guides/javaws/developersguide/syntax.html#resources">
+<code>resources</code> Element</a> in <a href="../../../technotes/guides/javaws/developersguide/syntax.html">JNLP File Syntax</a> for information about adding a splash screen
+for a Java Web Start application</li>
+</ul>
+<h3><a id="progress" name="progress"></a>Implementing a Customized
+Loading Progress Indicator</h3>
+<p>You can replace the default loading progress indicator with a
+custom implementation that provides regular feedback about how the
+RIA is loading. Don't feel constrained by rectangular boxes or the
+use of the Swing <code>JProgressBar</code> component. You can
+develop a customized loading progress indicator that is meaningful
+to your RIA or web site. The loading progress indicator can use
+visual or non-visual means to keep the end user interested and
+engaged while the RIA is loading in the background.</p>
+<p>See <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/customizeRIALoadingExperience.html">
+Customizing the Loading Experience</a> topic in the Java Tutorials
+for step-by-step instructions and detailed examples. A few
+screenshots of loading progress indicators are shown next.</p>
+<p><b>Default loading progress indicator for Java Web Start
+application</b></p>
+<img src="images/DefaultProgressIndicator_Webstart.jpg" alt=
+"Default Progress Indicator for Java Web Start applications" />
+<p><b>Customized loading progress indicator for Java Web Start
+application</b></p>
+<img src="images/CustomProgressIndicator_Webstart.jpg" alt=
+"Customized Progress Indicator for Java Web Start applications" />
+<p><b>Customized loading progress indicator for the Reversi JavaFX
+applet</b> (black balls turn white as loading progresses)</p>
+<img src="images/reversi_custom_progress.jpg" alt=
+"Customized Progress Indicator for Reversi application" />
+<p>The following features enable varied customizations of the
+loading progress indicator for a RIA that is deployed by using JNLP
+technology:</p>
+<ul>
+<li>The customized loading progress indicator can provide
+deterministic or non-deterministic feedback.</li>
+<li>The customized loading progress indicator can provide visual or
+non-visual cues to communicate progress.</li>
+<li>A single loading progress indicator can be developed to support
+applets and Java Web Start applications.</li>
+<li>Multiple loading progress indicators can be defined as Java
+Network Launch Protocol (JNLP) extensions. The loading progress
+indicator specified in the RIA's main JNLP file takes precedence
+(if one is specified). You should specify which extension should be
+displayed to avoid undeterministic behavior.</li>
+<li>The customized loading progress indicator can be leveraged to
+also display progress when loading application-specific data. For
+example, if a RIA invokes web services to load initial application
+data, you can use the progress range of 0 - 75% to indicate status
+of RIA download, and use the range of 76% - 100% to indicate
+progress of a web service invocation that fetches application
+data.</li>
+<li>Loading progress indicators for applets can perform the
+following operations:
+<ul>
+<li>They can receive a reference to an instance of the
+java.applet.AppletStub class. This allows the loading progress
+indicator code to access the java.applet.AppletContext object to
+retrieve the applet's parameters.</li>
+<li>They can invoke JavaScript code in the applet's parent web
+page. A reference to the window can be retrieved as shown next.
+<pre>
+JSObject window = JSObject.getWindow(null);
+window.call("someJavaScriptFunction", args);    
+    
+</pre></li>
+</ul>
+</li>
+</ul>
+<p>The next few paragraphs describe technical details about
+implementing a loading progress indicator.</p>
+<h4><a id="interface" name="interface"></a>The
+<code>javax.jnlp.DownloadServiceListener</code> Interface</h4>
+<p>A loading progress indicator class should implement the <a href=
+"../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.DownloadServiceListener</code></a>
+interface.</p>
+<h4><a id="constructor" name="constructor"></a>Constructors of the
+Loading Progress Indicator Class</h4>
+<p>Specify the following constructors in the loading progress
+indicator class. The RIA software will invoke the appropriate
+constructor depending on the capabilities of the JRE software on
+the client machine. In some cases, RIA software may not instantiate
+the loading progress indicator class if all resources are
+up-to-date.</p>
+<ul>
+<li>Constructor without any parameters &ndash; This constructor
+<em>should</em> be specified in the loading progress indicator
+class for a Java Web Start application. This constructor can also
+be specified in the loading progress indicator class for an applet.
+If the RIA software invokes this constructor, the loading progress
+indicator UI will be displayed in a top level window such as a
+<code>javax.swing.JFrame</code> object.</li>
+<li>Constructor with one parameter &ndash; This constructor has one
+parameter of type <code>java.lang.Object</code>. The
+<code>Object</code> argument can be typecast to an instance of the
+<code>java.awt.Container</code> class. This constructor is relevant
+to loading progress indicators for applets. If the RIA software (in
+this case, Java Plug-in software) invokes this constructor, the
+loading progress indicator UI will be displayed in the applet's
+container.</li>
+<li>Constructor with two parameters &ndash; This constructor has
+two parameters of type <code>java.lang.Object</code>. The first
+<code>Object</code> argument can be typecast to an instance of the
+<code>java.awt.Container</code> class. The second
+<code>Object</code> argument can be typecast to an instance of the
+<code>java.applet.AppletStub</code> class. If the RIA software (in
+this case, Java Plug-in software) invokes this constructor, the
+loading progress indicator UI will be displayed in the applet's
+container. The loading progress indicator can access the
+<code>java.applet.AppletContext</code> object to customize the
+loading progress indicator further. This constructor is relevant to
+loading progress indicators for applets.
+<p>When specifying the constructor with two parameters, it is
+better to also specify the single-parameter constructor to
+accomodate older versions of the client JRE software. The
+constructor with two parameters is invoked only when the client JRE
+software version is at least Java SE 6 update 21.</p>
+</li>
+</ul>
+<h4><a id="methods" name="methods"></a>Methods of the
+javax.jnlp.DownloadServiceListener Interface</h4>
+<p>The loading progress indicator class should implement the
+following methods of the interface to receive and convey the latest
+progress information.</p>
+<ul>
+<li><code>progress(URL url, String version, long readSoFar, long
+total, int overallPercent)</code></li>
+<li><code>upgradingArchive(java.net.URL url, java.lang.String
+version, int patchPercent, int overallPercent)</code></li>
+<li><code>validating(java.net.URL url, java.lang.String version,
+long entry, long total, int overallPercent)</code> &ndash; When the
+loading progress indicator class is instantiated, this method is
+always invoked with an <code>overallPercent</code> value of
+100.</li>
+</ul>
+<p>Update progress information in the loading progress indicator
+based on the <code>overallPercent</code> values received in these
+methods.</p>
+<h4><a id="jnlpfile" name="jnlpfile"></a>Specifying the Custom
+Progress Indicator in the JNLP File</h4>
+<p>Include the following information in the RIA's Java Network
+Launch Protocol (JNLP) file to specify a loading progress
+indicator:</p>
+<ul>
+<li><code>download=&quot;progress&quot;</code> attribute to
+indicate which JAR file contains the loading progress indicator
+class</li>
+<li><code>progress-class</code> attribute containing fully
+qualified name of the loading progress indicator class. This
+attribute can be defined as a part of the
+<code>&lt;applet-desc&gt;</code>,
+<code>&lt;application-desc&gt;</code>, or
+<code>&lt;component-desc&gt;</code> depending on how the RIA and
+the loading progress indicator are deployed.</li>
+</ul>
+<p>A sample JNLP file for an applet is shown next.</p>
+<pre>
+&lt;jnlp spec=&quot;1.0+&quot; codebase=&quot;&quot; href=&quot;&quot;&gt;
+...
+  &lt;resources&gt;
+    ...
+    &lt;jar href=&quot;MyApplet.jar&quot; main=&quot;true&quot; /&gt;    
+    &lt;jar href=&quot;CustomProgressIndicator.jar&quot; <b>download=&quot;progress&quot;</b> /&gt;
+  &lt;/resources&gt;
+
+  &lt;applet-desc
+     name=&quot;MyFavoriteApplet&quot;
+     main-class=&quot;myAppletPackage.MyFavoriteApplet&quot;
+     <b>progress-class</b>=&quot;myCustomProgressPackage.MyCustomProgressIndicator&quot;
+     width=&quot;600&quot;
+     height=&quot;200&quot;&gt;
+  &lt;/applet-desc&gt;
+...
+&lt;/jnlp&gt;
+</pre>
+<h4><a id="commprogress" name="commprogress"></a>How the RIA
+Software Communicates Progress</h4>
+<p>RIA software communicates progress information as follows:</p>
+<ul>
+<li>RIA software instantiates loading progress indicator, if
+necessary. In some cases, when all resources are cached and
+up-to-date, the loading progress indicator may not be instantiated
+at all.</li>
+<li>RIA software invokes the <code>progress</code>,
+<code>upgradingArchive</code>, <code>validating</code> methods
+several times with increasing values of
+<code>overallPercent</code>.</li>
+<li>In some cases, when the resources are already cached and
+validated, RIA software may just invoke the constructor followed by
+a 100% completion message.</li>
+<li>RIA software will always send a 100% completion message to the
+loading progress indicator.</li>
+</ul>
+<h3><a id="tips" name="tips"></a>Best Practices and Tips</h3>
+<ul>
+<li>When deciding on an approach to customize the RIA loading
+experience, consider the <a href=
+"clientJRECapabilitiesCheatSheet.html" target="_blank">capabilities
+of older versions of client JRE software</a>. You can provide a
+range of increasingly sophisticated implementations depending on
+the capabilities of the client JRE software and other criteria as
+described next.
+<ul>
+<li>Specify a splash screen that can be displayed for applets when
+the client JRE software version is at least Java SE 6 update
+10.</li>
+<li>Specify a customized loading progress indicator that can be
+displayed when the client JRE software version is at least Java SE
+6 update 18.</li>
+</ul>
+</li>
+<li>Consider the fact that a splash screen or loading screen may
+not be displayed at all when a RIA is partially or completely
+cached.</li>
+<li>When developing a customized loading progress indicator,
+consider the following items:
+<ul>
+<li>Keep the size of the loading progress indicator JAR file small.
+RIA resources are downloaded concurrently. If the loading progress
+indicator JAR file is large, then it may be downloaded at
+approximately the same time as other resources. In this case, the
+loading progress indicator may be displayed for a very short time
+or may not be displayed at all.</li>
+<li>Limit the amount of resources required by the loading progress
+indicator. Avoid using ImageIO or service lookups as this may cause
+other resources to be downloaded.</li>
+<li>A loading progress indicator can use the same top level window
+as the Java Web Start application itself. In this case, limit the
+amount of resources that are used when the application's
+constructor is invoked. Specify resource lookups in the
+application's <code>main</code> method instead.</li>
+<li>A loading progress indicator can be integrated into the
+applet's UI. In this case, create a top level container, such as a
+<code>javax.swing.JPanel</code> object, and add it to the
+<code>surfaceContainer</code> object described previously. After
+the applet's resources have been completely downloaded, remove the
+top level container from the <code>surfaceContainer</code> object
+and add it to the applet itself.</li>
+<li>A signed loading progress indicator implementation may be best
+for a signed RIA. In this case, security warnings would be
+displayed and accepted early on and progress can be updated without
+further interruptions.</li>
+</ul>
+</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

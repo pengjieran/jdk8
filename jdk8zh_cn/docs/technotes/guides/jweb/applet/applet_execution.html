@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<!-- InstanceBegin template="/Templates/jweb_guide_template.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Java Plug-In and Applet Architecture</title>
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Plug-in and Applet Architecture</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="applet_dev_guide.html">Applet Developer's Guide</a> &gt; Java Plug-in and Applet Architecture</p>
+
+<p>This document describes how the Java Plug-in controls the
+execution of applets and interactions between applets and the
+browser.</p>
+
+<p>The following topics are covered:</p>
+<ul class="TOC">
+<li><a href="#architecture" target="_self">Architecture</a>
+<ul>
+<li class="TOC2"><a href="#jre" target="_self">Java Runtime
+Environment</a></li>
+<li class="TOC2"><a href="#jreVersion" target="_self">Java Runtime
+Environment Version Selection</a></li>
+<li class="TOC2"><a href="#threads" target="_self">Thread
+Considerations</a></li>
+<li class="TOC2"><a href="#cache" target="_self">Classloader Cache
+and Interaction between Applets</a></li>
+<li class="TOC2"><a href="#gc" target="_self">Applet Garbage
+Collection</a></li>
+<li class="TOC2"><a href="#privileges" target="_self">Applet
+Privileges</a></li>
+<li class="TOC2"><a href="#proxy" target="_self">Proxy
+Configuration</a></li>
+<li class="TOC2"><a href="#security" target=
+"_self">Security</a></li>
+</ul>
+</li>
+</ul>
+
+<h2><a name="architecture" id="architecture"></a>Architecture</h2>
+<h3><a name="jre" id="jre"></a>Java Runtime Environment</h3>
+<p>With the Java Plug-in, applets are not run in the JVM inside the
+browser. Instead, they are executed in a separate process. The same
+JVM process can be shared between multiple applets, or applets may
+be placed into different processes depending on whether the
+existing JVMs match the applet requirements and have enough
+resources to execute the applet. An applet can request specific
+version of JRE to be used and can specify what options need to be
+passed to the JVM. An applet can also request to be executed in the
+separate JVM.</p>
+<p><img src="../images/jre_and_browser.jpg" alt=
+"Java Plug-in running applets on different JRE versions" width=
+"452" height="522" /></p>
+<p>The browser and the applet can still communicate with one
+another, however. Existing APIs have been re-engineered to use
+process sockets, so things continue to work as they did
+before, only better. This architecture provides a number of
+benefits:</p>
+<ul>
+<li>Applets that require different versions of the JRE can run
+simultaneously.&nbsp;</li>
+<li>Applets can specify JRE start-up parameters such as heap size.
+(A new applet uses an existing JRE if it's requirements are a
+subset of an existing JRE, otherwise, a new JRE instance is
+launched.);</li>
+<li>The message-passing interfaces are written in Java, so they run
+on all supported platforms, in the same way, so
+cross-browser compatibility is enhanced.</li>
+</ul>
+<p>With that architecture, a new JRE can be launched whenever it is
+needed. But an applet will run in an existing JRE as long as:</p>
+<ol>
+<li type="a">The JRE version required by the applet matches an
+existing JRE, and</li>
+<li type="a">The JRE's launch parameters satisfy the applet's
+requirements</li>
+</ol>
+<p><b>Note:</b></p>
+<ul>
+<li><p>If two applets each require a large amount of memory, they
+might both run in the same JRE, causing one of them to run out of
+memory. But that's only a concern when you have multiple applets
+running simultaneously.</p></li>
+<li><p>Particular versions of JRE can be marked as unavailable to the
+plugin by disabling them in the Java Control Panel.</p></li>
+</ul>
+
+<h3><a name="jreVersion" id="jreVersion"></a>Java Runtime
+Environment Version Selection</h3>
+
+<p>On all platforms, the Java Plug-in locates JREs to use from
+the entries listed in the Java Control Panel ("Java" tab, "View"
+button). The available JREs in
+this list are encoded in the <code>deployment.properties</code>
+file whose location is platform-dependent. On the Windows platform,
+it is generally located in <code>C:\Users\[username]\AppData\LocalLow\Sun\Java\Deployment</code>. On
+Solaris, Linux, and Mac OS X platforms, it is generally located in
+<code>~/.java/deployment/deployment.properties</code>.</p>
+<p>On Windows platforms, both the Java Control Panel and the
+Java Plug-in will automatically detect the installed JREs and add
+them to the available set. On Solaris, Linux, and Mac OS X platforms, auto-detection of
+installed JREs is not supported. The Java Runtime Environment Settings
+dialog, which is accessed by clicking View in the Java tab of the Java Control 
+Panel, may be used to manually add JREs
+to the known list for the Java Plug-in.</p>
+<p>By default, the Java Plug-in will execute all applets in the
+latest JRE version named in this list. It will only execute an
+applet on an earlier JRE version if explicitly requested.</p>
+<p>When considering a request to launch an applet on a specific JRE
+version (for example, a particular update release like
+"1.5.0_11"):</p>
+<ol>
+<li>The list of available JREs is consulted. If there is an exact
+match of the version string, that JRE version is selected.
+Otherwise, if there are one or more installed JREs in the same
+family, the latest version is selected. Otherwise, the latest
+available JRE on the machine is selected.</li>
+<li>The selected JRE version is compared against the security
+baseline for the family. (See <a href="http://www.oracle.com/technetwork/java/javase/family-clsid-140615.html">Deploying Java Applets With Family JRE Versions in Java Plug-in for Internet Explorer</a> for more information.) If it is equal to or more recent than
+that version, no further prompting is done and the applet is
+launched.</li>
+<li>Otherwise, the code for the applet is downloaded in a JVM
+instance of the selected JRE version. If the applet is signed and
+the user accepts the security dialog for the applet (or the code
+source has already been trusted), no further prompting is done and
+the applet is launched.</li>
+<li>Otherwise, we are dealing with an unsigned applet on an "older"
+JRE version. A dialog box is presented indicating that this applet
+is requesting to run on top of an older JRE release, and asks the
+user whether he or she wants to allow it to. If the user clicks
+"yes", the applet is launched. If the user clicks "no", the applet
+is re-launched on top of the latest available JRE version.</li>
+</ol>
+<p>When considering a request to launch an applet on a particular
+family, the most recent JRE from that family will be selected and
+the above steps starting from (2) will be followed.</p>
+<p>When considering a request to launch an applet on a particular
+family or any later family, the latest available JRE will be used
+to launch the applet.</p>
+<h3><b><a name="threads" id="threads"></a></b>Thread
+Considerations</h3>
+<p>A web browser's JavaScript interpreter engine is single thread.
+The Java Plug-in is capable of managing multiple threads. The Java
+Plug-in creates a separate worker thread for every applet. Applets
+themselves may be multi-threaded. Applets making JavaScript to Java
+calls and vice versa should be designed with the thread related
+issues in mind.</p>
+<p>The following picture shows the thread interactions between the
+JavaScript Interpreter, Java Plug-in and an applet (i.e. Java).</p>
+<p><img src="../images/LiveConnectThreadInteraction.jpg" alt=
+"JavaScript Interpreter, Java Plug-in and Applet Thread Interactions"
+width="709" height="535" /></p>
+<p>When the JavaScript interpreter is idle, the Java Plug-in
+executes a JavaScript to Java call on the per applet worker thread
+(JavaScript Interpreter Not Busy scenario).</p>
+<p>When a Java to Javascript call is in progress and a JavaScript
+to Java call is made, the latter is executed on the same thread
+that made the Java to JavaScript call (Round Trip scenario).</p>
+<p>When a thread is executing a Java to JavaScript call, another
+thread wanting to do the same will be blocked till the first thread
+has received its result and is done (JavaScript Interpreter Busy
+scenario)</p>
+<p>In order to avoid thread related issues especially when multiple
+applets are running simultaneously, keep both Java to JavaScript
+and JavaScript to Java calls short and avoid round trips, if
+possible.</p>
+<h3><a name="cache" id="cache"></a>Classloader Cache and
+Interaction between Applets</h3>
+<p>Normally, if two applets have the same <code>codebase</code> and
+<code>archive</code> parameters, they will be loaded by the same
+class loader instance. This behavior is required for backward
+compatibility, and is relied on by several real-world applications.
+The result is that multiple applets on the same web page may access
+each others' static variables at the Java language level,
+effectively allowing the multiple applets to be written as though
+they comprised a single application.</p>
+<p>While this feature enables certain kinds of applications to be
+conveniently written, it has certain drawbacks. It interferes with
+termination of applets, in particular when multiple instances of
+the same applet are active. It makes the programming model for
+applets more complex, since it is under specified exactly when the
+static fields of an applet will be re-initialized, and when they
+will be maintained from run to run of the same applet. It causes
+imprecise behavior of certain user interface operations within the
+Java Plug-in due to the inability to identify exactly which applet
+initiated a particular request.</p>
+<p>For this reason, the Java Plug-in provides a way to opt out
+of the use of the <a href=
+"applet_deployment.html#CLASSLOADER_CACHE">classloader cache</a> on
+an applet by applet basis.</p>
+<h3><a name="gc" id="gc"></a>Applet Garbage Collection</h3>
+<p>Garbage collection occurs on an applet instance immediately
+after the <code>destroy</code> method finishes. The garbage
+collection applies to all memory acquired by the applet, <i>except
+for static variables</i>. Statics are preserved in the classloader
+cache, along with the classes themselves, for as long as the class
+loader is present.</p>
+<p>So when does the class loader go away? That behavior is not
+specified. It's up to the implementation of the Java virtual
+machine and its interactions with the operating system. You can
+expect it be retained for as long as possible, but to be discarded
+when the memory is needed for other purposes.</p>
+<h3><a name="privileges" id="privileges"></a>Applet Privileges</h3>
+<p>All applets should be signed with a certificate from a recognized certificate 
+authority. The user must agree to run an applet and having a valid certificate 
+provides the user with some assurance that the applet is safe to run. An applet 
+runs in a secure sandbox that prevents it from
+interacting with the users system, unless authorized. To obtain
+that authorization, the applet must request permissions when it is launched and 
+the user must agree to run the applet. Permissions
+are needed to:</p>
+<ul>
+<li>Print</li>
+<li>Access the file system</li>
+<li>Access browser cookies</li>
+<li>Access other system resources</li>
+</ul>
+<p>The basic applet security model is an all or nothing
+proposition. An applet with permissions has full access to the user's system. 
+Without permissions, the applet has
+virtually no access at all.</p>
+<p>Deployment of applets using JNLP allows them to avail a more
+fine-grained security model (similar to Java Web Start
+applications), that gives them controlled access to a user's
+system, under control of the user. (For example, the ability to
+save or open a file selected by the user and the ability to
+print.)</p>
+<h3><a name="proxy" id="proxy"></a>Proxy Configuration</h3>
+<p>See <a href=
+"../networking/proxie_config.html" target=
+"_self">Proxy Configuration</a> for
+details.</p>
+<h3><a name="security" id="security"></a>Security</h3>
+<p>See <a href="../security/security.html"
+target="_self">Security</a> for
+details.</p>
+<p>&nbsp;</p>
+<!-- InstanceEndEditable -->
+<p><br />
+<br /></p>
+<!-- InstanceEnd -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Installing With a Configuration File</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T14:54:20Z" name="date"/>
+<meta content="This page describes the configuration file that supplements JDK command line installation options. Windows, OS X, and Linux command-line installers support the configuration file, but not every operating system supports all configuration file options." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Installing With a Configuration File" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38207-02" name="partnum"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_install_faq.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/><a id="BABIBFAG" name="BABIBFAG"/>
+<h1><span>22</span> Installing With a Configuration File</h1>
+<p>This page describes the configuration file that supplements JDK command line installation options. Windows, OS X, and Linux command-line installers support the configuration file, but not every operating system supports all configuration file options.</p>
+<p>This page has these sections:</p>
+<ul>
+<li>
+<p><a href="#A1099712">"Configuration File Overview"</a></p>
+</li>
+<li>
+<p><a href="#A1013444">"Configuration File Options"</a></p>
+</li>
+</ul>
+<a id="A1099712" name="A1099712"/>
+<div>
+<h2>Configuration File Overview</h2>
+<p>An installer configuration file is an alternative to, and extension of, options specified on the installer command line. You can use a configuration file to standardize installations, and you can use a configuration file to specify options that are not available on the command line.</p>
+</div>
+
+<a id="A1013444" name="A1013444"/>
+<div>
+<h2>Configuration File Options</h2>
+<p>The following table lists the installer configuration file options that apply for each operating system.</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="Table describes installer configuration file entries." width="100%">
+<col width="20%"/>
+<col width="21%"/>
+<col width="15%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Option</th>
+<th align="left" id="r1c2-t2" valign="bottom">Operating Systems</th>
+<th align="left" id="r1c3-t2" valign="bottom">Values</th>
+<th align="left" id="r1c4-t2" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p><code>INSTALL_SILENT=</code></p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p>Windows</p>
+<p>OS X</p>
+<p>Linux</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r2c1-t2 r1c4-t2">
+<p>Silent (non-interactive) installation.</p>
+<p>Default: <code>Disable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p><code>INSTALL_DIR=</code></p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p>Windows</p>
+<p>Linux</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c3-t2">
+<p><code><span>path</span></code></p>
+</td>
+<td align="left" headers="r3c1-t2 r1c4-t2">
+<p>Folder/directory into which the files are installed.</p>
+<p>Default: Operating system default path</p>
+<p>For Windows, this will only work for first time install of a family. Lnx and Sol. use OS tools for this purpose and installation directory relocation will be handled by OS tools for Lnx and Sol (Example: rpm --prefix=&lt;path&gt;)]</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p><code>STATIC=</code></p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p>Windows</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r4c1-t2 r1c4-t2">
+<p>Static installation (see <a href="windows_installer_options.html#CJABEIEC">"Static Configuration"</a>).</p>
+<p>Default: <code>Disable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">
+<p><code>AUTO_UPDATE=</code></p>
+</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">
+<p>Windows</p>
+<p>OS X</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r5c1-t2 r1c4-t2">
+<p>Auto updating installation.</p>
+<p>Default: <code>Enable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r6c1-t2">
+<p><code>SPONSORS=</code></p>
+</td>
+<td align="left" headers="r6c1-t2 r1c2-t2">
+<p>Windows</p>
+</td>
+<td align="left" headers="r6c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r6c1-t2 r1c4-t2">
+<p>Show or hide offers from third parties (such as toolbars) in the graphical installer.</p>
+<p>Default: <code>Enable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r7c1-t2">
+<p><code>WEB_JAVA=</code></p>
+</td>
+<td align="left" headers="r7c1-t2 r1c2-t2">
+<p>Windows</p>
+<p>OS X</p>
+<p>Linux</p>
+</td>
+<td align="left" headers="r7c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r7c1-t2 r1c4-t2">
+<p>Configure the installation so downloaded Java applications are, or are not, allowed to run in a web browser or by Java Webstart.</p>
+<p>Default: <code>Enable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r8c1-t2">
+<p><code>WEB_JAVA_SECURITY_LEVEL=</code></p>
+</td>
+<td align="left" headers="r8c1-t2 r1c2-t2">
+<p>Windows</p>
+<p>OS X</p>
+<p>Linux</p>
+</td>
+<td align="left" headers="r8c1-t2 r1c3-t2">
+<p><code>M</code> (medium), <code>H</code> (high), <code>VH</code> (very high)</p>
+</td>
+<td align="left" headers="r8c1-t2 r1c4-t2">
+<p>Configure the installation's security level for unsigned Java applications running in a browser.</p>
+<p>Default: <code>H</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r9c1-t2">
+<p><code>WEB_ANALYTICS=</code></p>
+</td>
+<td align="left" headers="r9c1-t2 r1c2-t2">
+<p>Windows</p>
+</td>
+<td align="left" headers="r9c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r9c1-t2 r1c4-t2">
+<p>Allow or disallow the installer to send installation-related statistics to an Oracle server.</p>
+<p>Default: <code>Enable</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r10c1-t2">
+<p><code>EULA=</code></p>
+</td>
+<td align="left" headers="r10c1-t2 r1c2-t2">
+<p>Windows</p>
+</td>
+<td align="left" headers="r10c1-t2 r1c3-t2">
+<p><code>Enable</code>, <code>Disable</code></p>
+</td>
+<td align="left" headers="r10c1-t2 r1c4-t2">
+<p>Default: <code>Disable</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_install_faq.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

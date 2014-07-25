@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Command Reference</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-03T11:24:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Command Reference" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E28976-01" name="partnum"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Flight Recorder Runtime Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="run.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/><a id="BABHCDCE" name="BABHCDCE"/>
+<h1><span>A</span> Command Reference</h1>
+<p>This appendix serves as a basic reference to the commands you can use with Java Flight Recorder. It contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABHIICD">Section A.1, "Command-Line Options"</a></p>
+</li>
+<li>
+<p><a href="#BABBGJCF">Section A.2, "Diagnostic Command Reference"</a></p>
+</li>
+</ul>
+<a id="BABHIICD" name="BABHIICD"/>
+<div>
+<h2><span>A.1</span> Command-Line Options</h2>
+<p>When you launch your Java application with the <code>java</code> command, you can specify options to enable Java Flight Recorder, configure its settings, and start a recording. The following command-line options are specific to Java Flight Recorder:</p>
+<ul>
+<li>
+<p><code>-XX:+|-FlightRecorder</code></p>
+</li>
+<li>
+<p><code>-XX:FlightRecorderOptions</code></p>
+</li>
+<li>
+<p><code>-XX:StartFlightRecording</code></p>
+</li>
+</ul>
+<p>These command-line options are available only in the commercial license of the JDK. To use them, you have to also specify the <code>-XX:+UnlockCommercialFeatures</code> option.</p>
+<p>For more information about these options, see <i>Java Command Line Reference</i> at <code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html</a></code> (UNIX)<br/>
+<code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html</a></code> (Windows)</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>You should use <code>-XX</code> options only if you have a thorough understanding of your system. If you use these commands improperly, you might affect the stability or performance of your system. <code>-XX</code> options are experimantal, and they are subject to change at any time.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="BABBGJCF" name="BABBGJCF"/>
+<div>
+<h2><span>A.2</span> Diagnostic Command Reference</h2>
+<p>This is a description of the diagnostic commands available to control Java Flight Recorder and the parameters available for each command. This information is also available by running the <code>jcmd</code> command with the process identifier specified, followed by the <code>help</code> parameter and the commad name. For example, to get help information for the <code>JFR.start</code> command on a running JVM process with the identifier 5361, run the following:</p>
+<pre xml:space="preserve">
+jcmd 5361 help JFR.start
+</pre>
+<p>To get a full list of diagnostic commands available to the JVM, do not specify the name of the command. For more information about using the <code>jcmd</code> command, see the <code>jcmd</code> documentation at:</p>
+<p><code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jcmd.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jcmd.html</a></code></p>
+<p>The diagnostic commands associated with Java Flight Recorder are:</p>
+<ul>
+<li>
+<p><a href="#BABGCBBA">JFR.start</a></p>
+</li>
+<li>
+<p><a href="#CACBECAF">JFR.check</a></p>
+</li>
+<li>
+<p><a href="#BABCGDCD">JFR.stop</a></p>
+</li>
+<li>
+<p><a href="#BABIBHEI">JFR.dump</a></p>
+</li>
+</ul>
+<a id="BABGCBBA" name="BABGCBBA"/>
+<div>
+<h3><span>A.2.1</span> JFR.start</h3>
+<p>The <code>JFR.start</code> diagnostic command starts a flight recording. <a href="#BABJEIEH">Table A-1</a> lists the parameters you can use with this command.</p>
+<div><a id="sthref11" name="sthref11"/><a id="BABJEIEH" name="BABJEIEH"/>
+<p>Table A-1 JFR.start</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This is a four-column description table. The left-most column contains the parameter names. The next column to the right contains a description of the associate paramenter. The next column to the right contains the type of value for the associated parameter. The far-right column contains the default value for the associated parameter, assuming one is available." title="JFR.start" width="100%">
+<col width="20%"/>
+<col width="*"/>
+<col width="25%"/>
+<col width="18%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t3" valign="bottom">Parameter</th>
+<th align="left" id="r1c2-t3" valign="bottom">Description</th>
+<th align="left" id="r1c3-t3" valign="bottom">Type of value</th>
+<th align="left" id="r1c4-t3" valign="bottom">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r2c1-t3">
+<p>name</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<p>Name of recording</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c3-t3">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c4-t3"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r3c1-t3">
+<p>settings</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<p>Server-side template</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c3-t3">
+<p>String</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c4-t3"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r4c1-t3">
+<p>defaultrecording</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<p>Starts default recording</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c3-t3">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c4-t3">
+<p>False</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r5c1-t3">
+<p>delay</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c2-t3">
+<p>Delay start of recording</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c3-t3">
+<p>Time</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c4-t3">
+<p>0s</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r6c1-t3">
+<p>duration</p>
+</td>
+<td align="left" headers="r6c1-t3 r1c2-t3">
+<p>Duration of recording</p>
+</td>
+<td align="left" headers="r6c1-t3 r1c3-t3">
+<p>Time</p>
+</td>
+<td align="left" headers="r6c1-t3 r1c4-t3">
+<p>0s (means "forever")</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r7c1-t3">
+<p>filename</p>
+</td>
+<td align="left" headers="r7c1-t3 r1c2-t3">
+<p>Resulting recording filename</p>
+</td>
+<td align="left" headers="r7c1-t3 r1c3-t3">
+<p>String</p>
+</td>
+<td align="left" headers="r7c1-t3 r1c4-t3"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r8c1-t3">
+<p>compress</p>
+</td>
+<td align="left" headers="r8c1-t3 r1c2-t3">
+<p>GZip compress the resulting recording file</p>
+</td>
+<td align="left" headers="r8c1-t3 r1c3-t3">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r8c1-t3 r1c4-t3">
+<p>False</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r9c1-t3">
+<p>maxage</p>
+</td>
+<td align="left" headers="r9c1-t3 r1c2-t3">
+<p>Maximum age of buffer data</p>
+</td>
+<td align="left" headers="r9c1-t3 r1c3-t3">
+<p>Time</p>
+</td>
+<td align="left" headers="r9c1-t3 r1c4-t3">
+<p>0s (means "no age limit")</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r10c1-t3">
+<p>maxsize</p>
+</td>
+<td align="left" headers="r10c1-t3 r1c2-t3">
+<p>Maximum size of buffers in bytes</p>
+</td>
+<td align="left" headers="r10c1-t3 r1c3-t3">
+<p>Long</p>
+</td>
+<td align="left" headers="r10c1-t3 r1c4-t3">
+<p>0 (means "no max size")</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<a id="CACBECAF" name="CACBECAF"/>
+<div>
+<h3><span>A.2.2</span> JFR.check</h3>
+<p>The <code>JFR.check</code> command shows information about running recordings. <a href="#CACHCJBC">Table A-2</a> lists the parameters you can use with this command.</p>
+<div><a id="sthref12" name="sthref12"/><a id="CACHCJBC" name="CACHCJBC"/>
+<p>Table A-2 JFR.check</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This is a four-column description table. The left-most column contains the parameter names. The next column to the right contains a description of the associate paramenter. The next column to the right contains the type of value for the associated parameter. The far-right column contains the default value for the associated parameter, assuming one is available." title="JFR.check" width="100%">
+<col width="20%"/>
+<col width="*"/>
+<col width="25%"/>
+<col width="18%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t4" valign="bottom">Parameter</th>
+<th align="left" id="r1c2-t4" valign="bottom">Description</th>
+<th align="left" id="r1c3-t4" valign="bottom">Type of value</th>
+<th align="left" id="r1c4-t4" valign="bottom">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r2c1-t4">
+<p>name</p>
+</td>
+<td align="left" headers="r2c1-t4 r1c2-t4">
+<p>Recording name</p>
+</td>
+<td align="left" headers="r2c1-t4 r1c3-t4">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t4 r1c4-t4"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r3c1-t4">
+<p>recording</p>
+</td>
+<td align="left" headers="r3c1-t4 r1c2-t4">
+<p>Recording id</p>
+</td>
+<td align="left" headers="r3c1-t4 r1c3-t4">
+<p>Long</p>
+</td>
+<td align="left" headers="r3c1-t4 r1c4-t4">
+<p>1</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r4c1-t4">
+<p>verbose</p>
+</td>
+<td align="left" headers="r4c1-t4 r1c2-t4">
+<p>Print verbose data</p>
+</td>
+<td align="left" headers="r4c1-t4 r1c3-t4">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r4c1-t4 r1c4-t4">
+<p>False</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<a id="BABCGDCD" name="BABCGDCD"/>
+<div>
+<h3><span>A.2.3</span> JFR.stop</h3>
+<p>The <code>JFR.stop</code> diagnostic command stops running flight recordings. <a href="#BABGCHHD">Table A-3</a> lists the parameters you can use with this command.</p>
+<div><a id="sthref13" name="sthref13"/><a id="BABGCHHD" name="BABGCHHD"/>
+<p>Table A-3 JFR.stop</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This is a four-column description table. The left-most column contains the parameter names. The next column to the right contains a description of the associate paramenter. The next column to the right contains the type of value for the associated parameter. The far-right column contains the default value for the associated parameter, assuming one is available." title="JFR.stop" width="100%">
+<col width="20%"/>
+<col width="*"/>
+<col width="25%"/>
+<col width="18%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t5" valign="bottom">Parameter</th>
+<th align="left" id="r1c2-t5" valign="bottom">Description</th>
+<th align="left" id="r1c3-t5" valign="bottom">Type of value</th>
+<th align="left" id="r1c4-t5" valign="bottom">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r2c1-t5">
+<p>name</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c2-t5">
+<p>Recording name</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c3-t5">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c4-t5"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r3c1-t5">
+<p>recording</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c2-t5">
+<p>Recording id</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c3-t5">
+<p>Long</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c4-t5">
+<p>1</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r4c1-t5">
+<p>discard</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c2-t5">
+<p>Discards the recording data</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c3-t5">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c4-t5"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r5c1-t5">
+<p>copy_to_file</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c2-t5">
+<p>Copy recording data to file</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c3-t5">
+<p>String</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c4-t5"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r6c1-t5">
+<p>compress_copy</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c2-t5">
+<p>GZip compress "copy_to_file" destination</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c3-t5">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c4-t5">
+<p>False</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<a id="BABIBHEI" name="BABIBHEI"/>
+<div>
+<h3><span>A.2.4</span> JFR.dump</h3>
+<p>The <code>JFR.dump</code> diagnostic command stops running flight recordings. <a href="#BABJGJGB">Table A-4</a> lists the parameters you can use with this command.</p>
+<div><a id="sthref14" name="sthref14"/><a id="BABJGJGB" name="BABJGJGB"/>
+<p>Table A-4 JFR.dump</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This is a four-column description table. The left-most column contains the parameter names. The next column to the right contains a description of the associate paramenter. The next column to the right contains the type of value for the associated parameter. The far-right column contains the default value for the associated parameter, assuming one is available." title="JFR.dump" width="100%">
+<col width="20%"/>
+<col width="*"/>
+<col width="25%"/>
+<col width="18%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t6" valign="bottom">Parameter</th>
+<th align="left" id="r1c2-t6" valign="bottom">Description</th>
+<th align="left" id="r1c3-t6" valign="bottom">Type of value</th>
+<th align="left" id="r1c4-t6" valign="bottom">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r2c1-t6">
+<p>name</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c2-t6">
+<p>Recording name</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c3-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c4-t6"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r3c1-t6">
+<p>recording</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c2-t6">
+<p>Recording id</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c3-t6">
+<p>Long</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c4-t6">
+<p>1</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r4c1-t6">
+<p>copy_to_file</p>
+</td>
+<td align="left" headers="r4c1-t6 r1c2-t6">
+<p>Copy recording data to file</p>
+</td>
+<td align="left" headers="r4c1-t6 r1c3-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r4c1-t6 r1c4-t6"><br/></td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r5c1-t6">
+<p>compress_copy</p>
+</td>
+<td align="left" headers="r5c1-t6 r1c2-t6">
+<p>GZip compress "copy_to_file" destination</p>
+</td>
+<td align="left" headers="r5c1-t6 r1c3-t6">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r5c1-t6 r1c4-t6">
+<p>False</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="run.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

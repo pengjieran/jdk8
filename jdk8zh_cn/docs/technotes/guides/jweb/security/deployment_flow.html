@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Rich Internet Application Deployment Process</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Rich Internet Application Deployment Process </h1>
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Rich Internet Application Deployment Process </p>
+<p align="left">This page includes the following topics:</p>
+<ul>
+<li><a href="#overview">Overview</a> </li>
+<li><a href="#plugin">Plug-in Processing</a> </li>
+<li><a href="#rules">Rules Processing</a> </li>
+<li><a href="#jre">JRE Status</a> </li>
+<li><a href="#signature">Digital Signature</a> </li>
+<li><a href="#prompts">Security Prompts</a> 
+  <ul>
+    <li><a href="#normal">Normal Processing </a></li>
+    <li><a href="#esl">Exception Site List </a></li>
+    <li><a href="#oldjre">Select JRE</a> </li>
+  </ul>
+</li>
+</ul>
+
+<h2><a name="overview" id="overview"></a>Overview</h2>
+<p>When a user launches an applet or a Java Web Start application, collectively called Rich Internet Applications (RIAs), a number of checks are made to determine if the RIA is allowed to run, which version of the JRE is used, and which security prompts are shown to the user. The purpose of this topic is to explain those checks and show how the decisions are made. </p>
+<p>The following flow chart shows a simplified version of the process that is used to deploy a RIA. </p>
+<p><em><a name="figure1" id="figure1"></a>Figure 1. Deployment Processing Flow Chart </em></p>
+<p><img src="images/deployment_process.png" alt="Flow chart that shows the deployment process for RIAs" /></p>
+<p>The nodes in the left column of the chart provide a high-level view of what happens after a user starts a RIA. The following steps describe the main process. When a decision is made to either run or block the RIA, any remaining steps are skipped. </p>
+<ol>
+  <li>
+    <p>Begin loading Java content.</p>
+    <p>When a user opens an HTML page that contains an applet, or starts a Java Web Start application, the  content starts to load. If no JRE is installed, the browser notifies the user that the plug-in is missing and the RIA is not run. </p>
+  </li>
+  <li>
+    <p>Is the browser plug-in registered and allowed to run?  </p>
+    <p>Check that the plug-in is registered and enabled. See <a href="#plugin">Plug-in Processing</a> for more information. </p>
+  </li>
+  <li>
+    <p>Does a rule exist for this RIA?</p>
+    <p>If a deployment rule set exists, then look for a rule that matches the RIA. If a matching rule is found, then the action for the rule is taken. If the action is <code>block</code>, then the RIA is not run. If the action is <code>run</code>, then the RIA is allowed to run. If no rule is found, or the action is <code>default</code>, then the deployment process continues with the next step in the flow chart. See <a href="#rules">Rules Processing</a> for more information. </p>
+  </li>
+  <li>
+    <p>Is the JRE expired or below the security baseline?  </p>
+    <p>Ensure that a valid JRE is installed to run the RIA. If not, then give the user the option to update the JRE. See <a href="#jre">JRE Status</a> for more information. </p>
+  </li>
+  <li>
+    <p>Does the RIA have a valid signature?</p>
+    <p>Check if the RIA is signed. If so, then ensure that the signature is valid.  See <a href="#signature">Digital Signature</a> for more information. </p>
+  </li>
+  <li>
+    <p>Which security prompt is needed?</p>
+    <p>Determine which security prompt to show based on the RIA, the setting of the security level in the Java Control Panel, and the exception site list. If an older JRE is requested, then choose the JRE that is used to run the RIA. See <a href="#prompts">Security Prompts</a> for more information. </p>
+  </li>
+</ol>
+<h2><a name="plugin" id="plugin"></a>Plug-in Processing</h2>
+<p>When content starts to load, plug-in processing answers the question in the second step of the deployment process, &quot;Is the browser plug-in registered and allowed to run?&quot; This process is shown in the Plug-in Processing box in <a href="#figure1">Figure 1</a>, which is connected to the node for this step and shown to the right of the node.</p>
+<p>If the plug-in is not registered, then the browser notifies the user that the plug-in is missing and the RIA is not run.</p>
+<p>If the plug-in is registered, then deployment properties are checked to see if the plug-in is disabled. The browser is also checked to see if the browser has disabled the plug-in. If the plug-in is disabled, then the user is notified and the RIA is not run. If the plug-in is enabled, then the deployment process continues with <a href="#rules">Rules Processing</a>. See the <a href="../jcp/jcp.html#security">Security</a> tab of the <a href="../jcp/jcp.html">Java Control Panel</a> for information on disabling and enabling the Java Plug-in. If the plug-in was disabled by the browser, see the documentation for the browser. </p>
+<h2><a name="rules" id="rules"></a>Rules Processing</h2>
+<p>Rules processing answers the question in the third step of the deployment process, &quot;Does a rule exist for this RIA?&quot; This process is shown in the Rules Processing box in <a href="#figure1">Figure 1</a>, which is connected to the node for this step and shown to the right of the node. Rules processing looks for a valid Deployment Rule Set file. See <a href="deployment_rules.html">Deployment Rule Set</a>, which was introduced in Java 7 update 40, for information on this feature.</p>
+<p> If no deployment rule set is found, then the deployment process continues with <a href="#jre">JRE Status</a>. </p>
+<p>If an invalid deployment rule set is found, then an error message is shown to the user and the RIA is blocked. </p>
+<p>If a valid deployment rule set is found, then one of the following actions is performed:</p>
+<ul>
+  <li>
+    <p>If no rule matches the RIA, then the deployment process continues with <a href="#jre">JRE Status</a>.</p>
+  </li>
+  <li>
+    <p>If the RIA matches a rule, then one of the following actions is performed:    </p>
+    <ul>
+      <li>
+        <p>If the rule allows the RIA to run, then the signature for the RIA is checked. If the signature is valid, or the RIA is unsigned, then the RIA is run on the requested version of the JRE without showing any security prompts. If the signature for the RIA is not valid, then a security warning is shown to the user and the RIA is blocked.</p>
+		<p>For rules processing, a signature that contains a certificate that is expired or a certificate whose certificate revocation status cannot be checked is considered valid, and the RIA is run. An invalid signature is one that contains a certificate that is blacklisted, revoked, or malformed in some way.</p>
+      </li>
+      <li>
+        <p>If the rule blocks the RIA, then a security warning is shown to the user and the RIA is blocked. </p>
+      </li>
+      <li>
+        <p>If the rule requests default processing for the RIA, then the deployment process continues with <a href="#signature">Digital Signature</a>. </p>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h2><a name="jre" id="jre"></a>JRE Status</h2>
+<p>JRE status processing  answers the question in the fourth step of the deployment process, &quot;Is the JRE expired or below the security baseline?&quot; This process is shown in the JRE Status box in <a href="#figure1">Figure 1</a>, which is connected to the node for this step and shown to the right of the node. If the option for ignoring the security baseline is set, then the JRE status is not checked and the deployment process continues with <a href="#signature">Digital Signature</a>. The deployment property <code>deployment.expiration.check.enabled</code> is used to indicate if the security baseline is ignored. See <a href="../jcp/properties.html">Deployment Configuration File and Properties</a> for information on this property. </p>
+<p>If the security baseline is not ignored, the JRE is checked to see if it is expired or below the security baseline. If neither condition is true, then the deployment process continues with <a href="#signature">Digital Signature</a>. See <a href="../client-security.html">Setting the Security Level of the Java Client</a> for information on the JRE expiration date. See the <a href="http://www.oracle.com/technetwork/java/javase/jdk-relnotes-index-2162236.html">Update Release Notes</a> for your version of the JDK for information on the security baseline. </p>
+<p>If the JRE is either expired or below the security baseline, the user is given the option to update the JRE. Depending on the user's choice, one of the following actions is performed:</p>
+<ul>
+  <li>    If the user chooses to update later, then the deployment process continues with <a href="#signature">Digital Signature</a>.</li>
+  <li>    If the user chooses to block the RIA, then the RIA is not run.</li>
+  <li>    If the user chooses to    update the JRE, then the user is directed to the download page at java.com. </li>
+</ul>
+<h2><a name="signature" id="signature"></a>Digital Signature </h2>
+<p>Digital signature processing answers the question in the fifth step of the deployment process, &quot;Does the RIA have a valid signature?&quot; This process is shown in the Digital Signature box in <a href="#figure1">Figure 1</a>, which is connected to the node for this step and shown to the right of the node. If the RIA is unsigned, then the deployment process continues with <a href="#prompts">Security Prompts</a>. </p>
+<p>If the RIA is signed, then the certificate used to sign the RIA is validated. If the certificate is invalid or revoked, then the RIA is blocked.</p>
+<p>If the RIA is signed with a valid certificate, or if the certificate is expired or the revocation status cannot be checked, then the deployment process continues with <a href="#prompts">Security Prompts</a>. The action taken for RIAs that have expired certificates or certificates that cannot be checked depends on the setting of the Security Level slider in the Java Control Panel.</p>
+<p>See <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/signindex.html">Signing and Verifying JAR Files</a> for information on digital signatures. </p>
+<h2><a name="prompts" id="prompts"></a>Security Prompts  </h2>
+<p>The final step in the deployment process is to determine if the RIA is run, and answers the question in the last step of the deployment process, &quot;Which security prompt is needed?&quot; If the RIA is run, this step also determines which version of the JRE is used when an older version is requested. The Normal Processing box and Exception Site List box in <a href="#figure1">Figure 1</a> show the process for determining if the RIA is run and which security prompt is shown. These boxes are connected to the node for this step and shown to the right of the node. </p>
+<p>The process for determining which JRE is used when an older version is requested is shown in the Select JRE box  in <a href="#figure1">Figure 1</a>, which is connected to the boxes for determining if the RIA is run and which security prompt is shown. </p>
+<p>At this point in the process, the decision to run or block the RIA, and the choice of the security prompt to show, is based on the following criteria:</p>
+<ul>
+  <li>The setting of the Security Level slider in the Java Control Panel, the default is <code>High</code>. See the <a href="../jcp/jcp.html#security">Security</a> tab of the <a href="../jcp/jcp.html">Java Control Panel</a> for information on the Security Level Slider. </li>
+  <li>The presence of a signing certificate for the RIA </li>
+  <li>The status of the certificate that was used to sign the RIA</li>
+  <li>The inclusion of the location of the RIA in the exception site list</li>
+</ul>
+<blockquote>
+  <hr />
+  <p><strong>Note:</strong> If the user previously selected the option to not show a prompt again, then that prompt is suppressed. The response the user gave when the option to suppress was selected is used instead of showing the prompt again. </p>
+  <hr />
+</blockquote>
+<h3><a name="normal" id="normal"></a>Normal Processing  </h3>
+<p>The following table shows if a RIA is run or blocked when the location of the RIA is not on the exception site list. </p>
+<table width="95%" border="1" align="center" cellpadding="3"
+cellspacing="0" summary=
+"Shows if RIAs are run or blocked when the JRE is at or above the security baseline.">
+  <tr bgcolor="#CCCCCC">
+    <th id="h1" valign="top">Security Level </th>
+    <th id="h2" valign="top">Run with Prompt </th>
+    <th id="h3" valign="top">Block</th>
+  </tr>
+  <tr>
+    <td headers="h1" valign="top"><p>Very High </p></td>
+    <td headers="h2" valign="top"><p>Only RIAs that are signed with a valid certificate located in the Signer CA keystore are allowed to run. The manifest for the main JAR file for the RIA must contain the Permissions attribute. See <a href="manifest.html">JAR File Manifest Attributes for Security</a> for information on the Permissions attribute. </p></td>
+    <td headers="h3" valign="top"><p>The following RIAs are blocked: </p>
+        <ul>
+          <li>Signed with an expired certificate, or a certificate whose revocation status cannot be checked </li>
+          <li>Missing the Permissions attribute in the main JAR file </li>
+          <li>Self-signed (signed with a certificate that is not in the Signer CA keystore) </li>
+          <li>Unsigned </li>
+          <li>Local</li>
+        </ul></td>
+  </tr>
+  <tr>
+    <td headers="h1" valign="top"><p>High</p></td>
+    <td headers="h2" valign="top"><p>RIAs that are signed with a valid certificate located in the Signer CA keystore, an expired certificate, or a certificate whose revocation status cannot be checked are allowed to run. The manifest for the main JAR file for the RIA must contain the Permissions attribute. See <a href="manifest.html">JAR File Manifest Attributes for Security</a> for information on the Permissions attribute. </p></td>
+    <td headers="h3" valign="top"><p>The following RIAs are blocked: </p>
+      <ul>
+        <li>Missing the Permissions attribute in the main JAR file </li>
+        <li>Self-signed (signed with a certificate that is not in the Signer CA keystore) </li>
+        <li>Unsigned</li>
+        <li>Local</li>
+      </ul></td>
+  </tr>
+  <tr>
+    <td headers="h1" valign="top"><p>Medium </p></td>
+    <td headers="h2" valign="top"><p>All RIAs that contain the Permissions attribute in the manifest for the main JAR file are allowed to run. See <a href="manifest.html">JAR File Manifest Attributes for Security</a> for information on the Permissions attribute.</p></td>
+    <td headers="h3" valign="top"><p>The following  RIAs are blocked: </p>
+      <ul>
+        <li>Missing the Permissions attribute in the main JAR file</li>
+      </ul></td>
+  </tr>
+</table>
+<p>If the RIA is allowed to run and requests an older version of the JRE, then the deployment process continues with <a href="#oldjre">Select JRE</a>.</p>
+<h3><a name="esl" id="esl"></a>Exception Site List </h3>
+<p>The Exception Site List feature, which was introduced in Java 7 Update 51, provides a way for users to run RIAs that would be blocked because they do not meet the current security requirements. RIAs that are launched from sites in the exception site list are allowed to run with the appropriate security prompts. See <a href="exception_site_list.html">Exception Site List</a> for more information on this feature. </p>
+<p>If the RIA is allowed to run and requests an older version of the JRE, then the deployment process continues with <a href="#oldjre">Select JRE</a>.</p>
+<h3><a name="oldjre" id="oldjre"></a>Select JRE</h3>
+<p>It is recommended that the most recent version of the JRE always be used. However, if a RIA is not compatible with this version of the JRE, the version that is required to run the RIA can be requested in the JNLP file or applet tag. </p>
+<p>When an older version is requested, one of the following actions is performed, based on the criteria described in the sections that follow:</p>
+<ul>
+  <li>The RIA is restarted with the requested version of the JRE using Secure Static Versioning (SSV).</li>
+  <li>The RIA is run with the latest version of the JRE that is installed.</li>
+  <li>The RIA is blocked. </li>
+</ul>
+<h4>Run the RIA with the Requested JRE</h4>
+    <p>The RIA is restarted with the requested version of the JRE using SSV when the following conditions are met:</p>
+	<ul>
+	  <li>RIA is signed.</li>
+	  <li>The requested version of the JRE is installed.</li>
+	  <li>For privileged RIAs, which request all permissions, the RIA is signed with a valid certificate.</li>
+	  <li>For sandbox RIAs or self-signed RIAs, the user agrees to run with the requested version when prompted.</li>
+    </ul>
+    <h4>Run the RIA with the Latest JRE</h4>
+    <p>The following table describes the cases in which the RIA is run with the latest version of the JRE that is installed, instead of the requested version.  </p>
+    <table width="95%" border="1" align="center" cellpadding="3"
+cellspacing="0" summary=
+"Shows the criteria used to determine if a RIA is run with the latest version of the JRE when an older version is requested.">
+  <tr bgcolor="#CCCCCC">
+    <th id="h101" valign="top">Signing Status </th>
+    <th id="h102" valign="top">Requested Version is Installed </th>
+    <th id="h103" valign="top">Type of RIA </th>
+    <th id="h104" valign="top">Response to Prompt </th>
+  </tr>
+  <tr>
+    <td headers="h101" valign="top">Signed </td>
+    <td headers="h102" valign="top">Yes</td>
+    <td headers="h103" valign="top">Sandbox, self-signed </td>
+    <td headers="h104" valign="top">User does not agree to run with requested version </td>
+  </tr>
+  <tr>
+    <td headers="h101" valign="top">Signed</td>
+    <td headers="h102" valign="top">No</td>
+    <td headers="h103" valign="top">All </td>
+    <td headers="h104" valign="top">User agrees to run with the latest version that is installed </td>
+  </tr>
+  <tr>
+    <td headers="h101" valign="top">Unsigned</td>
+    <td headers="h102" valign="top">Ignored</td>
+    <td headers="h103" valign="top">All</td>
+    <td headers="h104" valign="top">User agrees to run with the latest version that is installed </td>
+  </tr>
+</table>
+<h4>Block the RIA</h4>
+<p>The RIA is blocked in the following cases when the user does not agree to run with the latest version of the JRE that is installed: </p>
+<ul>
+  <li>The RIA is signed and the requested version of the JRE is not installed.</li>
+  <li>The RIA is unsigned.</li>
+</ul>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

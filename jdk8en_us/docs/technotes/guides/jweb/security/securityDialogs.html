@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Security Dialogs</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Security Dialogs </h1>
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Security Dialogs </p>
+<p align="left">The following topics are covered:</p>
+<ul>
+<li><a href="#contents">Dialog Contents</a></li>
+<li><a href="#userexp">Improving the User Experience</a></li>
+<li><a href="#settings">Java Control Panel Settings That Affect the Dialogs Shown</a></li>
+</ul>
+
+<h2><a name="contents" id="contents"></a>Dialog Contents </h2>
+<p>Beginning with the 7u21 release, users are notified when a RIA is launched with a security prompt similar to the following screen shot. </p>
+<p><img src="images/dialog_trusted.png" alt="Screen shot of the security dialog shown for an RIA that runs in the security sandbox and is signed with a certificate from a trusted certificate authority." /> </p>
+<p>Depending on the RIA, the security prompt shows the following information: </p>
+<ul>
+  <li>
+    <p>Name of the RIA, or notification that the application is unsigned.</p>
+	<p>The name that is shown is the value of the <code>Application-Name</code> attribute in the JAR file manifest. If the <code>Application-Name</code> attribute is not present, the value for the <code>Main-Class</code> attribute is used. If neither attribute is present in the manifest, no title is shown in the security prompts. Titles are not shown for unsigned RIAs. See <a href="manifest.html#app_name">Application-Name Attribute</a> for information. </p>
+  </li>
+  <li>
+    <p>Warning when an out-of-date JRE is being used.</p>
+	<p>For enterprises that manage the update process of user's systems, the deployment property <code>deployment.expiration.check.enabled</code> can be set to suppress the warnings for out-of-date JREs. See <a href="../jcp/properties.html">Deployment Configuration File and Properties</a> for  information.</p>
+  </li>
+  <li>
+    <p>Information about the publisher.</p>
+    <p>If the application is self-signed or signed by an unknown authority, the publisher is  shown as UNKNOWN. </p>
+  </li>
+  <li>
+    <p>Warnings about the certificate. </p>
+    <p>If the certificate is expired, revoked, or the server that tracks which certificates were revoked cannot be accessed, the prompt shows a warning. A warning is also shown if the certificate is not valid until a future date. </p>
+  </li>
+  <li>
+    <p>Location from which the application is accessed.</p>
+	<p>The value is either a URL for applications that are accessed from a website, or a directory for applications that are accessed from a local drive.</p>
+  </li>
+  <li>
+    <p>Level of access required by the application. </p>
+    <p>Limited access restricts the application to the security sandbox, unrestricted access  provides the application with access to resources on the user's system.</p>
+  </li>
+  <li>
+    <p>Warning about missing JAR file manifest attributes.</p>
+    <p>JAR file manifest attributes are available to provide additional protection for an application. The warning indicates that the manifest is missing a recommended attribute. See <a href="manifest.html">JAR File Manifest Attributes for Security</a> for information.</p>
+  </li>
+  <li>
+    <p>For unsigned or self-signed applications, a checkbox that the user must select before the Run button is enabled.</p>
+  </li>
+  <li>
+    <p>Option to not show the prompt again. </p>
+    <p>For signed RIAs, future prompts for this RIA and RIAs from the same location that are signed with the same certificate can be turned off. If the RIA is a sandbox application, then the prompt is turned off only for other sandbox applications that are signed with the same certificate. When shown, click Show Options to access the option to turn off the prompt. </p>
+	<p>Prompts that were previously hidden can be restored through a button on the Security tab of the Java Control Panel. See <a href="../jcp/jcp.html#restore_prompts">Restore Security Prompts</a> for information. </p>
+  </li>
+  <li>Buttons to Run the RIA, Cancel the RIA, and when a JRE is out of date, to Update to the latest JRE. </li>
+</ul>
+<p>For a description and examples of the security prompts, see &quot;<a href="http://java.com/faq-securityprompts">What should I do when I see a security prompt from Java?</a>&quot; on <a href="http://java.com/">java.com</a>. </p>
+<h2><a name="userexp" id="userexp"></a>Improving the User Experience </h2>
+<p>The best experience for the user is when the RIA is restricted to the security sandbox and is signed with a current certificate from a trusted certificate authority. Clicking Run is all that is needed from the user to run the RIA.</p>
+<p>As conditions become less secure, warning messages become stronger, and in some cases, more action is needed by the user, as described for the following situations: </p>
+<ul>
+  <li><p>If the RIA is signed with a certificate from a trusted certificate authority, but requires unrestricted access to the user's system, the prompt warns the users about the risk of running the RIA. Clicking Run starts the RIA. </p>
+  </li>
+  <li>
+    <p>If the RIA is signed with an expired certificate or the revocation status of the certificate cannot be checked, the prompt provides stronger warnings about the risk of running the RIA. The user must select the option to accept the risk, which enables the Run button, then click Run to run the RIA.</p>
+  </li>
+  <li>
+    <p>Additional warnings are shown in some cases, such as when sandbox code attempts to access privileged code, or a RIA attempts to access resources that it does not have permission to access. These warnings require additional responses from the user. </p>
+  </li>
+</ul>
+<p>For guidelines on deploying your RIA, see <a href="http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/bestPractices.html">Deployment Best Practices</a> in the Java Tutorial. For information on how the deployment of RIAs is handled, see <a href="deployment_flow.html">Rich Internet Application Deployment Process</a>.</p>
+<h2><a name="settings" id="settings"></a>Java Control Panel Settings That Affect the Dialogs Shown</h2>
+<p>The Java Control Panel can be used to set options that are related to the security prompts. The Security tab provides an option to block Java content from running in a browser. The Security Level setting determines if the applet is automatically blocked and what level of prompting the user receives if the RIA is not blocked. See the <a href="../jcp/jcp.html#security">Security</a> section for the Java Control Panel for more information. </p>
+<p>The Advanced tab provides options for managing RIAs:</p>
+<ul>
+  <li>
+    <p> Secure Execution Environment options provide control for allowing or prohibiting users from granting privileges. If the user is not allowed to grant privileges, the security prompt is not shown and the app or features of the app are blocked. </p>
+  </li>
+  <li>
+    <p>Mixed code security verification options provide control for showing or hiding prompts that warn of mixed code. If the prompts are hidden, some features might be blocked without any notice to the user. </p>
+  </li>
+</ul>
+<p>See the <a href="../jcp/jcp.html#advanced">Advanced</a> section for the Java Control Panel for more information. </p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

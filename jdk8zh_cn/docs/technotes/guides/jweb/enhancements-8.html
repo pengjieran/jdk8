@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Rich Internet Applications Enhancement in JDK 8</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Rich Internet Applications Enhancement in JDK 8</h1>
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; <a href="index.html#otherFeatures">Enhancements and Other Features</a> &gt; Java Rich Internet Applications Enhancements in JDK 8</p>
+
+<p>This release introduces the following improvements for web-deployed applications, called RIAs:</p>
+
+
+<ul>
+  <li>
+    <p>For sandbox RIAs, <code>URLPermission</code> is now used to allow connections back to the server from which they were started.  <code>URLPermissions</code> is granted based on protocol, host and port of the code source. This change has the following implications:  </p>
+    <ul>
+      <li>
+        <p>For sandbox RIAs, <code>SocketPermissions</code> for the origin host is no longer granted. Calls from JavaScript code to the RIA are not granted <code>SocketPermissions</code> beginning with JDK 8. </p>
+      </li>
+      <li>
+        <p>Sandbox RIAs that are loaded from a server using the HTTP protocol are not  allowed to connect back to the server using the HTTPS protocol. </p>
+      </li>
+      <li>
+        <p>Sandbox RIAs loaded from a server on a specific port using either the HTTP or HTTPS protocol are not  allowed to connect back to a different port on the server. For example, if the RIA is started from https://www.example.com:80, then the RIA is not allowed to connect back to https://www.example.com:8888. </p>
+      </li>
+      <li>
+        <p>Sandbox RIAs loaded from a server  using either the HTTP or HTTPS protocol and a domain name are not allowed to connect back to the server using an IP address. For example, if the RIA is started from https://www.example.com:8080, then the RIA is not allowed to connect back to https://192.0.2.1:8080. </p>
+      </li>
+      <li>
+        <p>Privileged RIAs loaded from a server using the HTTP protocol do not accept calls from JavaScript code using the HTTPS protocol. If you want to make calls to your RIA from JavaScript code using HTTPS, you must load your RIA using HTTPS. </p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The Permissions attribute is now required in the JAR file manifest for the main JAR file of all Rich Internet Applications (RIAs) at all security levels. See <a href="security/manifest.html">JAR File Manifest Attributes for Security</a> for information on the Permissions attribute.</p>
+  </li>
+  <li>
+
+    <p>The Java class file format has been updated because of <a href="http://jcp.org/en/jsr/detail?id=292">JSR 292</a>, <a href="../vm/multiple-language-support.html">Java Virtual Machine Support for Non-Java Languages</a>. Consequently, the Pack200 engine has been updated accordingly to ensure that Java SE 8 class files are compressed effectively. In particular, the Pack200 engine now recognizes constant pool entries and new bytecodes introduced by JSR 292.</p>
+
+    <p>As a result, compressed files created with this version of <code>pack200</code> will not be compatible with older versions of <code>unpack200</code>.</p>
+
+    <p>In general, if a compressed file contains Java SE 8 or Java SE 7 class files, then it will not be compatible with older unpackers. (For example, if a compressed file contains Java SE 7 class files, then it will not be compatible with unpackers from Java SE 6 or earlier.)</p>
+
+    <p>See <a href="networking/pack200.html">Pack200 and Compression for Network Deployment</a> and RFE <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6981776">6981776</a>.</p>
+  </li>
+  
+  <li>
+    <p>The old Java Plug-in (the version available prior to Java SE 6 Update 10) has been removed from this release. See RFE <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7076143">7076143</a>.</p>
+  </li>
+</ul>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

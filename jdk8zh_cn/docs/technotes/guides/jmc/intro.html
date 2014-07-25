@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>About Java Mission Control</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-04T2:3:8Z" name="date"/>
+<meta content="This chapter provides an overview of Java Mission Control and its features." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="About Java Mission Control" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E28023-04" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Mission Control User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface_jmcci.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Next</a><hr/><a id="CEGIAGIG" name="CEGIAGIG"/>
+<h1><span>1</span> About Java Mission Control</h1>
+<p>This chapter provides an overview of Java Mission Control and its features.</p>
+<p>Java Mission Control enables you to monitor and manage Java applications without introducing the performance overhead normally associated with these types of tools. It uses data collected for normal adaptive dynamic optimization of the Java Virtual Machine (JVM). Besides minimizing the performance overhead, this approach eliminates the problem of the <i>observer effect</i>, which occurs when monitoring tools alter the execution characteristics of the system.</p>
+<p>Java Mission Control consists of the client application (<i>JMC client</i>) and a number of plug-ins that run on it:</p>
+<ul>
+<li>
+<p><i>JVM Browser</i> shows the running Java applications and their JVMs. Each JVM instance is called a <i>JVM Connection</i>.</p>
+</li>
+<li>
+<p><i>JMX Console</i> connects to a running JVM, collects and displays its characteristics in real time, and enables you to change some of the runtime properties through Managed Beans (MBeans). You can also create rules that trigger on certain events (for example, to send an email if the CPU usage by the application reaches 90 percent).</p>
+</li>
+<li>
+<p><i>Java Flight Recorder</i> (JFR) collects and saves detailed performance characteristics for historic analysis and profiling. It can be used as a standalone performance monitoring and profiling tool, but when used as a plug-in for the JMC client, it presents diagnostic information in logically grouped tables, charts, and dials. It enables you to select the range of time and level of detail necessary to focus on the problem.</p>
+</li>
+</ul>
+<p>Java Mission Control plug-ins connect to a JVM using the Java Management Extensions (JMX) agent. For more information about JMX, see the Java Management Extensions documentation at <code><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jmx/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jmx/index.html</a></code></p>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface_jmcci.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<title>Applet Developer's Guide</title>
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Applet Developer's Guide</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; Applet Developer's Guide</p>
+
+
+<p>This guide covers the following topics:</p>
+
+<ul>
+  <li><a href="applet_execution.html">Java Plug-in and Applet Architecture</a></li>
+  <li><a href="applet_deployment.html">Applet Deployment</a></li>
+  <li><a href="using_tags.html">Using applet, object and embed Tags</a></li>
+  <li><a href="appletStatus.html">Applet Status And Event Handlers</a></li>
+  <li><a href="codebase_determination.html">Codebase Determination</a></li>
+  
+</ul>
+
+<h2>Overview</h2>
+
+<p>Java Plug-in technology (hereafter the "Java Plug-in"),
+which is included in the Java Runtime Environment, enables Java
+applets to run in popular web browsers on the desktop. The Java Plug-in
+provides powerful new capabilities to applets in the web browser,
+while improving the overall reliability and functionality of
+applets in a backward-compatible manner.</p>
+
+<p>The Java Plug-in runs one or more
+Java virtual machine instances (JVMs) that connect back to the
+browser for full interoperability with the surrounding web page.
+This architectural change offers many advantages and features:</p>
+<ul>
+
+<li><p>The JVM running the applet is
+isolated from the web browser at the operating system level. If
+something should go wrong while running the applet, or if an
+uncooperative applet refuses to shut down, the Java Plug-in
+detects and handles the error condition gracefully; the web browser
+is unaffected.</p>
+
+<p>The Java Plug-in starts
+applets in the background, so the web browser always remains
+responsive. Applets appear on the web page as they become ready to
+run.</p>
+
+
+</li>
+
+<li><p>The Java Plug-in offers the
+capability to launch applets directly from JNLP files, unifying
+deployment of Java content both in the browser and out of the
+browser (via Java Web Start). Developers can reuse JNLP
+extensions for advanced functionality including <a href=
+"http://jogamp.org/jogl/www/">Java Binding for the OpenGL API (JOGL)</a> and
+<a href="http://worldwind.arc.nasa.gov/java/">NASA World Wind</a> (planetary-scale
+terrain visualization) within applets. Applets can access
+JNLP APIs for persistent data storage, local file system access,
+and other useful functionality from sandboxed code.</p></li>
+
+<li><p>The bridge
+between the JavaScript engine in the web browser and the Java
+programming language is backward-compatible and features exceptional
+reliability, performance, and cross-browser portability for both
+Java calling JavaScript as well as JavaScript calling Java.
+Formerly Mozilla-specific "LiveConnect" functionality, such as the
+ability to call static Java methods, instantiate new Java objects
+and reference third-party packages from JavaScript, is available in all browsers.</p></li>
+
+<li><p>Applets can utilize as much heap space as command-line applications.</p></li>
+
+
+<li><p>JVM command-line
+arguments may be specified in the HTML of the web page on a
+per-applet basis, providing fine-grained control over options such
+as the heap size and Java 2D hardware acceleration features.</p></li>
+
+<li><p>Each individual applet
+instance may request a different JRE version on which to run. This
+feature is designed for enterprise customers who prefer to
+qualify their applets against either a particular JRE version or a
+particular JRE family. Both selection of a specific JRE version, or
+any in a particular family, are supported in the Java
+Plug-in.</p></li>
+
+</ul>
+
+<p>See the <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/index.html"
+target="_blank">Applet Development Tutorial</a>, a comprehensive
+Java Tutorial that explains various aspects of applet development
+and deployment.</p>
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

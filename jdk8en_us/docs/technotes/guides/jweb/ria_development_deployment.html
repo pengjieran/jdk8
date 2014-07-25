@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Development and Deployment Of Rich Internet Applications</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+.cdiv {
+}
+.ldiv,.rdiv,.cdiv {
+padding:1%;
+}
+.ldiv {
+width:20%;
+float:left;
+text-align:justify;
+}
+.rdiv {
+margin-left:35%;
+text-align:justify;
+}
+.clear {
+clear:both;
+}
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Rich Internet Applications Development and Deployment</h1>
+
+<p><a href="index.html">Java Rich Internet Applications Guide</a> &gt; Java Rich Internet Applications Development and Deployment</p>
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#design">Design</a></li>
+<li><a href="#dev">Development</a></li>
+<li><a href="#depl">Deployment</a></li>
+</ul>
+<h2><a id="intro" name="intro"></a>Introduction</h2>
+<p style="margin-bottom: 0in;">Java technology based solutions are
+versatile when developed with good design principles. There are
+three major kinds of solutions depending on their deployment
+mechanism and execution context:</p>
+<ol>
+<li>
+<p style="margin-bottom: 0in;">Applets &ndash; These solutions run
+in the context of a web browser. They utilize the browser
+capabilities like session cookies, DOM access etc. Applets may be
+deployed by using Java Network Launch Protocol (JNLP) or by using
+applet tag attributes.</p>
+</li>
+<li>Java Web Start applications - Java Web Start applications are
+deployed via a browser the first time. Once the application is
+downloaded and the user has accepted its security certificate, it
+behaves almost like a standalone application. When run standalone
+from the user's desktop using Java Web Start, updates to the
+application are automatically downloaded.</li>
+<li>Standalone solutions &ndash; Standalone solutions do not
+require a browser session for execution.</li>
+</ol>
+<p>Applets and Java Web Start applications are now referred to as
+<em>rich internet applications</em> (RIAs) - Java programs that
+take advantage of the Internet.</p>
+<h2><a id="design" name="design"></a>Design</h2>
+<p>In the past, the decision of whether to deploy a RIA inside the
+browser as an applet, or outside the browser as a Java Web Start
+application, could significantly impact the design of the solution.
+With technology introduced in the Java SE 6 update 10 release,
+these two deployment options have been substantially unified, so
+that properly structured programs can be easily deployed either
+inside or outside the browser.</p>
+
+<p>A key methodology to follow during the design of your app is to use
+a <em>component-based architecture</em>. Traditional applications
+tend to construct their user interfaces, including the top-level
+Frame, in the <code>main</code> method. This programming style
+prevents easy re-deployment of the app in the browser, because it
+assumes that the app creates its own Frame. When running in the
+browser as an applet, the applet is implicitly the container that
+should hold the user interface for the app, and no top-level Frame
+is needed or desired.</p>
+
+<p>Instead, during the development of your app, try to organize its
+functionality into one or more components that can be composed
+together. In this context, the term &quot;component&quot; refers to a GUI
+element that subclasses from the AWT <code>Component</code> class,
+the Swing <code>JComponent</code> class, or another subclass.
+Rather than phrasing the app in terms of various methods which
+build user interfaces and return or show them, instead phrase the
+app in terms of various <code>Component</code> subclasses, each of
+which adds their portion of the user interface to themselves. Then
+the app, which at that point is just a Component (and perhaps, for
+example, a menu bar) can easily be added to any kind of Container.
+The container might be a top-level Frame or an Applet. Using this
+methodology and architecture makes it easy to redeploy the app
+either inside or outside the browser, and allows this deployment
+decision to be changed at essentially any time without
+significantly impacting the development cycle of the app.</p>
+
+<p>The SwingSet2 demo is an example that shows how to
+lay out components in a single cohesive unit. This demo is included in the 
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 7 
+Demos and Samples</a> bundle that you can download. The constructor of the
+<code>ButtonDemo</code> class instantiates and lays out all required user
+interface components into one master panel. The <code>DemoModule</code> class is
+only responsible for displaying this master panel as an applet.
+This design enables the <code>ButtonDemo</code> to be reused or ported easily to
+another applet or application.</p>
+
+<p>To determine whether to develop an applet or a Java Web Start application, see <a href="decision_guide.html">Rich
+Internet Applications Decision Guide</a>.</p>
+
+<h2><a id="dev" name="dev"></a>Development</h2>
+<p>Having decided on the type of client app you plan to build, the
+next step is to build it. For applets, use the <a href=
+"applet/applet_dev_guide.html">Applet Developer's Guide</a> to set
+up the applet, get the browser and the applet talking to each
+other, and to communicate with other applets. For Java Web Start
+applications, use the <a href=
+"../javaws/developersguide/contents.html">Java Web Start
+Developer's Guide</a>.</p>
+
+<p>Debugging is a natural part of development. In addition to using
+your Java IDE or the Java debugger, you can use the debugging
+facilities in the <a href=
+"jcp/console.html">Java Console</a>, as
+well as the JVM's <a href=
+"jcp/tracing_logging.html">Tracing and
+Logging</a>&nbsp;capabilities.</p>
+<p>The <a href=
+"http://docs.oracle.com/javase/tutorial/deployment/index.html">Deployment
+trail</a> in the Java Tutorials is a comprehensive resource to
+learn more about the development and deployment of RIAs.</p>
+<h2><a id="depl" name="depl"></a>Deployment</h2>
+<p>Signing the application JAR files  with a valid public key certificate and specifying 
+the runtime  permission in the JAR file manifest are  critical. Applications  that 
+are deployed without these elements might not be allowed to run in some circumstances. </p>
+<p>Deployment is a multi-step process. Many of the steps are
+optional, but they are all intended to improve the end-user's
+experience.
+The following is an overview of deployment related steps. See
+<a href="deployment_advice.html">Rich Internet Applications
+Deployment Advice</a> for more information.</p>
+<ul>
+<li><p><b>JNLP File:</b> A JNLP file is created for Java Web Start
+applications and applets that will be deployed using JNLP. If the RIA requires 
+access to resources on the user's system, you'll need to include the <code>security</code> 
+element in the JNLP file. Otherwise, the RIA runs in the security sandbox. See 
+<a href="../javaws/developersguide/syntax.html">JNLP File Syntax</a> 
+for information on the JNLP file.</p></li>
+<li><p><b>JAR File Manifest:</b> The JAR file manifest contains security and configuration information about the JAR file and the files it contains. Attributes introduced in the JDK 7u25 and JDK 7u45 releases provide additional security for RIAs.  See <a href="security/manifest.html">JAR File Manifest Attributes for Security</a> for more information.</p></li>
+<li><p><b>Security Certificate</b>: RIAs request permission from the user to run the 
+first time they are launched, whether they run in the security sandbox or require 
+access to a user's system. Sign and time stamp the JAR file for the RIA with a 
+certificate from a recognized certificate authority. See 
+<a href="security/securityDialogs.html">Security Dialogs</a> and 
+<a href="security/security.html">Security</a> for more information.</p>
+</li>
+<li>
+  <p><b>JAR Indexing:</b> To keep the app from downloading JAR files
+before they're needed, you'll want to use <i>JAR Indexing.</i>
+<a href="../jar/jar.html#JAR_Index">Jar Indexing</a> works both for
+applets and Java Web Start applications. With Jar Indexing, the
+main jar contains an index file that tells which packages are in
+the other jars. When lazy-loading a resource, the underlying
+classloader uses the index to know what jar file to
+download. Make sure that you create the index before you sign the JAR file. </p>
+</li>
+<li><p><b>Pack200 Compression:</b> See <a href=
+"networking/pack200.html">Pack200 and Compression for Network Deployment</a> for information on how to use Pack200 compression to minimize download time for JAR files.</p></li>
+<li><b>Deployment Toolkit:</b> Finally, you'll want to use the
+  <a href="deployment_advice.html#deplToolkit">Deployment Toolkit</a>
+to set up your web page with cross-browser JavaScript you need to
+launch your app. The deployment toolkit is essentially a set of
+JavaScript functions that ensure deployment of applets consistently
+across various browsers.</li>
+</ul>
+<p>For enterprises that provide a common execution environment and manage the applications that users access, the Deployment Rule Set feature enables the creation of rules that allow some applications to be run without security prompts while automatically blocking other applications. This feature is intended to be used internally in an organization. See <a href="security/deployment_rules.html">Deployment Rule Set</a> for more information. </p>
+<p>For users who need to run RIAs that are blocked because they do not meet current security requirements, the Exception Site List feature is provided. RIAs that are started from sites in the list prompt the user for permission to run. See <a href="security/exception_site_list.html">Exception Site List</a> for more information. </p>
+<p>To understand how the deployment of RIAs is handled, see <a href="security/deployment_flow.html">Rich Internet Application Deployment Process</a>. </p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

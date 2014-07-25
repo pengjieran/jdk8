@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Fatal Error Log</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T13:53:12Z" name="date"/>
+<meta content="This appendix describes the fatal error log, its location and contents." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Fatal Error Log" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38386-01" name="partnum"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Desktop Technologies Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/><a id="fatal_error_log_vm" name="fatal_error_log_vm"/>
+<h1><span>B</span> Fatal Error Log</h1>
+<p>This appendix describes the fatal error log, its location and contents.</p>
+<p>The fatal error log is created when a fatal error occurs. It contains information and the state obtained at the time of the fatal error.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>The format of this file can change slightly in update releases.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>This appendix contains the following sections.</p>
+<ul>
+<li>
+<p><a href="#A999314">"Location of Fatal Error Log"</a></p>
+</li>
+<li>
+<p><a href="#A999363">"Description of Fatal Error Log"</a></p>
+</li>
+<li>
+<p><a href="#A999581">"Header Format"</a></p>
+</li>
+<li>
+<p><a href="#BHIDFGFH">"Thread Section Format"</a></p>
+</li>
+<li>
+<p><a href="#BHIGJBHH">"Process Section Format"</a></p>
+</li>
+<li>
+<p><a href="#BHIHIBHI">"System Section Format"</a></p>
+</li>
+</ul>
+<a id="A999314" name="A999314"/>
+<div>
+<h2>Location of Fatal Error Log</h2>
+<p>To specify where the log file will be created, use the product flag <code>-XX:ErrorFile=</code><span>file</span>, where <span>file</span> represents the full path for the log file location. The substring <code>%%</code> in the <span>file</span> variable is converted to <code>%</code>, and the substring <code>%p</code> is converted to the PID of the process.</p>
+<p>In the following example, the error log file will be written to the directory /var/log/java and will be named java_error<span>pid</span>.log:</p>
+<pre xml:space="preserve">
+java -XX:ErrorFile=/var/log/java/java_error%p.log
+</pre>
+<p>If the <code>-XX:ErrorFile=file</code> flag is not specified, the default log file name is hs_err_<span>pid</span>.log, where <span>pid</span> is the PID of the process.</p>
+<p>In addition, if the <code>-XX:ErrorFile=file</code> flag is not specified, the system attempts to create the file in the working directory of the process. In the event that the file cannot be created in the working directory (insufficient space, permission problem, or other issue), the file is created in the temporary directory for the operating system. On Solaris OS and Linux the temporary directory is /tmp. On Windows the temporary directory is specified by the value of the <code>TMP</code> environment variable; if that environment variable is not defined, the value of the <code>TEMP</code> environment variable is used.</p>
+</div>
+
+<a id="A999363" name="A999363"/>
+<div>
+<h2>Description of Fatal Error Log</h2>
+<p>The error log contains information obtained at the time of the fatal error, including the following information, where possible:</p>
+<ul>
+<li>
+<p>The operating exception or signal that provoked the fatal error</p>
+</li>
+<li>
+<p>Version and configuration information</p>
+</li>
+<li>
+<p>Details on the thread that provoked the fatal error and thread's stack trace</p>
+</li>
+<li>
+<p>The list of running threads and their state</p>
+</li>
+<li>
+<p>Summary information about the heap</p>
+</li>
+<li>
+<p>The list of native libraries loaded</p>
+</li>
+<li>
+<p>Command line arguments</p>
+</li>
+<li>
+<p>Environment variables</p>
+</li>
+<li>
+<p>Details about the operating system and CPU</p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>In some cases only a subset of this information is output to the error log. This can happen when a fatal error is of such severity that the error handler is unable to recover and report all details.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The error log is a text file consisting of the following sections:</p>
+<ul>
+<li>
+<p>A header that provides a brief description of the crash. See <a href="#A999581">"Header Format"</a>.</p>
+</li>
+<li>
+<p>A section with thread information. See <a href="#BHIDFGFH">"Thread Section Format"</a>.</p>
+</li>
+<li>
+<p>A section with process information. See <a href="#BHIGJBHH">"Process Section Format"</a>.</p>
+</li>
+<li>
+<p>A section with system information. See <a href="#BHIHIBHI">"System Section Format"</a>.</p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>The format of the fatal error log described here is based on Java SE 6. The format might be different with other releases.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="A999581" name="A999581"/>
+<div>
+<h2>Header Format</h2>
+<p>The header section at the beginning of every fatal error log file contains a brief description of the problem. The header is also printed to standard output and may show up in the application's output log.</p>
+<p>The header includes a link to the HotSpot Virtual Machine Error Reporting Page, where the user can submit a bug report.</p>
+<p>The following is a sample header from a crash.</p>
+<pre xml:space="preserve">
+#
+# An unexpected error has been detected by Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x417789d7, pid=21139, tid=1024
+#
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode, sharing)
+# Problematic frame:
+# C  [libNativeSEGV.so+0x9d7]
+
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+</pre>
+<p>This example shows that the VM crashed on an unexpected signal. The next line describes the signal type, program counter (pc) that caused the signal, process ID and thread ID, as follows.</p>
+<pre xml:space="preserve">
+#  SIGSEGV (0xb) at pc=0x417789d7, pid=21139, tid=1024
+      |      |           |             |         +--- thread id
+      |      |           |             +------------- process id
+      |      |           +--------------------------- program counter
+      |      |                                        (instruction pointer)
+      |      +--------------------------------------- signal number
+      +---------------------------------------------- signal name
+</pre>
+<p>The next line contains the VM version (Client VM or Server VM), an indication whether the application was run in mixed or interpreted mode, and an indication whether class file sharing was enabled. Here is an example:</p>
+<pre xml:space="preserve">
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode, sharing)
+</pre>
+<p>The next information is the function frame that caused the crash, as follows.</p>
+<pre xml:space="preserve">
+# Problematic frame:
+# C  [libNativeSEGV.so+0x9d7]
+  |              +-- Same as pc, but represented as library name and offset.
+  |                  For position-independent libraries (JVM and most shared
+  |                  libraries), it is possible to inspect the instructions
+  |                  that caused the crash without a debugger or core file
+  |                  by using a disassembler to dump instructions near the
+  |                  offset.
+  +----------------- Frame type
+</pre>
+<p>In this example, the "C" frame type indicates a native C frame. The following table shows the possible frame types.</p>
+<div><a id="sthref132" name="sthref132"/><a id="sthref133" name="sthref133"/>
+<p>Table B-1 Frame Types</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of possible frame types and their descriptions." title="Frame Types" width="100%">
+<col width="21%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t5" valign="bottom">Frame Type</th>
+<th align="left" id="r1c2-t5" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r2c1-t5">
+<p>C</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c2-t5">
+<p>Native C frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r3c1-t5">
+<p>j</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c2-t5">
+<p>Interpreted Java frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r4c1-t5">
+<p>V</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c2-t5">
+<p>VM frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r5c1-t5">
+<p>v</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c2-t5">
+<p>VM-generated stub frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r6c1-t5">
+<p>J</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c2-t5">
+<p>Other frame types, including compiled Java frames</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>Internal errors will cause the VM error handler to generate a similar error dump. However, the header format is different. Examples of internal errors are <code>guarantee()</code> failure, assertion failure, <code>ShouldNotReachHere()</code>, and so forth. Here is an example of how the header looks for an internal error:</p>
+<pre xml:space="preserve">
+#
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+# Internal Error (4F533F4C494E55583F491418160E43505000F5), pid=10226, tid=16384
+#
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode)
+</pre>
+<p>In the above header, there is no signal name or signal number. Instead the second line now contains <code>Internal Error</code> and a long hexadecimal string. This hexadecimal string encodes the source module and line number where the error was detected. In general this "error string" is useful only to engineers working on the HotSpot Virtual Machine.</p>
+<p>The error string encodes a line number and therefore it changes with each code change and release. A crash with a given error string in one release (for example, 1.6.0) might not correspond to the same crash in an update release (for example, 1.6.0_01), even if the strings match.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>Do not assume that a workaround or solution that worked in one situation associated with a given error string will work in another situation associated with that same error string. Note the following facts:</p>
+<ul>
+<li>
+<p>Errors with the same root cause might have different error strings.</p>
+</li>
+<li>
+<p>Errors with the same error string might have completely different root causes.</p>
+</li>
+</ul>
+<p>Therefore, the error string should not be used as the sole criterion when troubleshooting bugs.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="BHIDFGFH" name="BHIDFGFH"/>
+<div>
+<h2>Thread Section Format</h2>
+<p>This section contains information about the thread that just crashed. If multiple threads crash at the same time, only one thread is printed.</p>
+<div><a id="sthref134" name="sthref134"/>
+<h3>Thread Information</h3>
+<p>The first part of the thread section shows the thread that provoked the fatal error, as follows.</p>
+<pre xml:space="preserve">
+Current thread (0x0805ac88):  JavaThread "main" [_thread_in_native, id=21139]
+                    |             |         |            |          +-- ID
+                    |             |         |            +------------- state
+                    |             |         +-------------------------- name
+                    |             +------------------------------------ type
+                    +-------------------------------------------------- pointer
+</pre>
+<p>The thread pointer is the pointer to the Java VM internal thread structure. It is generally of no interest unless you are debugging a live Java VM or core file.</p>
+<p>The following list shows possible thread types.</p>
+<ul>
+<li>
+<p><code>JavaThread</code></p>
+</li>
+<li>
+<p><code>VMThread</code></p>
+</li>
+<li>
+<p><code>CompilerThread</code></p>
+</li>
+<li>
+<p><code>GCTaskThread</code></p>
+</li>
+<li>
+<p><code>WatcherThread</code></p>
+</li>
+<li>
+<p><code>ConcurrentMarkSweepThread</code></p>
+</li>
+</ul>
+<p>The following table shows the important thread states.</p>
+<div><a id="sthref135" name="sthref135"/><a id="sthref136" name="sthref136"/>
+<p>Table B-2 Thread States</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of thread states and their descriptions." title="Thread States" width="100%">
+<col width="27%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t7" valign="bottom">Thread State</th>
+<th align="left" id="r1c2-t7" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r2c1-t7">
+<p><code>_thread_uninitialized</code></p>
+</td>
+<td align="left" headers="r2c1-t7 r1c2-t7">
+<p>Thread is not created. This occurs only in the case of memory corruption.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r3c1-t7">
+<p><code>_thread_new</code></p>
+</td>
+<td align="left" headers="r3c1-t7 r1c2-t7">
+<p>Thread has been created but it has not yet started.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r4c1-t7">
+<p><code>_thread_in_native</code></p>
+</td>
+<td align="left" headers="r4c1-t7 r1c2-t7">
+<p>Thread is running native code. The error is probably a bug in native code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r5c1-t7">
+<p><code>_thread_in_vm</code></p>
+</td>
+<td align="left" headers="r5c1-t7 r1c2-t7">
+<p>Thread is running VM code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r6c1-t7">
+<p><code>_thread_in_Java</code></p>
+</td>
+<td align="left" headers="r6c1-t7 r1c2-t7">
+<p>Thread is running either interpreted or compiled Java code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r7c1-t7">
+<p><code>_thread_blocked</code></p>
+</td>
+<td align="left" headers="r7c1-t7 r1c2-t7">
+<p>Thread is blocked.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r8c1-t7">
+<p><code>..._trans</code></p>
+</td>
+<td align="left" headers="r8c1-t7 r1c2-t7">
+<p>If any of the above states is followed by the string <code>_trans</code>, that means that the thread is changing to a different state.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The thread ID in the output is the native thread identifier.</p>
+<p>If a Java thread is a daemon thread, then the string daemon is printed before the thread state.</p>
+</div>
+
+<div><a id="sthref137" name="sthref137"/>
+<h3>Signal Information</h3>
+<p>The next information in the error log describes the unexpected signal that caused the VM to terminate. On a Windows system the output appears as follows:</p>
+<pre xml:space="preserve">
+siginfo: ExceptionCode=0xc0000005, reading address 0xd8ffecf1
+</pre>
+<p>In the above example, the exception code is <code>0xc0000005</code> (<code>ACCESS_VIOLATION</code>), and the exception occurred when the thread attempted to read address <code>0xd8ffecf1</code>.</p>
+<p>On Solaris OS and Linux systems the signal number (<code>si_signo</code>) and signal code (<code>si_code</code>) are used to identify the exception, as follows:</p>
+<pre xml:space="preserve">
+siginfo:si_signo=11, si_errno=0, si_code=1, si_addr=0x00004321
+</pre></div>
+
+<div><a id="sthref138" name="sthref138"/>
+<h3>Register Context</h3>
+<p>The next information in the error log shows the register context at the time of the fatal error. The exact format of this output is processor-dependent. The following example shows output for the Intel (IA32) processor.</p>
+<pre xml:space="preserve">
+Registers:
+EAX=0x00004321, EBX=0x41779dc0, ECX=0x080b8d28, EDX=0x00000000
+ESP=0xbfffc1e0, EBP=0xbfffc1f8, ESI=0x4a6b9278, EDI=0x0805ac88
+EIP=0x417789d7, CR2=0x00004321, EFLAGS=0x00010216
+</pre>
+<p>The register values might be useful when combined with instructions, as described below.</p>
+</div>
+
+<div><a id="sthref139" name="sthref139"/>
+<h3>Machine Instructions</h3>
+<p>After the register values, the error log contains the top of stack followed by 32 bytes of instructions (opcodes) near the program counter (PC) when the system crashed. These opcodes can be decoded with a disassembler to produce the instructions around the location of the crash. Note that IA32 and AMD64 instructions are variable in length, and so it is not always possible to reliably decode instructions before the crash PC.</p>
+<pre xml:space="preserve">
+Top of Stack: (sp=0xbfffc1e0)
+0xbfffc1e0:   00000000 00000000 0818d068 00000000
+0xbfffc1f0:   00000044 4a6b9278 bfffd208 41778a10
+0xbfffc200:   00004321 00000000 00000cd8 0818d328
+0xbfffc210:   00000000 00000000 00000004 00000003
+0xbfffc220:   00000000 4000c78c 00000004 00000000
+0xbfffc230:   00000000 00000000 00180003 00000000
+0xbfffc240:   42010322 417786ec 00000000 00000000
+0xbfffc250:   4177864c 40045250 400131e8 00000000 
+Instructions: (pc=0x417789d7)
+0x417789c7:   ec 14 e8 72 ff ff ff 81 c3 f2 13 00 00 8b 45 08
+0x417789d7:   0f b6 00 88 45 fb 8d 83 6f ee ff ff 89 04 24 e8
+</pre></div>
+
+<div><a id="sthref140" name="sthref140"/>
+<h3>Thread Stack</h3>
+<p>Where possible, the next output in the error log is the thread stack. This includes the addresses of the base and the top of the stack, the current stack pointer, and the amount of unused stack available to the thread. This is followed, where possible, by the stack frames, and up to 100 frames are printed. For C/C++ frames the library name may also be printed. It is important to note that in some fatal error conditions the stack may be corrupt, and in such case this detail may not be available.</p>
+<pre xml:space="preserve">
+Stack: [0x00040000,0x00080000),  sp=0x0007f9f8,  free space=254k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x83d77]
+C  [App.dll+0x1047]
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0x80f13]
+V  [jvm.dll+0xd3842]
+V  [jvm.dll+0x80de4]
+C  [java.exe+0x14c0]
+C  [java.exe+0x64cd]
+C  [kernel32.dll+0x214c7]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+</pre>
+<p>The log contains two thread stacks.</p>
+<ul>
+<li>
+<p>The first thread stack is <code>Native frames</code>, which prints the native thread showing all function calls. However this thread stack does not take into account the Java methods that are inlined by the runtime compiler; if methods are inlined they appear to be part of the parent's stack frame.</p>
+<p>The information in the thread stack for native frames provides important information about the cause of the crash. By analyzing the libraries in the list from the top down, you can generally determine which library might have caused the problem and report it to the appropriate organization responsible for that library.</p>
+</li>
+<li>
+<p>The second thread stack is <code>Java frames</code>, which prints the Java frames including the inlined methods, skipping the native frames. Depending on the crash it might not be possible to print the native thread stack but it might be possible to print the Java frames.</p>
+</li>
+</ul>
+</div>
+
+<div><a id="sthref141" name="sthref141"/>
+<h3>Further Details</h3>
+<p>If the error occurred in the VM thread or in a compiler thread, then further details may be printed. For example, in the case of the VM thread, the VM operation is printed if the VM thread is executing a VM operation at the time of the fatal error. In the following output example, the compiler thread provoked the fatal error. The task is a compiler task and the HotSpot Client VM is compiling method <code>hs101t004Thread.ackermann</code>.</p>
+<pre xml:space="preserve">
+Current CompileTask:
+HotSpot Client Compiler:754   b  
+nsk.jvmti.scenarios.hotswap.HS101.hs101t004Thread.ackermann(IJ)J (42 bytes)
+</pre>
+<p>For the HotSpot Server VM the output for the compiler task is slightly different but will also include the full class name and method.</p>
+</div>
+</div>
+
+<a id="BHIGJBHH" name="BHIGJBHH"/>
+<div>
+<h2>Process Section Format</h2>
+<p>The process section is printed after the thread section. It contains information about the whole process, including thread list and memory usage of the process.</p>
+<div><a id="sthref142" name="sthref142"/>
+<h3>Thread List</h3>
+<p>The thread list includes the threads that the VM is aware of. This includes all Java threads and some VM internal threads, but does not include any native threads created by the user application that have not attached to the VM. The output format follows:</p>
+<pre xml:space="preserve">
+=&gt;0x0805ac88 JavaThread "main" [_thread_in_native, id=21139]
+|      |         |        |             |             +----- ID
+|      |         |        |             +------------------- state 
+|      |         |        |                                  (JavaThread only)
+|      |         |        +--------------------------------- name
+|      |         +------------------------------------------ type
+|      +---------------------------------------------------- pointer
++------------------------------------------------------ "=&gt;" current thread
+</pre>
+<p>An example of this output follows:</p>
+<pre xml:space="preserve">
+Java Threads: ( =&gt; current thread )
+  0x080c8da0 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=21147]
+  0x080c7988 JavaThread "CompilerThread0" daemon [_thread_blocked, id=21146]
+  0x080c6a48 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=21145]
+  0x080bb5f8 JavaThread "Finalizer" daemon [_thread_blocked, id=21144]
+  0x080ba940 JavaThread "Reference Handler" daemon [_thread_blocked, id=21143]
+=&gt;0x0805ac88 JavaThread "main" [_thread_in_native, id=21139]
+
+Other Threads:
+  0x080b6070 VMThread [id=21142]
+  0x080ca088 WatcherThread [id=21148]
+</pre>
+<p>The thread type and thread state are described in <a href="#BHIDFGFH">"Thread Section Format"</a>.</p>
+</div>
+
+<div><a id="sthref143" name="sthref143"/>
+<h3>VM State</h3>
+<p>The next information is the VM state, which indicates the overall state of the virtual machine. The following table describes the general states.</p>
+<div><a id="sthref144" name="sthref144"/><a id="sthref145" name="sthref145"/>
+<p>Table B-3 VM States</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of VM states and their descriptions." title="VM States" width="100%">
+<col width="25%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t8" valign="bottom">General VM State</th>
+<th align="left" id="r1c2-t8" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r2c1-t8">
+<p><code>not at a safepoint</code></p>
+</td>
+<td align="left" headers="r2c1-t8 r1c2-t8">
+<p>Normal execution.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r3c1-t8">
+<p><code>at safepoint</code></p>
+</td>
+<td align="left" headers="r3c1-t8 r1c2-t8">
+<p>All threads are blocked in the VM waiting for a special VM operation to complete.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r4c1-t8">
+<p><code>synchronizing</code></p>
+</td>
+<td align="left" headers="r4c1-t8 r1c2-t8">
+<p>A special VM operation is required and the VM is waiting for all threads in the VM to block.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The VM state output is a single line in the error log, as follows:</p>
+<pre xml:space="preserve">
+VM state:not at safepoint (normal execution)
+</pre></div>
+
+<div><a id="sthref146" name="sthref146"/>
+<h3>Mutexes and Monitors</h3>
+<p>The next information in the error log is a list of mutexes and monitors that are currently owned by a thread. These mutexes are VM internal locks rather than monitors associated with Java objects. Below is an example to show how the output might look when a crash happens when VM locks are held. For each lock the log contains the name of the lock, its owner, and the addresses of a VM internal mutex structure and its OS lock. In general this information is useful only to those who are very familiar with the HotSpot VM. The owner thread can be cross-referenced to the thread list.</p>
+<pre xml:space="preserve">
+VM Mutex/Monitor currently owned by a thread:  
+([mutex/lock_event])[0x007357b0/0x0000031c] Threads_lock - owner thread: 0x00996318
+[0x00735978/0x000002e0] Heap_lock - owner thread: 0x00736218
+</pre></div>
+
+<div><a id="sthref147" name="sthref147"/>
+<h3>Heap Summary</h3>
+<p>The next information is a summary of the heap. The output depends on the garbage collection (GC) configuration. In this example the serial collector is used, class data sharing is disabled, and the tenured generation is empty. This probably indicates that the fatal error occurred early or during start-up and a GC has not yet promoted any objects into the tenured generation. An example of this output follows:</p>
+<pre xml:space="preserve">
+Heap
+ def new generation   total 576K, used 161K [0x46570000, 0x46610000, 0x46a50000)  
+  eden space 512K,  31% used [0x46570000, 0x46598768, 0x465f0000)
+  from space 64K,   0% used [0x465f0000, 0x465f0000, 0x46600000)
+  to   space 64K,   0% used [0x46600000, 0x46600000, 0x46610000)
+ tenured generation   total 1408K, used 0K [0x46a50000, 0x46bb0000, 0x4a570000)
+   the space 1408K,   0% used [0x46a50000, 0x46a50000, 0x46a50200, 0x46bb0000)
+ compacting perm gen  total 8192K, used 1319K [0x4a570000, 0x4ad70000, 0x4e570000)
+   the space 8192K,  16% used [0x4a570000, 0x4a6b9d48, 0x4a6b9e00, 0x4ad70000)
+No shared spaces configured.
+</pre></div>
+
+<div><a id="sthref148" name="sthref148"/>
+<h3>Memory Map</h3>
+<p>The next information in the log is a list of virtual memory regions at the time of the crash. This list can be long in the case of large applications. The memory map can be very useful when debugging some crashes, as it can tell you what libraries are actually being used, their location in memory, as well as the location of heap, stack, and guard pages.</p>
+<p>The format of the memory map is operating-system-specific. On the Solaris Operating System, the base address and library name are printed. On the Linux system the process memory map (/proc/<span>pid</span>/maps) is printed. On the Windows system, the base and end addresses of each library are printed. The following example output was generated on Linux/x86. Note that most of the lines have been omitted from the example for the sake of brevity.</p>
+<pre xml:space="preserve">
+Dynamic libraries:
+08048000-08056000 r-xp 00000000 03:05 259171     /h/jdk6/bin/java
+08056000-08058000 rw-p 0000d000 03:05 259171     /h/jdk6/bin/java
+08058000-0818e000 rwxp 00000000 00:00 0
+40000000-40013000 r-xp 00000000 03:0a 400046     /lib/ld-2.2.5.so
+40013000-40014000 rw-p 00013000 03:0a 400046     /lib/ld-2.2.5.so
+40014000-40015000 r--p 00000000 00:00 0
+Lines omitted.
+4123d000-4125a000 rwxp 00001000 00:00 0
+4125a000-4125f000 rwxp 00000000 00:00 0
+4125f000-4127b000 rwxp 00023000 00:00 0
+4127b000-4127e000 ---p 00003000 00:00 0
+4127e000-412fb000 rwxp 00006000 00:00 0
+412fb000-412fe000 ---p 00083000 00:00 0
+412fe000-4137b000 rwxp 00086000 00:00 0
+Lines omitted.
+44600000-46570000 rwxp 00090000 00:00 0
+46570000-46610000 rwxp 00000000 00:00 0
+46610000-46a50000 rwxp 020a0000 00:00 0
+46a50000-46bb0000 rwxp 00000000 00:00 0
+46bb0000-4a570000 rwxp 02640000 00:00 0
+Lines omitted.
+</pre>
+<p>The format of a line in the above memory map is as follows:</p>
+<pre xml:space="preserve">
+40049000-4035c000 r-xp 00000000 03:05 824473 /jdk1.5/jre/lib/i386/client/libjvm.so
+|&lt;-------------&gt;|                        |&lt;---------------------------------&gt;|
+  Memory region    |      |       |     |                      |
+                   |      |       |     |                      |
+  Permission   --- +      |       |     |                      |
+    r: read               |       |     |                      |
+    w: write              |       |     |                      |
+    x: execute            |       |     |                      |
+    p: private            |       |     |                      |
+    s: share              |       |     |                      |
+                          |       |     |                      |
+  File offset   ----------+       |     |                      |
+                                  |     |                      |
+  Major ID and minor ID of -------+     |                      |
+  the device where the file             |                      |
+  is located (i.e. /dev/hda5)           |                      |
+                                        |                      |
+  inode number  ------------------------+                      |
+                                                               |
+  File name  --------------------------------------------------+
+</pre>
+<p>In the memory map output, each library has two virtual memory regions: one for code and one for data. The permission for the code segment is marked with <code>r-xp</code> (readable, executable, private), and the permission for the data segment is <code>rw-p</code> (readable, writable, private).</p>
+<p>The Java heap is already included in the heap summary earlier in the output, but it can be useful to verify that the actual memory regions reserved for heap match the values in the heap summary and that the attributes are set to <code>rwxp</code>.</p>
+<p>Thread stacks usually show up in the memory map as two back-to-back regions, one with permission <code>---p</code> (guard page) and one with permission <code>rwxp</code> (actual stack space). In addition, it is useful to know the guard page size or stack size. For example, in this memory map, the stack is located from 4127b000 to 412fb000.</p>
+<p>On a Windows system, the memory map output is the load and end address of each loaded module, as in the example below.</p>
+<pre xml:space="preserve">
+Dynamic libraries:
+0x00400000 - 0x0040c000     c:\jdk6\bin\java.exe
+0x77f50000 - 0x77ff7000     C:\WINDOWS\System32\ntdll.dll
+0x77e60000 - 0x77f46000     C:\WINDOWS\system32\kernel32.dll
+0x77dd0000 - 0x77e5d000     C:\WINDOWS\system32\ADVAPI32.dll
+0x78000000 - 0x78087000     C:\WINDOWS\system32\RPCRT4.dll
+0x77c10000 - 0x77c63000     C:\WINDOWS\system32\MSVCRT.dll
+0x08000000 - 0x08183000     c:\jdk6\jre\bin\client\jvm.dll
+0x77d40000 - 0x77dcc000     C:\WINDOWS\system32\USER32.dll
+0x7e090000 - 0x7e0d1000     C:\WINDOWS\system32\GDI32.dll
+0x76b40000 - 0x76b6c000     C:\WINDOWS\System32\WINMM.dll
+0x6d2f0000 - 0x6d2f8000     c:\jdk6\jre\bin\hpi.dll
+0x76bf0000 - 0x76bfb000     C:\WINDOWS\System32\PSAPI.DLL
+0x6d680000 - 0x6d68c000     c:\jdk6\jre\bin\verify.dll
+0x6d370000 - 0x6d38d000     c:\jdk6\jre\bin\java.dll
+0x6d6a0000 - 0x6d6af000     c:\jdk6\jre\bin\zip.dll
+0x10000000 - 0x10032000     C:\bugs\crash2\App.dll
+</pre></div>
+
+<div><a id="sthref149" name="sthref149"/>
+<h3>VM Arguments and Environment Variables</h3>
+<p>The next information in the error log is a list of VM arguments, followed by a list of environment variables. An example follows.</p>
+<pre xml:space="preserve">
+VM Arguments:
+java_command: NativeSEGV 2
+
+Environment Variables:
+JAVA_HOME=/h/jdk
+PATH=/h/jdk/bin:.:/h/bin:/usr/bin:/usr/X11R6/bin:/usr/local/bin:
+     /usr/dist/local/exe:/usr/dist/exe:/bin:/usr/sbin:/usr/ccs/bin:
+     /usr/ucb:/usr/bsd:/usr/etc:/etc:/usr/dt/bin:/usr/openwin/bin:
+     /usr/sbin:/sbin:/h:/net/prt-web/prt/bin
+USERNAME=user
+LD_LIBRARY_PATH=/h/jdk6/jre/lib/i386/client:/h/jdk6/jre/lib/i386:
+     /h/jdk6/jre/../lib/i386:/h/bugs/NativeSEGV
+SHELL=/bin/tcsh
+DISPLAY=:0.0
+HOSTTYPE=i386-linux
+OSTYPE=linux
+ARCH=Linux
+MACHTYPE=i386
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>The list of environment variables is not the full list but rather a subset of the environment variables that are applicable to the Java VM.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<div><a id="sthref150" name="sthref150"/>
+<h3>Signal Handlers</h3>
+<p>On Solaris OS and Linux, the next information in the error log is the list of signal handlers.</p>
+<pre xml:space="preserve">
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x3aea90], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x3aea90], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x304e70], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x304e70], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x304e70], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x306e80], sa_mask[0]=0x80000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x3068a0], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x3068a0], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x3068a0], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x3068a0], sa_mask[0]=0xfffbfeff, sa_flags=0x10000004
+SIGUSR2: [libjvm.so+0x306e80], sa_mask[0]=0x80000000, sa_flags=0x10000004
+</pre></div>
+</div>
+
+<a id="BHIHIBHI" name="BHIHIBHI"/>
+<div>
+<h2>System Section Format</h2>
+<p>The final section in the error log is the system information. The output is operating-system-specific but in general includes the operating system version, CPU information, and summary information about the memory configuration.</p>
+<p>The following example shows output on a Solaris 9 OS system.</p>
+<pre xml:space="preserve">
+---------------  S Y S T E M  ---------------
+
+OS:                       Solaris 9 12/05 s9s_u5wos_08b SPARC
+           Copyright 2005 Sun Microsystems, Inc.  All Rights Reserved.
+                        Use is subject to license terms.
+                           Assembled 21 November 2005
+
+uname:SunOS 5.9 Generic_112233-10 sun4u  (T2 libthread)
+rlimit: STACK 8192k, CORE infinity, NOFILE 65536, AS infinity
+load average:0.41 0.14 0.09
+
+CPU:total 2 has_v8, has_v9, has_vis1, has_vis2, is_ultra3
+
+Memory: 8k page, physical 2097152k(1394472k free)
+
+vm_info: Java HotSpot(TM) Client VM (1.5-internal) for solaris-sparc, 
+built on Aug 12 2005 10:22:32 by unknown with unknown Workshop:0x550
+</pre>
+<p>On Solaris OS and Linux, the operating system information is contained in the file /etc/*release. This file describes the kind of system the application is running on, and in some cases the information string might include the patch level. Some system upgrades are not reflected in the /etc/*release file. This is especially true on the Linux system, where the user can rebuild any part of the system.</p>
+<p>On Solaris OS the <code>uname</code> system call is used to get the name for the kernel. The thread library (T1 or T2) is also printed.</p>
+<p>On the Linux system the <code>uname</code> system call is also used to get the kernel name. The <code>libc</code> version and the thread library type are also printed. An example follows.</p>
+<pre xml:space="preserve">
+uname:Linux 2.4.18-3smp #1 SMP Thu Apr 18 07:27:31 EDT 2002 i686
+libc:glibc 2.2.5 stable linuxthreads (floating stack)
+    |&lt;- glibc version -&gt;|&lt;--  pthread type       --&gt;|
+</pre>
+<p>On Linux there are three possible thread types, namely <code>linuxthreads (fixed stack)</code>, <code>linuxthreads (floating stack)</code>, and <code>NPTL</code>. They are normally installed in /lib, /lib/i686, and /lib/tls.</p>
+<p>It is useful to know the thread type. For example, if the crash appears to be related to <code>pthread</code>, then you might be able to work around the issue by selecting a different <code>pthread</code> library. A different <code>pthread</code> library (and <code>libc</code>) can be selected by setting <code>LD_LIBRARY_PATH</code> or <code>LD_ASSUME_KERNEL</code>.</p>
+<p>The <code>glibc</code> version usually does not include the patch level. The command <code>rpm -q glibc</code> might provide more detailed version information.</p>
+<p>On Solaris OS and Linux, the next information is the <code>rlimit</code> information. Note that the default stack size of the VM is usually smaller than the system limit. An example follows:</p>
+<pre xml:space="preserve">
+rlimit: STACK 8192k, CORE 0k, NPROC 4092, NOFILE 1024, AS infinity
+             |          |         |           |           virtual memory (-v)
+             |          |         |           +--- max open files (ulimit -n)
+             |          |         +----------- max user processes (ulimit -u)
+             |          +------------------------- core dump size (ulimit -c)
+             +---------------------------------------- stack size (ulimit -s)
+load average:0.04 0.05 0.02
+</pre>
+<p>The next information specifies the CPU architecture and capabilities identified by the VM at start-up, as in the following example:</p>
+<pre xml:space="preserve">
+CPU:total 2 family 6, cmov, cx8, fxsr, mmx, sse
+          |        | |&lt;----- CPU features ----&gt;|
+          |        |
+          |        +--- processor family (IA32 only):
+          |                3 - i386
+          |                4 - i486
+          |                5 - Pentium
+          |                6 - PentiumPro, PII, PIII
+          |               15 - Pentium 4
+          +------------ Total number of CPUs
+</pre>
+<p>The following table shows the possible CPU features on a SPARC system.</p>
+<div><a id="sthref151" name="sthref151"/><a id="sthref152" name="sthref152"/>
+<p>Table B-4 SPARC Features</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of CPU features on a SPARC system and their descriptions." title="SPARC Features" width="100%">
+<col width="25%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t10" valign="bottom">SPARC Feature</th>
+<th align="left" id="r1c2-t10" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r2c1-t10">
+<p><code>has_v8</code></p>
+</td>
+<td align="left" headers="r2c1-t10 r1c2-t10">
+<p>Supports v8 instructions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r3c1-t10">
+<p><code>has_v9</code></p>
+</td>
+<td align="left" headers="r3c1-t10 r1c2-t10">
+<p>Supports v9 instructions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r4c1-t10">
+<p><code>has_vis1</code></p>
+</td>
+<td align="left" headers="r4c1-t10 r1c2-t10">
+<p>Supports visualization instructions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r5c1-t10">
+<p><code>has_vis2</code></p>
+</td>
+<td align="left" headers="r5c1-t10 r1c2-t10">
+<p>Supports visualization instructions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r6c1-t10">
+<p><code>is_ultra3</code></p>
+</td>
+<td align="left" headers="r6c1-t10 r1c2-t10">
+<p>UltraSparc III.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r7c1-t10">
+<p><code>no-muldiv</code></p>
+</td>
+<td align="left" headers="r7c1-t10 r1c2-t10">
+<p>No hardware integer multiply and divide.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r8c1-t10">
+<p><code>no-fsmuld</code></p>
+</td>
+<td align="left" headers="r8c1-t10 r1c2-t10">
+<p>No multiply-add and multiply-subtract instructions.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The following table shows the possible CPU features on an Intel/IA32 system.</p>
+<div><a id="sthref153" name="sthref153"/><a id="sthref154" name="sthref154"/>
+<p>Table B-5 Intel/IA32 Features</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of CPU features on an Intel/IA32 system and their descriptions." title="Intel/IA32 Features" width="100%">
+<col width="33%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t11" valign="bottom">Intel/IA32 Feature</th>
+<th align="left" id="r1c2-t11" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r2c1-t11">
+<p><code>cmov</code></p>
+</td>
+<td align="left" headers="r2c1-t11 r1c2-t11">
+<p>Supports cmov instruction.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r3c1-t11">
+<p><code>cx8</code></p>
+</td>
+<td align="left" headers="r3c1-t11 r1c2-t11">
+<p>Supports cmpxchg8b instruction.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r4c1-t11">
+<p><code>fxsr</code></p>
+</td>
+<td align="left" headers="r4c1-t11 r1c2-t11">
+<p>Supports fxsave and fxrstor.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r5c1-t11">
+<p><code>mmx</code></p>
+</td>
+<td align="left" headers="r5c1-t11 r1c2-t11">
+<p>Supports MMX.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r6c1-t11">
+<p><code>sse</code></p>
+</td>
+<td align="left" headers="r6c1-t11 r1c2-t11">
+<p>Supports SSE extensions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r7c1-t11">
+<p><code>sse2</code></p>
+</td>
+<td align="left" headers="r7c1-t11 r1c2-t11">
+<p>Supports SSE2 extensions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r8c1-t11">
+<p><code>ht</code></p>
+</td>
+<td align="left" headers="r8c1-t11 r1c2-t11">
+<p>Supports Hyper-Threading Technology.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The following table shows the possible CPU features on an AMD64/EM64T system.</p>
+<div><a id="sthref155" name="sthref155"/><a id="sthref156" name="sthref156"/>
+<p>Table B-6 AMD64/EM64T Features</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of CPU features on an AMD64/EM64T system and their descriptions." title="AMD64/EM64T Features" width="100%">
+<col width="39%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t12" valign="bottom">AMD64/EM64T Feature</th>
+<th align="left" id="r1c2-t12" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r2c1-t12">
+<p><code>amd64</code></p>
+</td>
+<td align="left" headers="r2c1-t12 r1c2-t12">
+<p>AMD Opteron, Athlon64, and so forth.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r3c1-t12">
+<p><code>em64t</code></p>
+</td>
+<td align="left" headers="r3c1-t12 r1c2-t12">
+<p>Intel EM64T processor.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r4c1-t12">
+<p><code>3dnow</code></p>
+</td>
+<td align="left" headers="r4c1-t12 r1c2-t12">
+<p>Supports 3DNow extension.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r5c1-t12">
+<p><code>ht</code></p>
+</td>
+<td align="left" headers="r5c1-t12 r1c2-t12">
+<p>Supports Hyper-Threading Technology.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The next information in the error log is memory information, as follows:</p>
+<pre xml:space="preserve">
+                                                  unused swap space
+                              total amount of swap space        |
+                   unused physical memory            |          |
+total amount of physical memory       |              |          |
+     page size              |         |              |          |
+           v                v         v              v          v
+Memory: 4k page, physical 513604k(11228k free), swap 530104k(497504k free)
+</pre>
+<p>Some systems require swap space to be at lease twice the size of real physical memory, whereas other systems do not have any such requirements. As a general rule, if both physical memory and swap space are almost full, there is good reason to suspect that the crash was due to insufficient memory.</p>
+<p>On Linux systems the kernel may convert most of unused physical memory to file cache. When there is a need for more memory, the Linux kernel will give the cache memory back to the application. This is handled transparently by the kernel, but it does mean the amount of unused physical memory reported by fatal error handler could be close to zero when there is still sufficient physical memory available.</p>
+<p>The final information in the SYSTEM section of the error log is <code>vm_info</code>, which is a version string embedded in libjvm.so/jvm.dll. Every Java VM has its own unique <code>vm_info</code> string. If you are in doubt about whether the fatal error log was generated by a particular Java VM, check the version string.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

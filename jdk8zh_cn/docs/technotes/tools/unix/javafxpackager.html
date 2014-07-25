@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>javafxpackager</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T23:26:36Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="javafxpackager" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-02" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="unpack200.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s7-web-start-tools.html">
+                Next</a><hr/><a id="BABDBDDJ" name="BABDBDDJ"/>
+
+<div>
+<h1>javafxpackager</h1>
+<p>Performs tasks related to packaging and signing JavaFX applications.</p>
+<a id="sthref260" name="sthref260"/>
+<h2>Synopsis</h2>
+<p><b>javafxpackager</b> <i>command</i> [<i>options</i>]</p>
+<dl>
+<dt><i>command</i></dt>
+<dd>
+<p>The task that should be performed.</p>
+</dd>
+<dt>options</dt>
+<dd>
+<p>One or more options for the command separated by spaces.</p>
+</dd>
+</dl>
+<a id="sthref261" name="sthref261"/>
+<h2>Commands</h2>
+<p>You can specify one of the following commands. After the command, specify the options for it.</p>
+<dl>
+<dt>-createbss</dt>
+<dd>
+<p>Converts CSS files into binary form.</p>
+</dd>
+<dt>-createjar</dt>
+<dd>
+<p>Produces a JAR archive according to other parameters.</p>
+</dd>
+<dt>-deploy</dt>
+<dd>
+<p>Assembles the application package for redistribution. By default, the deploy task will generate the base application package, but it can also generate a self-contained application package if requested.</p>
+</dd>
+<dt>-makeall</dt>
+<dd>
+<p>Performs compilation, <code>createjar</code>, and <code>deploy</code> steps as one call, with most arguments predefined. By default, it attempts to generate all applicable self-contained application packages. The source files must be located in a folder called src, and the resulting files (JAR, JNLP, HTML, and self-contained application packages) are put in a folder called dist. This command can only be configured in a minimal way and is as automated as possible.</p>
+</dd>
+<dt>-signjar</dt>
+<dd>
+<p>Signs JAR file(s) with a provided certificate.</p>
+</dd>
+</dl>
+<a id="BABBBDJG" name="BABBBDJG"/>
+<h2>Options for the createbss Command</h2>
+<dl>
+<dt>-outdir <i>dir</i></dt>
+<dd>
+<p>Name of the directory that will receive generated output files.</p>
+</dd>
+<dt>-srcdir <i>dir</i></dt>
+<dd>
+<p>Base directory of the files to package.</p>
+</dd>
+<dt>-srcfiles <i>files</i></dt>
+<dd>
+<p>List of files in the directory specified by the <code>-srcdir</code> option. If omitted, all files in the directory (which is a mandatory argument in this case) will be used. Files in the list must be separated by spaces.</p>
+</dd>
+</dl>
+<a id="sthref262" name="sthref262"/>
+<h2>Options for the createjar Command</h2>
+<dl>
+<dt>-appclass <i>app-class</i></dt>
+<dd>
+<p>Qualified name of the application class to be executed.</p>
+</dd>
+<dt>-argument <i>arg</i></dt>
+<dd>
+<p>An unnamed argument to be inserted into the JNLP file as an <code>&lt;fx:argument&gt;</code> element.</p>
+</dd>
+<dt>-classpath <i>files</i></dt>
+<dd>
+<p>List of dependent JAR file names.</p>
+</dd>
+<dt>-manifestAttrs <i>manifest-attributes</i></dt>
+<dd>
+<p>List of names and values for additional manifest attributes. Syntax:</p>
+<pre xml:space="preserve">
+"name1=value1,name2=value2,name3=value3"
+</pre></dd>
+<dt>-nocss2bin</dt>
+<dd>
+<p>The packager will not convert CSS files to binary form before copying to JAR.</p>
+</dd>
+<dt>-noembedlauncher</dt>
+<dd>
+<p>If present, the packager will not add the JavaFX launcher classes to the JAR file.</p>
+</dd>
+<dt>-outdir <i>dir</i></dt>
+<dd>
+<p>Name of the directory that will receive generated output files.</p>
+</dd>
+<dt>-outfile <i>filename</i></dt>
+<dd>
+<p>Name (without the extension) of the file that will be generated.</p>
+</dd>
+<dt>-paramfile <i>file</i></dt>
+<dd>
+<p>A properties file with default named application parameters.</p>
+</dd>
+<dt>-preloader <i>preloader-class</i></dt>
+<dd>
+<p>Qualified name of the preloader class to be executed.</p>
+</dd>
+<dt>-runtimeversion <i>version</i></dt>
+<dd>
+<p>Version of the required JavaFX Runtime.</p>
+</dd>
+<dt>-srcdir <i>dir</i></dt>
+<dd>
+<p>Base directory of the files to package.</p>
+</dd>
+<dt>-srcfiles <i>files</i></dt>
+<dd>
+<p>List of files in the directory specified by the <code>-srcdir</code> option. If omitted, all files in the directory (which is a mandatory argument in this case) will be used. Files in the list must be separated by spaces.</p>
+</dd>
+</dl>
+<a id="BABBIGDB" name="BABBIGDB"/>
+<h2>Options for the deploy Command</h2>
+<dl>
+<dt>-allpermissions</dt>
+<dd>
+<p>If present, the application will require all security permissions in the JNLP file.</p>
+</dd>
+<dt>-appclass <i>app-class</i></dt>
+<dd>
+<p>Qualified name of the application class to be executed.</p>
+</dd>
+<dt>-argument <i>arg</i></dt>
+<dd>
+<p>An unnamed argument to be inserted into an <code>&lt;fx:argument&gt;</code> element in the JNLP file.</p>
+</dd>
+<dt>-callbacks</dt>
+<dd>
+<p>Specifies user callback methods in generated HTML. The format is the following:</p>
+<pre xml:space="preserve">
+"name1:value1,name2:value2,..."
+</pre></dd>
+<dt>-description <i>description</i></dt>
+<dd>
+<p>Description of the application.</p>
+</dd>
+<dt>-embedCertificates</dt>
+<dd>
+<p>If present, the certificates will be embedded in the JNLP file.</p>
+</dd>
+<dt>-embedjnlp</dt>
+<dd>
+<p>If present, the JNLP file will be embedded in the HTML document.</p>
+</dd>
+<dt>-height <i>height</i></dt>
+<dd>
+<p>Height of the application.</p>
+</dd>
+<dt>-htmlparamfile <i>file</i></dt>
+<dd>
+<p>Properties file with parameters for the resulting application when it is run in the browser.</p>
+</dd>
+<dt>-isExtension</dt>
+<dd>
+<p>If present, the <code>srcfiles</code> are treated as extensions.</p>
+</dd>
+<dt>-name <i>name</i></dt>
+<dd>
+<p>Name of the application.</p>
+</dd>
+<dt>-native <i>type</i></dt>
+<dd>
+<p>Generate self-contained application bundles (if possible). If <i>type</i> is specified, then only a bundle of this type is created. List of supported types includes: <code>installer</code>, <code>image</code>, <code>exe</code>, <code>msi</code>, <code>dmg</code>, <code>rpm</code>, <code>deb</code>.</p>
+</dd>
+<dt>-outdir <i>dir</i></dt>
+<dd>
+<p>Name of the directory that will receive generated output files.</p>
+</dd>
+<dt>-outfile <i>filename</i></dt>
+<dd>
+<p>Name (without the extension) of the file that will be generated.</p>
+</dd>
+<dt>-paramfile <i>file</i></dt>
+<dd>
+<p>Properties file with default named application parameters.</p>
+</dd>
+<dt>-preloader <i>preloader-class</i></dt>
+<dd>
+<p>Qualified name of the preloader class to be executed.</p>
+</dd>
+<dt>-srcdir <i>dir</i></dt>
+<dd>
+<p>Base directory of the files to package.</p>
+</dd>
+<dt>-srcfiles <i>files</i></dt>
+<dd>
+<p>List of files in the directory specified by the <code>-srcdir</code> option. If omitted, all files in the directory (which is a mandatory argument in this case) will be used. Files in the list must be separated by spaces.</p>
+</dd>
+<dt>-templateId</dt>
+<dd>
+<p>Application ID of the application for template processing.</p>
+</dd>
+<dt>-templateInFilename</dt>
+<dd>
+<p>Name of the HTML template file. Placeholders are in the following form:</p>
+<pre xml:space="preserve">
+#XXXX.YYYY(APPID)#
+</pre>
+<p>Where APPID is the identifier of an application and XXX is one of following:</p>
+<ul>
+<li>
+<p><code>DT.SCRIPT.URL</code></p>
+<p>Location of dtjava.js in the Deployment Toolkit. By default, the location is</p>
+<p>http://java.com/js/dtjava.js</p>
+</li>
+<li>
+<p><code>DT.SCRIPT.CODE</code></p>
+<p>Script element to include dtjava.js of the Deployment Toolkit.</p>
+</li>
+<li>
+<p><code>DT.EMBED.CODE.DYNAMIC</code></p>
+<p>Code to embed the application into a given placeholder. It is expected that the code will be wrapped in the <code>function()</code> method.</p>
+</li>
+<li>
+<p><code>DT.EMBED.CODE.ONLOAD</code></p>
+<p>All the code needed to embed the application into a web page using the <code>onload</code> hook (except inclusion of dtjava.js).</p>
+</li>
+<li>
+<p><code>DT.LAUNCH.CODE</code></p>
+<p>Code needed to launch the application. It is expected that the code will be wrapped in the <code>function()</code> method.</p>
+</li>
+</ul>
+</dd>
+<dt>-templateOutFilename</dt>
+<dd>
+<p>Name of the HTML file that will be generated from the template.</p>
+</dd>
+<dt>-title <i>title</i></dt>
+<dd>
+<p>Title of the application.</p>
+</dd>
+<dt>-vendor <i>vendor</i></dt>
+<dd>
+<p>Vendor of the application.</p>
+</dd>
+<dt>-width <i>width</i></dt>
+<dd>
+<p>Width of the application.</p>
+</dd>
+<dt>-updatemode <i>update-mode</i></dt>
+<dd>
+<p>Sets the update mode for the JNLP file.</p>
+</dd>
+</dl>
+<a id="sthref263" name="sthref263"/>
+<h2>Options for the makeall Command</h2>
+<dl>
+<dt>-appclass <i>app-class</i></dt>
+<dd>
+<p>Qualified name of the application class to be executed.</p>
+</dd>
+<dt>-classpath <i>files</i></dt>
+<dd>
+<p>List of dependent JAR file names.</p>
+</dd>
+<dt>-height <i>height</i></dt>
+<dd>
+<p>Height of the application.</p>
+</dd>
+<dt>-name <i>name</i></dt>
+<dd>
+<p>Name of the application.</p>
+</dd>
+<dt>-preloader <i>preloader-class</i></dt>
+<dd>
+<p>Qualified name of the preloader class to be executed.</p>
+</dd>
+<dt>-width <i>width</i></dt>
+<dd>
+<p>Width of the application.</p>
+</dd>
+</dl>
+<a id="sthref264" name="sthref264"/>
+<h2>Options for the signjar Command</h2>
+<dl>
+<dt>-alias</dt>
+<dd>
+<p>Alias for the key.</p>
+</dd>
+<dt>-keyPass</dt>
+<dd>
+<p>Password for recovering the key.</p>
+</dd>
+<dt>-keyStore <i>file</i></dt>
+<dd>
+<p>Keystore file name.</p>
+</dd>
+<dt>-outdir <i>dir</i></dt>
+<dd>
+<p>Name of the directory that will receive generated output files.</p>
+</dd>
+<dt>-srcdir <i>dir</i></dt>
+<dd>
+<p>Base directory of the files to be signed.</p>
+</dd>
+<dt>-srcfiles <i>files</i></dt>
+<dd>
+<p>List of files in the directory specified by the <code>-srcdir</code> option. If omitted, all files in the directory (which is a mandatory argument in this case) will be used. Files in the list must be separated by spaces.</p>
+</dd>
+<dt>-storePass</dt>
+<dd>
+<p>Password to check integrity of the keystore or unlock the keystore</p>
+</dd>
+<dt>-storeType</dt>
+<dd>
+<p>Keystore type. The default value is "jks".</p>
+</dd>
+</dl>
+<a id="sthref265" name="sthref265"/>
+<h2>Notes</h2>
+<ul>
+<li>
+<p>A <code>-v</code> option can be used with any task command to enable verbose output.</p>
+</li>
+<li>
+<p>When the <code>-srcdir</code> option is allowed in a command, it can be used more than once. If the <code>-srcfiles</code> option is specified, the files named in the argument will be looked for in the location specified in the preceding <code>srcdir</code> option. In case there is no <code>-srcdir</code> preceding <code>-srcfiles</code>, the directory where the <code>javafxpackager</code> command is executed will be used.</p>
+</li>
+</ul>
+<a id="sthref266" name="sthref266"/>
+<h2>Examples</h2>
+<dl>
+<dd><a id="JSSOR558" name="JSSOR558"/><a id="BABEJIGE" name="BABEJIGE"/></dd>
+<dt>Example 1Using the -createjar Command</dt>
+<dd>
+<pre xml:space="preserve">
+javafxpackager -createjar -appclass package.ClassName
+  -srcdir classes -outdir out -outfile outjar -v
+</pre>
+<p>Packages the contents of the <code>classes</code> directory to <code>outjar.jar</code>, sets the application class to <code>package.ClassName</code>.</p>
+</dd>
+<dd><a id="JSSOR559" name="JSSOR559"/><a id="BABGJHHJ" name="BABGJHHJ"/></dd>
+<dt>Example 2Using the -deploy Command</dt>
+<dd>
+<pre xml:space="preserve">
+javafxpackager -deploy -outdir outdir -outfile outfile -width 34 -height 43 
+  -name AppName -appclass package.ClassName -v -srcdir compiled
+</pre>
+<p>Generates <code>outfile.jnlp</code> and the corresponding <code>outfile.html</code> files in <code>outdir</code> for application <code>AppName</code>, which is started by <code>package.ClassName</code> and has dimensions of 34 by 43 pixels.</p>
+</dd>
+<dd><a id="JSSOR560" name="JSSOR560"/><a id="sthref267" name="sthref267"/></dd>
+<dt>Example 3Using the -makeall Command</dt>
+<dd>
+<pre xml:space="preserve">
+javafxpackager -makeall -appclass brickbreaker.Main -name BrickBreaker -width 600
+-height 600
+</pre>
+<p>Does all the packaging work including compilation, <code>createjar</code>, and <code>deploy</code>.</p>
+</dd>
+<dd><a id="JSSOR561" name="JSSOR561"/><a id="BABFFICA" name="BABFFICA"/></dd>
+<dt>Example 4Using the -signjar Command</dt>
+<dd>
+<pre xml:space="preserve">
+javafxpackager -signJar --outdir dist -keyStore sampleKeystore.jks -storePass ****
+-alias javafx -keypass **** -srcdir dist
+</pre>
+<p>Signs all of the JAR files in the <code>dist</code> directory, attaches a certificate with the specified alias, <code>keyStore</code> and <code>storePass</code>, and puts the signed JAR files back into the <code>dist</code> directory.</p>
+</dd>
+</dl>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="unpack200.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s7-web-start-tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

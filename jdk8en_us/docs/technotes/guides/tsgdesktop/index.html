@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Table of Contents</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T13:53:12Z" name="date"/>
+<meta content="This document is a guide to help troubleshoot problems that might occur with Java applications created using desktop technologies of the Java Platform, Standard Edition (Java SE)." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Table of Contents" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38386-01" name="partnum"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Desktop Technologies Troubleshooting Guide</b><br/>
+
+<a href="title.html">
+                Next</a><hr/>
+<h1>Contents</h1>
+<h2><a href="title.html">Title and Copyright Information</a></h2>
+<h2><a href="preface.html#sthref2">Preface</a></h2>
+<ul style="list-style-type:none">
+<li><a href="preface.html#sthref3">Audience</a></li>
+<li><a href="preface.html#sthref4">Documentation Accessibility</a></li>
+<li><a href="preface.html#sthref6">Related Documents</a></li>
+<li><a href="preface.html#sthref7">Conventions</a></li>
+</ul>
+<h2><a href="introduction.html#sthref8"><span>1</span> Introduction</a></h2>
+<ul style="list-style-type:none">
+<li><a href="introduction.html#A1003454">Java SE Desktop Overview</a></li>
+<li><a href="introduction.html#A1006478">Troubleshooting an Issue</a></li>
+<li><a href="introduction.html#A1007766">Identifying the Type of Issue</a>
+<ul style="list-style-type:none">
+<li><a href="introduction.html#CACFGIJE">Crashes</a></li>
+<li><a href="introduction.html#CACFBEAF">Performance Problems</a></li>
+<li><a href="introduction.html#CACJBFDA">Behavior Problems</a></li>
+</ul>
+</li>
+<li><a href="introduction.html#A1008473">Basic Tools</a></li>
+<li><a href="introduction.html#A1008775">Using JDWP</a></li>
+</ul>
+<h2><a href="awt.html#sthref17"><span>2</span> AWT</a></h2>
+<ul style="list-style-type:none">
+<li><a href="awt.html#A1007153">Debugging Tips for AWT</a></li>
+<li><a href="awt.html#A1012223">Layout Managers</a></li>
+<li><a href="awt.html#A1013785">Key Events</a></li>
+<li><a href="awt.html#A1014774">Modality</a></li>
+<li><a href="awt.html#A1017537">Memory Leaks</a></li>
+<li><a href="awt.html#A1018672">Crashes</a>
+<ul style="list-style-type:none">
+<li><a href="awt.html#sthref26">How to Distinguish an AWT Crash</a></li>
+<li><a href="awt.html#sthref27">How to Troubleshoot an AWT Crash</a></li>
+</ul>
+</li>
+<li><a href="awt.html#A1019523">Focus Events</a>
+<ul style="list-style-type:none">
+<li><a href="awt.html#CHDCGCGF">How to Trace Focus Events</a></li>
+<li><a href="awt.html#CHDIJEDA">Native Focus System</a></li>
+<li><a href="awt.html#CHDGBDEI">Focus System in the Java Plug-in</a></li>
+<li><a href="awt.html#CHDHHBJC">Focus Models Supported by X Window Managers</a></li>
+<li><a href="awt.html#CHDGHAGI">Miscellaneous Problems With Focus</a></li>
+</ul>
+</li>
+<li><a href="awt.html#A1021653">Data Transfer</a>
+<ul style="list-style-type:none">
+<li><a href="awt.html#sthref38">Debugging Drag and Drop Applications</a></li>
+<li><a href="awt.html#sthref39">Frequent Issues With Data Transfer</a></li>
+</ul>
+</li>
+<li><a href="awt.html#A1024076">Other Issues</a>
+<ul style="list-style-type:none">
+<li><a href="awt.html#CHDEGJDF">Splash Screen Issues</a></li>
+<li><a href="awt.html#CHDBJCHD">Tray Icon Issues</a></li>
+<li><a href="awt.html#CHDJBJHC">Popup Menu Issues</a></li>
+<li><a href="awt.html#CHDIEFGF">Background/Foreground Color Inheritance</a></li>
+<li><a href="awt.html#CHDGJCJC">AWT Panel Size Restriction</a></li>
+<li><a href="awt.html#CHDFAHDB">Hangs when debugging popup menus and similar components on X11</a></li>
+<li><a href="awt.html#CHDHCJCH"><code>Window.toFront()</code>/<code>toBack()</code> behavior on X11</a></li>
+</ul>
+</li>
+<li><a href="awt.html#A1024721">Heavyweight/Lightweight Components Mixing</a>
+<ul style="list-style-type:none">
+<li><a href="awt.html#BABHGBGD">The Requirement of Validating the Component Hierarchy</a></li>
+<li><a href="awt.html#CHDDDBEH">Validate Roots</a></li>
+<li><a href="awt.html#CHDJIAED">Swing Painting Optimizations</a></li>
+<li><a href="awt.html#CHDGDHHI">Non-opaque LW Components</a></li>
+<li><a href="awt.html#CHDHJFAH">Disabling the Default HW/LW Mixing Feature Implementation</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="java2d.html#BABCFGDC"><span>3</span> Java 2D</a></h2>
+<ul style="list-style-type:none">
+<li><a href="java2d.html#A999460">Changing Rendering Pipelines and Their Properties</a>
+<ul style="list-style-type:none">
+<li><a href="java2d.html#sthref51">Solaris OS and Linux: Using Default X11 Pipeline</a></li>
+<li><a href="java2d.html#sthref62">Solaris OS on SPARC: Changing Default Visual Used by Java 2D</a></li>
+<li><a href="java2d.html#sthref63">Windows OS: Using Default DirectDraw/GDI Pipeline</a></li>
+<li><a href="java2d.html#sthref68">Windows OS: Using Direct3D Pipeline (Full-Screen Mode)</a></li>
+<li><a href="java2d.html#sthref72">Using OpenGL Pipeline (Solaris OS, Linux, and Windows)</a></li>
+</ul>
+</li>
+<li><a href="java2d.html#A1013923">Generic Performance Issues</a>
+<ul style="list-style-type:none">
+<li><a href="java2d.html#BABEABHJ">Hardware Accelerated Rendering Primitives</a></li>
+<li><a href="java2d.html#BABJDFDG">Using Java 2D Primitive Tracing to Detect and Avoid Non-accelerated Rendering</a></li>
+<li><a href="java2d.html#BABCBIAB">Causes of Poor Rendering Performance</a></li>
+<li><a href="java2d.html#BABBAHCJ">Improving Performance of Software-only Rendering</a></li>
+</ul>
+</li>
+<li><a href="java2d.html#A1016927">Text-Related Issues</a>
+<ul style="list-style-type:none">
+<li><a href="java2d.html#BABIEIDH">Application Crash During Text Rendering</a></li>
+<li><a href="java2d.html#BABHIHEH">Differences in Text Appearance</a></li>
+<li><a href="java2d.html#BABHIBBI">Metrics</a></li>
+</ul>
+</li>
+<li><a href="java2d.html#A1018541">Java 2D Printing</a></li>
+</ul>
+<h2><a href="swing.html#sthref84"><span>4</span> Swing</a></h2>
+<ul style="list-style-type:none">
+<li><a href="swing.html#A999252">General Debugging Tips for Swing</a></li>
+<li><a href="swing.html#A999474">Specific Debugging Tips for Swing</a>
+<ul style="list-style-type:none">
+<li><a href="swing.html#BCGEJHDF">Incorrect Threading</a></li>
+<li><a href="swing.html#BCGCCHGA">Overlapping Children of a JComponent</a></li>
+<li><a href="swing.html#BCGFGJFD">Updating the Display</a></li>
+<li><a href="swing.html#BCGIGJJB">Changing the Model</a></li>
+<li><a href="swing.html#BCGGJHJD">Adding or Removing Components</a></li>
+<li><a href="swing.html#BCGDFIAF">Overriding Opaque</a></li>
+<li><a href="swing.html#BCGCJCHI">Permanent Changes to a <code>Graphics</code></a></li>
+<li><a href="swing.html#BCGCDGFA">Custom Painting and Double Buffering</a></li>
+<li><a href="swing.html#BCGDECHI">Opaque Content Pane</a></li>
+<li><a href="swing.html#BCGBBGFE">Performance: Call to Renderer for Each Cell</a></li>
+<li><a href="swing.html#BCGHJGIA">Possible Leaks</a></li>
+<li><a href="swing.html#BCGCEECF">Mixing Heavyweight and Lightweight Components</a></li>
+<li><a href="swing.html#BCGFBGAI">Tips for Using Synth</a></li>
+<li><a href="swing.html#BCGGDFGC">Tracking Activity on Event Dispatch Thread</a></li>
+<li><a href="swing.html#BCGDEIGF">Differing Default Layout Managers</a></li>
+<li><a href="swing.html#BCGEFDBF">Listener Objects Dispatched to Deepest Component</a></li>
+<li><a href="swing.html#BCGJHBDF">Adding a Component to Content Pane</a></li>
+<li><a href="swing.html#BCGEIJAI">Drag and Drop Support in Swing</a></li>
+<li><a href="swing.html#BCGBIJHF">One Parent at a Time for a Component</a></li>
+<li><a href="swing.html#BCGIIJCG">Problem With <code>JFileChooser</code> and Shortcuts on Windows</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="i18n.html#sthref85"><span>5</span> Internationalization</a></h2>
+<ul style="list-style-type:none">
+<li><a href="i18n.html#A1000425">Introduction</a></li>
+<li><a href="i18n.html#A999161">Troubleshooting</a></li>
+</ul>
+<h2><a href="sound.html#sthref86"><span>6</span> Java Sound</a></h2>
+<ul style="list-style-type:none">
+<li><a href="sound.html#A999090">System Sound Configuration</a></li>
+<li><a href="sound.html#A999112">Audio File Formats</a></li>
+<li><a href="sound.html#A999134">Audio Formats</a></li>
+<li><a href="sound.html#A999156">Overrun and Underrun Conditions</a></li>
+</ul>
+<h2><a href="time-zone.html#sthref87"><span>7</span> Time Zone Settings in the JRE</a></h2>
+<ul style="list-style-type:none">
+<li><a href="time-zone.html#A9999112">Native Time Zone Information and the JRE</a>
+<ul style="list-style-type:none">
+<li><a href="time-zone.html#sthref88">Determine the Time Zone Data Version in Use</a></li>
+<li><a href="time-zone.html#sthref91">Troubleshooting Problems with Tzupdater</a></li>
+</ul>
+</li>
+<li><a href="time-zone.html#A9990909">Determining the Default Time Zone on Windows</a>
+<ul style="list-style-type:none">
+<li><a href="time-zone.html#sthref92">Check Which Time Zone the JRE Reports as Default</a></li>
+<li><a href="time-zone.html#CBBHFHJG">Determine the Setting in the Control Panel</a></li>
+<li><a href="time-zone.html#sthref93">Check Whether Automatic Daylight Saving Time Adjustment is Enabled</a></li>
+<li><a href="time-zone.html#sthref96">Set the Default Time Zone in the Control Panel</a></li>
+<li><a href="time-zone.html#sthref97">Check Whether You Can Use -Duser.timezone</a></li>
+<li><a href="time-zone.html#sthref98">Special Tools in Windows 7</a></li>
+<li><a href="time-zone.html#sthref99">JRE Internal Representation of Time Zone Mappings</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="plugin.html#sthref100"><span>8</span> Applets and Java Web Start Applications</a></h2>
+<ul style="list-style-type:none">
+<li><a href="plugin.html#A999225">Configuration Problems</a>
+<ul style="list-style-type:none">
+<li><a href="plugin.html#BHBBDDGC">Validation</a></li>
+<li><a href="plugin.html#BHBEBAED">Common Configuration Problems</a></li>
+<li><a href="plugin.html#sthref110">Managing Java Runtimes</a></li>
+<li><a href="plugin.html#BHBBGGIJ">Passing parameters to the JRE</a></li>
+<li><a href="plugin.html#BHBEHIBI">Java Deployment Home</a></li>
+<li><a href="plugin.html#sthref113">Deployment Tracing Information</a></li>
+<li><a href="plugin.html#sthref114">Deployment Cache</a></li>
+<li><a href="plugin.html#sthref115">Network Configuration</a></li>
+</ul>
+</li>
+<li><a href="plugin.html#A999976">Applet Troubleshooting</a>
+<ul style="list-style-type:none">
+<li><a href="plugin.html#sthref116">Applet Does Not Start - Plugin Cheat Sheet</a></li>
+<li><a href="plugin.html#sthref118">Unresponsive Web Page</a></li>
+</ul>
+</li>
+<li><a href="plugin.html#A1000510">Avoiding Security Dialogs</a>
+<ul style="list-style-type:none">
+<li><a href="plugin.html#sthref120">Signed Applications</a></li>
+<li><a href="plugin.html#sthref121">Mixed Code Issues</a></li>
+</ul>
+</li>
+<li><a href="plugin.html#A1000756">Development Tips</a>
+<ul style="list-style-type:none">
+<li><a href="plugin.html#sthref122">Debugging Applets and Web Start Applications</a></li>
+<li><a href="plugin.html#sthref123">Profiling Applets and Java Web Start Applications</a></li>
+<li><a href="plugin.html#sthref124">Debugging Memory Leaks</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="bugreports.html#submitting_bug_reports"><span>9</span> Submitting Bug Reports</a></h2>
+<ul style="list-style-type:none">
+<li><a href="bugreports.html#A998787">Checking for Existing Fixes in Update Releases</a></li>
+<li><a href="bugreports.html#A998824">Preparing to Submit a Bug Report</a></li>
+<li><a href="bugreports.html#A998988">Collecting Data for a Bug Report</a>
+<ul style="list-style-type:none">
+<li><a href="bugreports.html#hardware_details">Hardware Details</a></li>
+<li><a href="bugreports.html#operating_system">Operating System</a></li>
+<li><a href="bugreports.html#java_se_version_string">Java SE Version</a></li>
+<li><a href="bugreports.html#command_line_bug_reports">Command-Line Options</a></li>
+<li><a href="bugreports.html#env_vars_bug_reports">Environment Variables</a></li>
+<li><a href="bugreports.html#fatal_error_log_bug_report">Fatal Error Log</a></li>
+<li><a href="bugreports.html#core_crash_dump">Core or Crash Dump</a></li>
+<li><a href="bugreports.html#description_bug_report">Detailed Description of the Problem</a></li>
+<li><a href="bugreports.html#logs_traces_bug_report">Logs and Traces</a></li>
+<li><a href="bugreports.html#troubleshooting_results">Results from Troubleshooting Steps</a></li>
+</ul>
+</li>
+<li><a href="bugreports.html#collecting_core_dumps">Collecting Core Dumps</a>
+<ul style="list-style-type:none">
+<li><a href="bugreports.html#core_dumps_solaris">Collecting Core Dumps on Solaris OS</a></li>
+<li><a href="bugreports.html#core_dumps_linux">Collecting Core Dumps on Linux</a></li>
+<li><a href="bugreports.html#no_core_file">Reasons for Not Getting a Core File</a></li>
+<li><a href="bugreports.html#BABFDGJB">Collecting Crash Dumps on Windows</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="java2d-props.html#CIHDJJDF"><span>A</span> Java 2D Properties</a></h2>
+<ul style="list-style-type:none">
+<li><a href="java2d-props.html#A999072">Properties on Solaris OS and Linux</a></li>
+<li><a href="java2d-props.html#A999445">Properties on Windows</a></li>
+</ul>
+<h2><a href="felog.html#fatal_error_log_vm"><span>B</span> Fatal Error Log</a></h2>
+<ul style="list-style-type:none">
+<li><a href="felog.html#A999314">Location of Fatal Error Log</a></li>
+<li><a href="felog.html#A999363">Description of Fatal Error Log</a></li>
+<li><a href="felog.html#A999581">Header Format</a></li>
+<li><a href="felog.html#BHIDFGFH">Thread Section Format</a>
+<ul style="list-style-type:none">
+<li><a href="felog.html#sthref134">Thread Information</a></li>
+<li><a href="felog.html#sthref137">Signal Information</a></li>
+<li><a href="felog.html#sthref138">Register Context</a></li>
+<li><a href="felog.html#sthref139">Machine Instructions</a></li>
+<li><a href="felog.html#sthref140">Thread Stack</a></li>
+<li><a href="felog.html#sthref141">Further Details</a></li>
+</ul>
+</li>
+<li><a href="felog.html#BHIGJBHH">Process Section Format</a>
+<ul style="list-style-type:none">
+<li><a href="felog.html#sthref142">Thread List</a></li>
+<li><a href="felog.html#sthref143">VM State</a></li>
+<li><a href="felog.html#sthref146">Mutexes and Monitors</a></li>
+<li><a href="felog.html#sthref147">Heap Summary</a></li>
+<li><a href="felog.html#sthref148">Memory Map</a></li>
+<li><a href="felog.html#sthref149">VM Arguments and Environment Variables</a></li>
+<li><a href="felog.html#sthref150">Signal Handlers</a></li>
+</ul>
+</li>
+<li><a href="felog.html#BHIHIBHI">System Section Format</a></li>
+</ul>
+<a href="title.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

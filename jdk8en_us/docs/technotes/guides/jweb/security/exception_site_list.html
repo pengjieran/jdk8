@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Exception Site List</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Exception Site List </h1>
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Exception Site List </p>
+<p align="left">This page includes the following topics:</p>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#create">Manage the Exception Site List </a>
+  <ul>
+    <li><a href="#addurl">Add a URL </a></li>
+    <li><a href="#editurl">Edit a URL </a> </li>
+    <li><a href="#removeurl">Remove a URL</a></li>
+    </ul>
+</li>
+<li><a href="#manage">Manage Access to the Exception Site List</a></li>
+</ul>
+
+<h2><a name="overview" id="overview"></a>Overview</h2>
+<p>The Exception Site List feature provides a way for users to run Rich Internet Applications (RIAs) that otherwise would be blocked by security checks. The criteria used to determine if RIAs are allowed to run are becoming stricter. In some cases it might be difficult to update legacy RIAs to meet the security requirements and prevent them from being blocked. This feature enables users to continue to run these RIAs.</p>
+<p>The exception site list contains URLs for sites that host RIAs that users want to run. RIAs that are launched from sites in the exception site list are allowed to run with the appropriate security prompts, even in the following circumstances, which would normally cause the RIA to be blocked: </p>
+<ul>
+  <li>RIA is not signed with a certificate from a trusted certificate authority </li>
+  <li>RIA is hosted locally </li>
+  <li>JAR file does not have the Permission manifest attribute   </li>
+  <li>RIA is signed with an expired certificate</li>
+  <li>Certificate used to sign the RIA cannot be checked for revocation</li>
+</ul>
+<p>The exception site list also allows JavaScript code to call Java code (LiveConnect) without prompting the user for permission when the JavaScript code and the Java code are located on a site in the list. </p>
+<hr />
+<p><strong>Note:</strong> If an active deployment rule set is installed on the system, the deployment rules take precedence over the exception site list. The exception site list is considered only when the default rule applies. See <a href="deployment_rules.html">Deployment Rule Set</a> for information about deployment rules. </p>
+<hr />
+<h2><a name="create" id="create"></a>Manage the Exception Site List </h2>
+<p>The exceptions granted by the Exception Site List feature apply to RIAs whose entry point is included in the list:</p>
+<ul>
+  <li> For applets, the URL for the document base of the applet must be in the list. </li>
+  <li>For Java Web Start applications, the URL for the main JNLP file must be in the list. If the URL for the main JNLP file cannot be determined, then the exceptions do not apply to the RIA. </li>
+</ul>
+<p>If the RIA requires resources from another domain, that domain must also be included in the exception site list. Otherwise, the RIA is blocked when the additional resource is accessed. </p>
+<p>The exception site list is managed in the <a href="../jcp/jcp.html#security">Security</a> tab of the <a href="../jcp/jcp.html">Java Control Panel</a>. The list is shown in the tab. To add, edit, or remove items from the list, click <strong>Edit Site List</strong> and follow the directions in <a href="#addurl">Add a URL</a>, <a href="#editurl">Edit a URL</a>, and <a href="#removeurl">Remove a URL</a>. </p>
+<h3><a name="addurl" id="addurl"></a>Add a URL </h3>
+<p>To add a URL to the exception site list, follow these steps:</p>
+<ol>
+  <li>Click <strong>Add</strong> in the Exception Site List window.</li>
+  <li>Type the URL into the empty field that is provided under <strong>Location</strong>. </li>
+  <li>Continue to click <strong>Add</strong> and enter URLs until your list is complete.</li>
+  <li>Click <strong>OK</strong> to save the URLs that you entered. If you click <strong>Cancel</strong>, the URLs are not saved. </li>
+</ol>
+<p>The following rules apply to the format of the URL:</p>
+<ul>
+  <li>
+    <p>A protocol is required.</p>
+	<p>Supported protocols are <code>FILE</code>, <code>HTTP</code>, and <code>HTTPS</code>. <code>HTTPS</code> is recommended. If the protocol is not <code>HTTPS</code>, a warning is shown. Click <strong>Continue</strong> to add the URL, or click <strong>Cancel</strong> to discard the URL. </p>
+  </li>
+  <li>
+    <p>A domain is required. </p>
+	<p>Wildcards are not supported. If only a domain is provided, any RIA from that domain is allowed to run. A domain can have multiple entries, for example, <code>https://www.example.com</code> and <code>http://www.example.com</code>. </p>
+  </li>
+  <li>
+    <p>A port number is required only if the default port is not used. </p>
+  </li>
+  <li>
+    <p>A path is optional. </p>
+	<p>Wildcards are not supported. If the path ends with a slash (/), for example, <code>https://www.example.com/apps/</code>, RIAs in that directory and any subdirectory are allowed to run. If the path does not end with a slash, for example, <code>http://www.example.com/test/applet.html</code>, only that specific RIA is allowed to run. </p>
+  </li>
+</ul>
+    <p>Only add a site to the exception site list if you trust the entire site. Even if a path is specified, adding a site that might contain other untrusted paths could present a security risk and is not recommended. </p>
+<p>If an invalid URL is entered, an error icon is shown next to the item. If the URL is not corrected before <strong>OK</strong> is clicked, the invalid URL is not saved. </p>
+<h3><a name="editurl" id="editurl"></a>Edit a URL</h3>
+<p>To edit a URL in the exception site list, follow these steps:</p>
+<ol>
+  <li>Double-click the URL that you want to edit in the Exception Site List window. </li>
+  <li>Make changes to the URL. See <a href="#addurl">Add a URL</a> for information on the format of the URL. </li>
+  <li>Click <strong>OK</strong> to save the changes. If you click <strong>Cancel</strong>, the changes are not saved. </li>
+</ol>
+<h3><a name="removeurl" id="removeurl"></a>Remove a URL </h3>
+<p>To remove a URL from the exception site list, follow these steps:</p>
+<ol>
+  <li>Click the URL  that you want to remove in the Exception Site List window. </li>
+  <li>To remove more than one URL, Ctrl-click the additional URLs. </li>
+  <li>Click <strong>Remove</strong>. </li>
+  <li>Click <strong>OK</strong> to save your change. If you click <strong>Cancel</strong>, the URLs are not removed from the list. </li>
+</ol>
+<h2><a name="manage" id="manage"></a>Manage Access to the Exception Site List  </h2>
+<p>The location of the exception site list is set in the <code>deployment.user.security.exception.sites</code> property. The default location is <code><var>&lt;deployment.user.home&gt;</var>/security/exception.sites</code>. See <a href="../jcp/properties.html">Deployment Configuration Properties</a> for information on properties and property files.</p>
+<p>Users can manage a list on their system, or use a list managed by a system administrator in a central location. If a system administrator does not want users to edit the exception site list, the <code>deployment.user.security.exception.sites</code> property can be set to a file for which users do not have write permission. If a user cannot write to the exception site list, the list is shown in the Java Control Panel, but the controls for editing are not available in the Exception Site List window.  </p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

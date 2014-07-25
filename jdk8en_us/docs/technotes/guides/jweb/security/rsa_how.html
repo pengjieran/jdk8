@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>How RSA Signed Applet Verification Works in Java
+Plug-in</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Verification of RSA Signed Applets in Java Plug-in</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Verification of RSA Signed Applets in Java Plug-in</p>
+
+<p>The following topics are covered:</p>
+
+<ul>
+<li><a href="#intro">Introduction</a>&nbsp;</li>
+<li><a href="#verification">Support for RSA Verification</a></li>
+<li><a href="#trust">Support for Dynamic Trust
+Management</a>&nbsp;</li>
+<li><a href="#use"><code>usePolicy</code> Permission</a>&nbsp;</li>
+</ul>
+<h2><a name="intro" id="intro"></a>Introduction</h2>
+<p>This page provides an overview of how verification of RSA signed
+applets is implemented in Java Plug-in. For an overview of how to
+use RSA signed applets, see <a href="rsa_deploying.html">Deploying RSA-Signed Applets in Java Plug-in</a>.</p>
+<h2><a name="verification" id="verification"></a>Support for RSA
+Verification</h2>
+<p>To enable verification of RSA signatures in a
+browser-independent way, Java Plug-in includes a Cryptographic
+Service Provider (CSP). The CSP supports the &quot;MD2withRSA",
+"MD5withRSA", and "SHA1withRSA" digital signature algorithms. It is
+automatically registered with the Java Cryptographic Architecture
+framework as part of the static initializer of the
+<code>PluginClassLoader</code>.</p>
+<h2><a name="trust" id="trust"></a>Support for Dynamic Trust
+Management</h2>
+<p>Java SE has a fine-grained access control based on "codesource"
+and "protection domain". Every class that is loaded from a JAR file
+has a codesource, which encapsulates two pieces of information:</p>
+<ul>
+<li>The location (URL) where the class came from. In addition,
+every class that is loaded by a classloader belongs to one and only
+one protection domain, based on its codesource (i.e., based on
+where the class came from and who signed it). Every protection
+domain has a set of permissions associated with it, based on the
+configured security policy. The protection domain encapsulates the
+codesource and the set of permissions granted to it</li>
+<li>The list of principals who signed it (its certificates). Each
+signer principal in the codesource is represented by its X.509
+public-key certificate and supporting certificate chain.</li>
+</ul>
+<p>A certificate chain is a list of hierarchically ordered
+public-key certificates, starting at the signer's public-key
+certificate and ending at the certificate of a Root Certification
+Authority ("Root CA"). The public key of one certificate in the
+chain is used to verify the signature on the previous certificate
+in the chain. The Root CA certificate is self-signed. The
+assumption is that the Root CA is trusted because it is well known
+and widely published.</p>
+<p>The <code>PluginClassLoader</code> checks the configured
+security policy to determine which permissions to grant to a given
+codesource. The codesource and the set of permissions granted to it
+then form a protection domain. This behavior is common to all
+secure classloaders (i.e., instances of
+<tt>java.security.SecureClassLoader</tt>).</p>
+<p>The <tt>sun.plugin.security.PluginClassLoader</tt> extends
+<tt>sun.applet.AppletClassLoader</tt>, which is a subclass of
+<tt>java.net.URLClassLoader</tt>, which in turn extends
+<tt>java.security.SecureClassLoader</tt>. The
+<code>PluginClassLoader</code> does additional work: If the applet
+is signed, and the permissions granted to it do not include the
+special <a href="#use"><code>usePolicy</code></a> permission, the
+<code>PluginClassLoader</code> extracts the signers (and their
+supporting certificate chains) from the applet's codesource and
+attempts to verify them.</p>
+<p>If Plug-in can verify the certificate chain all the way up to
+its Root CA certificate, it checks if that Root CA certificate is
+contained in the database of trusted Root CA certificates. If so,
+Plug-in will display the certificate chain of the authenticated
+signer and ask the user whether or not to grant
+<code>AllPermission</code> to code signed by that principal. Java
+code that is assigned the <code>AllPermission</code> permission is
+treated the same as system code, meaning it has all the privileges
+that system code has. The user can then choose whether or not to
+grant <code>AllPermission</code> to code signed by that principal,
+and whether such permission should be granted to any code signed by
+that principal for all subsequent sessions or for the current
+session only.</p>
+<p>For the case of unsigned applets, or signed applets whose
+permissions include the <code>usePolicy</code>, see <a href=
+"security.html">Security</a>.</p>
+<h2><a name="use" id="use"></a><code>usePolicy</code>
+Permission</h2>
+<p>A permission named <code>usePolicy</code> allows system
+administrators to turn off the <code>PluginClassLoader</code>
+behavior. If the <code>usePolicy</code> permission is granted to
+the codesource by the configured security policy, no user prompting
+will take place. Only the permissions specified in the security
+policy will be granted to the codesource.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

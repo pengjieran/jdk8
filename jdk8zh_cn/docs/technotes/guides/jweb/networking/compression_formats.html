@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Compression Formats for Network Deployment</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Compression Formats for Network Deployment</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="../index.html#networking">Networking</a> &gt; Compression Formats for Network Deployment</p>
+
+
+<p>To increase server and network availability and bandwidth, two compression formats are available to Java deployment of applications and applets: gzip and Pack200. With both techniques, the compressed JAR files are transmitted over the network and the receiving application uncompresses and restores them.</p>
+
+<p>See <a href="http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/reducingDownloadTime.html">Reducing the Download Time</a> in the Java Tutorials to create and deploy a compressed JAR file for a rich Internet application.</p>
+
+<p>This section describes the technical details of how a web server handles a compressed JAR file. The following topics are covered:</p>
+<ul>
+<li><a href="#background">Background</a></li>
+<li><a href="#gzip_compression">Gzip Compression</a></li>
+<li><a href="#pack200_compression">Pack200 Compression</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#more">More Information</a></li>
+<li><a href="#java6updates">Updates in Java Standard Edition 6</a></li>
+<li><a href="#java8updates">Updates in Java Standard Edition 8</a></li>
+
+
+</ul>
+
+<h2><a name="background" id="background"></a>Background</h2>
+
+<p><a href="https://www.ietf.org/rfc/rfc2616.txt">Hypertext Transfer Protocol -- HTTP 1.1 (RFC 2616)</a> discusses HTTP compression. HTTP Compression allows applications JAR files to be deployed as compressed JAR files. The supported compression techniques are gzip, compress, and deflate.</p>
+
+<p>As of SDK/JRE version 5.0, HTTP compression is implemented in Java Web Start and Java Plug-in in compliance with RFC 2616. The supported techniques are gzip and pack200-gzip.</p>
+
+<p>The requesting application can send an HTTP request to the server indicating its ability to handle compressed versions of the file. The following is an example HTTP request created when the <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/examplesIndex.html#ComponentArchDynamicTreeDemo">Dynamic Tree Demo applet</a>, whose JAR file has been compressed with Pack200, is loaded:</p>
+
+<pre>GET http://www.example.com/DynamicTreeDemo.jar.pack.gz HTTP/1.1
+<strong>accept-encoding: pack200-gzip,gzip</strong>
+User-Agent: Mozilla/4.0 (Windows 7 6.1) Java/1.8.0
+Host: example.com
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive</pre>
+
+<p>The following is the HTTP response from the server:</p>
+
+<pre>HTTP/1.1 200 OK
+Date: Wed, 21 Mar 2012 20:13:22 GMT
+Server: Apache/2.2.11 (Solaris, Linux, or Mac OS X) mod_ssl/2.2.11 OpenSSL/0.9.8k SVN/1.6.2 DAV/2
+Last-Modified: Thu, 08 Mar 2012 03:48:34 GMT
+ETag: "489ee5-112d-4bab326774e43"
+Accept-Ranges: bytes
+Content-Length: 4397
+Keep-Alive: timeout=5, max=99
+Connection: Keep-Alive
+<strong>Content-Type: application/x-gzip</strong>
+<strong>Content-Encoding: gzip</strong></pre>
+
+<p>For more information about the Dynamic Tree Demo applet, see <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/deployingApplet.html">Deploying an Applet</a> in the Java Tutorials.</p>
+
+<p>The <code>Accept-Encoding</code> field specifies what the client can accept, which is set by the client. The <code>Content-Encoding</code> field indicates what is being sent, which is set by the server. The <code>Content-Type</code> field indicates what the client should expect when the transformation or decoding is done.
+
+<p>In this example, the <code>Accept-Encoding</code> field is set to <code>pack200-gzip</code> and <code>gzip</code>, indicating to the server that the application (in this case, Mozilla Firefox running in Windows 7 with the Java Plug-in that comes with JRE 7) can handle <code>pack200-gzip</code> and <code>gzip</code> formats.</p>
+
+<p>The server searches for the requested JAR file with a <code>.pack.gz</code> or <code>.gz</code> file extension and responds with the located file. The server sets the response header <code>Content-Encoding</code> field to <code>pack200-gzip</code>, <code>gzip</code>, or <code>NULL</code> depending on the type of file that is being sent, and optionally may set the <code>Content-Type</code> to <code>application/x-java-archive</code>. Therefore, by inspecting the <code>Content-Encoding</code> field, the requesting application can apply the corresponding transformation to restore the original JAR file.</p>
+
+<img src="images/javse_dt_001.gif" width="660" alt="Example 1: Application requesting packed or compressed JAR"/>
+<p><strong>Example 1: Application requesting packed or compressed JAR</strong></p>
+
+<p>In Example 1, the client requests the file <code>foo.jar</code> with the <code>Accept-Encoding</code> field <code>pack200-gzip,gzip</code>. The server searches for the file <code>foo.jar.pack.gz</code>. If the server finds the file, it will send the file to the client and set the <code>Content-Encoding</code> field to <code>pack200-gzip</code>.</p>
+
+
+<img src="images/javse_dt_002.gif" width="660" alt="Example 2: Application requesting packed or compressed JAR"/>
+<p><strong>Example 2: Application requesting packed or compressed JAR</strong></p>
+
+<p>In Example 2, if the file <code>foo.jar.pack.gz</code> is not found, the server responds with the file <code>foo.jar.gz</code>, if it is found, and sets the <code>Content-Encoding</code> field to <code>gzip</code>.</p>
+
+<img src="images/javse_dt_003.gif" width="660" alt="Example 3: Application requesting packed or compressed JAR"/>
+<p><strong>Example 3: Application requesting packed or compressed JAR</strong></p>
+
+<p>In Example 3, if the files <code>foo.jar.pack.gz</code> and <code>foo.jar.gz</code> are not found, then the server responds with the file <code>foo.jar</code> and either does not set the <code>Content-Encoding</code> field or sets it to <code>NULL</code>.</p>
+
+<img src="images/javse_dt_004.gif" width="660" alt="Example 4: Legacy application requesting JAR"/>
+<p><strong>Example 4: Legacy application requesting JAR</strong></p>
+
+
+<p>In Example 4, a legacy application (an application without HTTP or Pack200 compressions) requests the file <code>foo.jar</code>; consequently this application will continue to work seamlessly. Therefore, it is recommended that you host all three files <code>foo.jar</code>, <code>foo.jar.gz</code>, and <code>foo.jar.jar.gz</code>.
+
+
+
+<h2><a name="gzip_compression" id="gzip_compression"></a>GZIP Compression</h2>
+
+<p><code>gzip</code> is a freely available compressor available within the JRE and the SDK as <a href="../../../../api/java/util/zip/GZIPInputStream.html"><code>java.util.zip.GZIPInputStream</code></a> and <a href="../../../../api/java/util/zip/GZIPOutputStream.html"><code>java.util.zip.GZIPOutputStream</code></a>.</p>
+
+<p>The command line versions are available with most Solaris, Linux, or Mac OS X operating systems, Windows UNIX toolkits (<a href="http://cygwin.com/">Cygwin</a> and <a href="http://mkssoftware.com/">MKS Toolkit</a>), or from <a href="http://www.gzip.org/">http://www.gzip.org/</a>.</p>
+
+<p>You can get the highest degree of compression using <code>gzip</code> to
+compress an uncompressed JAR file versus compressing a compressed JAR
+file. The downside is that the JAR file may be stored uncompressed on target systems.</p>
+
+<p>Here is an example:</p>
+
+<ul>
+  <li>Using <code>gzip</code> to compress a JAR file that contains individual deflated entries:
+    <ul>
+      <li><code>Notepad.jar</code>: 46.25 kb</li>
+      <li><code>Notepad.jar.gz</code>: 43.00 kb</li>
+    </ul>
+  </li>
+  <li>Using <code>gzip</code> to compress a JAR file that contains stored entries (stored entries are entries that are not compressed):
+    <ul>
+      <li><code>Notepad.jar</code>: 987.47 kb</li>
+      <li><code>Notepad.jar.gz</code>: 32.47 kb</li>
+    </ul>
+  </li>
+</ul>
+
+<p>As you can see, the download size can be reduced by 14% by compressing an uncompressed JAR file compared to 3% by compressing a compressed JAR file.</p>
+
+
+<h2><a name="pack200_compression" id="pack200_compression"></a>Pack200 Compression<br /></h2>
+
+<p>Pack200 compresses large files very efficiently, depending on
+the density and size of the class files in the JAR file. You can
+expect compression to one-ninth the size of the JAR file if it contains
+only class files and is in the order of several megabytes.</p>
+
+<p>Using the same JAR file in the previous example:</p>
+
+<ul>
+  <li><code>Notepad.jar</code>: 46.25 kb</li>
+  <li><code>Notepad.jar.pack.gz</code>: 22.58 kb</li>
+</ul>
+
+<p>In this case, the same JAR file can be reduced by 50%.</p>
+
+<p>Pack200 works most efficiently on Java class files. It uses
+several techniques to efficiently reduce the size of JAR files:</p>
+
+<ul>
+  <li>It merges and sorts the constant-pool data in the class files and co-locates them in the archive.</li>
+  <li>It removes redundant class attributes.</li>
+  <li>It stores internal data structures.</li>
+  <li>It use delta and variable length encoding.</li>
+  <li>It chooses optimum coding types for secondary compression.</li>
+</ul>
+
+<p>Compress and uncompress JAR files with the command line interfaces
+<code>pack200</code> and <code>unpack200</code> in the <code>bin</code> directory of your SDK or JRE directory.</p>
+
+<p>You can also programmatically invoke Pack200 interfaces; see <a href="../../../../api/java/util/jar/Pack200.html"><code>java.util.jar.Pack200</code></a>.</p>
+
+<h3>Steps to Pack a file</h3>
+
+<h4>1. Consider the size of the JAR file, the contents of the JAR
+file, and the bandwidth of your target audience.</h4>
+
+<p>All these factors play into choosing a compression technique. The <code>unpack200</code> tool is designed to be as efficient as possible, and it takes little time to restore the original file. If you have large JAR files (2 MB or more) comprised mostly of class files, Pack200 is the preferred compression technique. If you have large JAR files which are comprised of resource files (JPEG, GIF, data, etc.), then gzip is the preferred compression technique.</p>
+
+<h4>2. Specify the segment limit for Pack200 compression.</h4>
+
+<p>Pack200 loads the entire compressed file into memory. However, when target systems are memory and resource constrained, setting the <code>Pack200.Packer.SEGMENT_LIMIT</code> to a lower value will reduce the memory requirements during compression and uncompression.</p>
+
+<p>As a special case, a value of <code>-1</code> will produce a single large segment with all input files, while a value of <code>0</code> will produce one segment for each class. Larger archive segments result in less fragmentation and better compression, but processing them requires more memory.</p>
+
+<p>The default is <code>-1</code>, which means <code>pack200</code> will always create a single segment output file. In cases where extremely large output files are generated, you are are strongly encouraged to use segmenting or break up the input file into smaller JARs.</p>
+
+<p>For example, a 10 MB JAR packed without this limit will typically pack about 10% smaller, but <code>pack200</code> may require a larger Java heap (about ten times the segment limit).</p>
+
+<h4>3. Sign the JAR files.</h4>
+
+<p>Pack200 rearranges the contents of the resulting JAR file. The <a href="../../../tools/index.html#security"><code>jarsigner</code></a> tool hashes the contents of the class file and stores the hash in an encrypted digest in the manifest. When <code>unpack200</code> uncompresses a file, the contents of the classes will be rearranged and thus invalidate the signature. Therefore, the JAR file must be normalized first using <code>pack200</code> and <code>unpack200</code>, and thereafter signed.</p>
+
+<p>Here's why this works: Any reordering <code>pack200</code> does on any class file structures is idempotent, so the
+second time it is compressed, it does not change the orderings produced by the first compression. Also, <code>unpack200</code> is guaranteed by the JSR 200
+specification to produce a specific bytewise image for any given
+transmission ordering of archive elements.</p>
+
+<p>For example, suppose you want to use <code>HelloWorld.jar</code>:</p>
+
+<ol>
+
+<li><p>Recompress, or repack, the file to normalize the JAR file; repacking uncompresses and compresses the JAR file in one step.</p>
+
+<pre>% pack200 --repack HelloWorld.jar</pre></li>
+
+<li><p>Sign the JAR.</p>
+
+<pre>% jarsigner -keystore myKeystore HelloWorld.jar <em>user_name</em></pre>
+
+<p><strong>Note</strong>: You must sign the repacked file with the <strong>same</strong> key that was used when building the original JAR file. Alternatively, delete all signature files found in the <code>META-INF</code> directory before repacking, re-signing and verifying. The signature files are named <code>MANIFEST.MF</code>, <code>*.DSA</code> and <code>*.SF</code>.</p> 
+
+<p>Verify the just signed JAR file to ensure the signing worked.</p>
+
+<pre>% jarsigner -verify HelloWorld.jar
+jar verified.</pre>
+
+<p>Ensure the JAR file still works.</p>
+
+<pre>% Java -jar HelloWorld.jar
+HelloWorld</pre></li>                    
+
+<li><p>Compress the JAR file with <code>pack200</code>.</p>   
+
+<pre>% pack200 HelloWorld.jar.pack.gz HelloWorld.jar</pre>
+
+<p><strong>Note</strong>: You must compress the JAR file with the same options that you used to repack the file to normalize the JAR file, as demonstrated in step 1. Additionally, you must set the segment limit to <code>-1</code> (unlimited) for all packing steps when using JDK 6 and earlier releases to prevent accidental variations of segment boundaries; class file sizes can change slightly under these circumstances, thus disrupting signatures. The default segment limit for JDK 7 and later is <code>-1</code>.</p>
+
+</li> 
+
+<li><p>Uncompress the file with <code>unpack200</code></p>
+
+<pre>% unpack200 HelloWorld.jar.pack.gz HelloT1.jar</pre></li>
+
+<li><p>Verify the JAR file.</p>
+
+<pre>% jarsigner -verify HelloT1.jar
+jar verified.</pre>
+
+<p>Test the JAR file.</p>
+
+<pre>% Java -jar HelloT1.jar
+HelloWorld</pre></li>
+
+</ol>
+
+<p>After verification, you can deploy the compressed pack file <code>HelloWorld.jar.pack.gz</code>.</p>
+
+<h4>4. Apply reduction techniques</h4>
+
+<p>Pack200 by default behaves in a High Fidelity (Hi-Fi) mode, meaning all the original attributes present in the classes as well as the attributes of each individual entry in a JAR file is retained. These typically tend to add to the packed file size; here are some of the techniques one can use to
+further reduce the size of the download:</p>
+
+<ol>
+<li><p><strong>Modification times</strong>: If modification time of the individual entries in a JAR file is not a concern, you can specify the option <code>Pack200.Packer.MODIFICATION_TIME="LATEST"</code>. This will allow one modification time to be transmitted in the pack file for each segment. The latest time will be the latest time of any entry within that segment.</p></li>
+
+<li><p><strong>Deflation hint</strong>: Similar to setting the modification time to <code>"LATEST"</code>, if the compression state of the individual entries in the archive is not required, set <code>Pack200.Packer.DEFLATION_HINT="false"</code>. This will fractionally reduce the download size, as individual compression hints will not be transmitted. However, the JAR file when recomposed will contain "stored" entries and hence may consume more disk space on the target system.</p>
+
+<p>For example:</p>
+
+<pre>pack200 --modification-time=latest --deflate-hint="true"
+tools-md.jar.pack.gz tools.jar</pre>
+
+<p><strong>Note</strong>: the above optimizations will yield better results with a JAR file containing thousands of entries.</p>
+
+</li>
+
+<li><p><strong>Attributes</strong>: Several class attributes are not required when deploying JAR files. These attributes can be stripped out of class files, significantly reducing download size. However, care must be taken to ensure that required runtime attributes are maintained.</p>
+
+<ol>
+<li><p><strong>Debugging attributes</strong>: If debugging information, such as Line Numbers and Source File, is not required (typically in applications stack traces), then these attributes can be discarded by specifying <code>Pack200.Packer.STRIP_DEBUG=true.</code>This typically reduces the packed file by about 10%.</p>
+
+<p>Example:</p>
+
+<pre>pack200 --strip-debug tools-stripped.jar.pack.gz tools.jar</pre>
+
+</li>
+
+<li><p><strong>Other attributes</strong>: Advanced users may use some of the other strip-related properties to strip out additional attributes. However, extreme caution should be used when doing so, the resultant JAR file must be tested on all possible Java runtime systems to ensure that the runtime does not depend on the stripped attributes.</li>
+
+</ol>
+</li>
+</ol>
+
+<h4>5. Handle unknown attributes:</h4>
+
+<p>Pack200 deals with standard attributes defined by the Java Virtual Machine Specification; however compilers are free to introduce custom attributes. When such attributes are present, by default, Pack200 passes through the class, emitting a warning message. These "passed-through" class files may contribute to bloating of packed files. If the unknown attributes are prevalent in the classes of a JAR file, this may lead to a very large bloat in the compressed output. In such cases, consider the following strategies:</p>
+
+<ul>
+
+<li><p>Strip the attribute if the attribute is deemed to be redundant at runtime; this can be achieved by setting the property <code>Pack200.Packer.UNKNOWN_ATTRIBUTE=STRIP</code>:</p>
+
+<pre>pack200 --unknown-attribute=strip
+foo.pack.gz foo.jar</pre></li>
+
+<li><p>If the attributes are required at
+runtime, and they do contribute to inflation in the size of the compressed file, then identify the attribute from the warning message and apply a suitable layout for these as described in the Pack200 JSR 200 specification, and the
+Java API reference section for the interface <a href="../../../../api/java/util/jar/Pack200.Packer.html">Pack200.Packer</a>.</p></li>
+
+<li><p>It is possible that a compiler could define an attribute not implemented in the layout specification of Pack200, and may cause the <code>pack200</code> to malfunction. In such cases, an entire class file or class files can be "passed through", as if it were a
+resource by virtue of its name and can be specified as follows:</p>
+
+<pre>pack200 --pass-file="com/acme/foo/bar/baz.class" foo.pack.gz foo.jar</pre>
+
+<p>The following passes through an entire directory and its contents,</p>
+
+<pre>pack200 --pass-file="com/acme/foo/bar/" foo.pack.gz foo.jar</pre></li>
+</ul>
+
+<p><strong>Note</strong>: When signing large JAR files, this step may fail with a security error. A likely cause is bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=5078608">5078608</a>. Use one of the following workarounds:</p>
+
+<ul>
+  <li>Specify <code>--segment-limit=-1</code> during repacking and packing.</li>
+  <li>Follow these repacking and signing steps:
+    <ol>
+      <li><code>pack200 --repack b.jar a.jar</code></li>
+      <li>Sign <code>b.jar</code>.</li>
+      <li><code>pack200 --repack c.jar b.jar</code></li>
+      <li>Sign <code>c.jar</code>.</li>
+      <li><code>pack200 out.jar.pack.gz c.jar</code></li>
+      <li>Deploy <code>out.jar.pack.gz</code>.</li>
+    </ol>
+  </li>
+</ul>
+
+<h4>6. Take advantage of Pack200 in your installation program</h4>
+
+<p>You may wish to take advantage of the Pack200 technology in your installation program, whereby a product's JAR files may need to compressed using Pack200 and uncompressed during installation. If the JRE or SDK is bundled in the installation, you are free to use the <code>unpack200</code> (Solaris, Linux, or Mac OS X) or <code>unpack200.exe</code> (Windows) tool in the distribution <code>bin</code> directory. This implementation is a pure C++ application requiring no Java runtime to be present for it to run.</p>
+
+<p><strong>Windows</strong>: Installers may use a better algorithm than the one in GZIP to compress entries. In such cases, one will get better compression using the Installer's intrinsic compression, by using the <code>pack200</code> tool as follows:</p>
+
+<pre>pack200 --no-gzip foo.jar.pack foo.jar</pre>
+
+<p>This will prevent the output file from being gzip compressed.</p>
+
+<p><code>unpack200</code> is a Windows console application; i.e. it will display a MS-DOS window during the install. To suppress this, use a launcher with a <code>WinMain</code>, which will suppress this window, as shown below.</p>
+
+<p>Sample Code:</p>
+
+<pre>#include "windows.h"
+#include &lt;stdio.h&gt;
+
+int APIENTRY WinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR     lpCmdLine,
+                     int       nCmdShow) {
+  STARTUPINFO si;
+  memset(&amp;si, 0, sizeof(si));
+  si.cb = sizeof(si);
+
+  PROCESS_INFORMATION pi;
+  memset(&amp;pi, 0, sizeof(pi));
+
+  //Test
+  //lpCmdLine = "c:/build/windows-i586/bin/unpack200 -l c:/Temp/log c:/Temp/rt.pack c:/Temp/rt.jar";
+  int ret = CreateProcess(NULL,                 /* Exec. name */
+                          lpCmdLine,            /* cmd line */
+                          NULL,                 /* proc. sec. attr. */
+                          NULL,                 /* thread sec. attr */
+                          TRUE,                 /* inherit file handle */
+                          CREATE_NO_WINDOW | DETACHED_PROCESS, /* detach the process/suppress console */
+                          NULL,                 /* env block */
+                          NULL,                 /* inherit cwd */
+                          &amp;si,                      /* startup info */
+                          &amp;pi);                     /* process info */
+  if ( ret == 0) ExitProcess(255);
+
+  // Wait until child process exits.
+  WaitForSingleObject( pi.hProcess, INFINITE );
+
+  DWORD exit_val;
+
+  // Be conservative and return
+  if (GetExitCodeProcess(pi.hProcess, &amp;exit_val) == 0) ExitProcess(255);
+
+  ExitProcess(exit_val); // Return the error code of the child process
+
+  return -1;
+}</pre>
+
+<h2><a name="testing" id="testing"></a>Testing</h2>
+
+<p>It is required that all JAR files, compressed and uncompressed, be tested for correctness with your applications test qualifiers. When using the command line interface <code>pack200</code>, the output file will be compressed using gzip with default values. A user may create a simple pack file and compress using <code>gzip</code> with user-specified options or using some other compressor.</p>
+
+<h2><a name="more" id="more"></a>More Information</h2>
+
+<p>For more information, see <code>pack200</code> and <code>unpack200</code> in <a href="../../../tools/index.html#deployment">Java Deployment Tools</a>.</p>
+
+<h2><a name="java6updates" id="java6updates"></a>Updates in Java Standard Edition 6</h2>
+
+<p>In Java SE 6, the Java class file format has been updated. For more information see <a href="http://jcp.org/en/jsr/detail?id=202">JSR 202: Java Class File Specification Update</a>. Due to JSR 202, the Pack200 engine needs to be updated accordingly for the following reasons:</p>
+
+<ul>
+<li>Align with the new class file format for Java SE 6</li>
+<li>Ensure that Java SE 6 class files are compressed effectively.</li>
+</ul>
+
+<p>To keep the changes minimal and seamless for users, <code>pack200</code> will generate appropriately versioned pack files based on the version of the input class files.</p>
+
+<p>Also to maintain backward compatibility, if the input JAR files are solely comprised of JDK 5 or older class files, a JDK 5 compatible pack file is produced. Otherwise a Java SE 6 compatible Pack200 file is produced. For more information, refer to the <tt>pack200</tt> man page for <a href="../../../tools/unix/pack200.html">Solaris, Linux, or Mac OS X</a> or <a href="../../../tools/windows/pack200.html">Windows</a>.</p>
+
+<h2><a name="java8updates" id="java8updates"></a>Updates in Java Standard Edition 8</h2>
+
+<p>In Java SE 8, the Java class file format has been updated because of <a href="http://jcp.org/en/jsr/detail?id=292">JSR 292</a>, <a href="../../vm/multiple-language-support.html">Java Virtual Machine Support for Non-Java Languages</a>. Consequently, the Pack200 engine has been updated accordingly to ensure that Java SE 8 class files are compressed effectively. In particular, the Pack200 engine now recognizes constant pool entries and new bytecodes introduced by JSR 292.</p>
+
+<p>As a result, compressed files created with this version of <code>pack200</code> will not be compatible with older versions of <code>unpack200</code>.</p>
+
+<p>In general, if a compressed file contains Java SE 8 or Java SE 7 class files, then it will not be compatible with older unpackers. (For example, if a compressed file contains Java SE 7 class files, then it will not be compatible with unpackers from Java SE 6 or earlier.)</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

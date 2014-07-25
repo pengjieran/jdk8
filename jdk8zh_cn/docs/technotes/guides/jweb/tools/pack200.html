@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Pack200 and Version Download</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Pack200 and Version Download</h1>
+<p><a name="PageTop" id="PageTop"></a></p>
+
+<p><a href="../index.html">Java Rich Internet Applications Guidet</a> &gt; <a href="../index.html#otherFeatures">Enhancements and Other Features</a> &gt; Pack200 and Version
+Download</p>
+<p><b>Contents</b></p>
+<ul>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#pack200">Pack200</a>
+<ul>
+<li><a href="#pack200JNLP">Usage in a JNLP
+File</a></li>
+<li><a href="#pack200AppletTag">Usage in Applet
+Tag</a></li>
+</ul>
+</li>
+<li><a href="#versionDownload">Version Download</a>
+<ul>
+<li><a href="#versionDownloadWebStart">Usage in a JNLP
+file</a></li>
+</ul>
+</li>
+</ul>
+<p><b>Related Links</b></p>
+<ul>
+<li><span><a href=
+"../../../tools/index.html#deployment">Pack200
+Tools</a></span></li>
+</ul>
+<hr />
+
+<h2><a name="intro" id="intro"></a>Introduction</h2>
+<p>Prior to Java SE 6 update 10
+release, engineers had to deploy the JNLPDownloadServlet on the web
+servers in order to use Pack200 or download specific versions of
+their application JARs. While this solution works, it limits the
+flexibility of deploying versioned or Pack200 compressed JARs:
+Engineers might not have access to deploy JNLPDownloadServlet on
+web servers.</p>
+<p>The Java SE 6 update 10 release introduces two new Java system
+properties to enable Pack200 and version download: <code>jnlp.packEnabled</code> and <code>jnlp.versionEnabled</code>.</p>
+
+<h2><a name="pack200" id="pack200"></a>Pack200</h2>
+<p>When the Java system property <code>jnlp.packEnabled</code> is
+set to "true" in a jnlp file or an applet tag, the Java Plug-in or
+Java Web Start software will download the .pack.gz version of JARs.
+If the .pack.gz version is not available, the unzipped JAR will be
+searched for.</p>
+<p><strong>Note</strong>: the compressed version of foo.jar should
+be named foo.jar.pack.gz.</p>
+<h3><a name="pack200JNLP" id="pack200JNLP"></a>Usage in a JNLP
+File</h3>
+<p>Use the property tag to specify "jnlp.packEnabled" to "true"
+within the resources tags, i.e.:</p>
+<pre>
+&lt;jnlp ...&gt;
+   ...
+   &lt;resources&gt;
+      &lt;property name="jnlp.packEnabled" value="true"/&gt;
+         &lt;java version="1.5+" href="http://javadl.sun.com/webapps/jawsautodl/AutoDL/j2se"/&gt;
+         &lt;jar href="foo.jar" main="true" download="eager"/&gt;        
+   &lt;/resources&gt;
+   ...
+&lt;/jnlp&gt;
+</pre>
+<p>In the above case, Java Web Start and the new Java Plug-in will
+first look for foo.jar.pack.gz. If the file is not found, they will
+fall back and look for the original, foo.jar.</p>
+<h3><a name="pack200AppletTag" id="pack200AppletTag"></a>Usage in
+Applet Tag</h3>
+<p>Pass the "-Djnlp.packEnabled" VM argument by using
+"java_arguments", i.e.:</p>
+<pre>
+&lt;HTML&gt;
+   ...
+   &lt;APPLET CODE="HelloWorld.class" WIDTH=150 HEIGHT=25&gt;
+      &lt;PARAM NAME  = "cache_archive" VALUE = "HelloWorld.jar"/&gt;
+      &lt;PARAM NAME="java_arguments" VALUE="-Djnlp.packEnabled=true"/&gt;
+   &lt;/APPLET&gt;
+   ...
+&lt;/HTML&gt;
+</pre>
+<p>This feature is only available to <a href=
+"../applet/applet_dev_guide.html">New Java Plug-in</a> since
+it requires passing the VM argument to Java VM. The New Java
+Plug-in will look for HelloWorld.jar.pack.gz, if this file is not
+available, it will fall back and look for HelloWorld.jar.</p>
+<h2><a name="versionDownload" id="versionDownload"></a>Version
+Download</h2>
+<p>Version download is the ability to request that specific
+versions of certain jar files be used by applets and Java Web Start
+applications. The <code>jnlp.versionEnabled</code> applies to Java
+Web Start applications and applets deployed using JNLP.</p>
+<h3><a name="versionDownloadWebStart" id=
+"versionDownloadWebStart"></a>Usage in a JNLP file</h3>
+<p>When the Java system property <code>jnlp.versionEnabled</code>
+is set to "true" in the jnlp file, if the JAR version is specified,
+the server is checked for the versioned JAR file using the naming
+convention:</p>
+<pre>
+  &lt;file&gt; ::= &lt;name&gt; "__" &lt;options&gt; ".jar"
+  &lt;options&gt; ::= "V" &lt;version-id&gt;
+</pre>
+<p><strong>Note</strong>: version 1.0 of foo.jar should be named
+foo__V1.0.jar.</p>
+<p>The original jar will be used if the versioned jar file is not
+found.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

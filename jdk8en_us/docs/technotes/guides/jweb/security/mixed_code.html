@@ -1,0 +1,422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Mixing Privileged Code and Sandbox Code</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Mixing Privileged Code and Sandbox Code<br />
+Ensuring Application and Applet Security</h1>
+
+<p><strong>Contents</strong></p>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#jcp">Mixed Code Protection Options for Users</a></li>
+<li><a href="#manifest">Deploying Privileged Applications and Applets
+Securely Without a Mixed Code Warning</a>
+<ul>
+<li><a href="#trusted_only"><code>Trusted-Only</code>
+Attribute</a></li>
+<li><a href="#trusted_library"><code>Trusted-Library</code>
+Attribute</a></li>
+</ul>
+</li>
+<li><a href="#faq">Mixed Code FAQ</a></li>
+<li><a href="#info">For More Information</a></li>
+</ul>
+<h2><a name="overview" id="overview">Overview</a></h2>
+<p>Privileged Java Web Start applications and applets that contain
+components that are restricted to the security sandbox could potentially be unsafe unless
+the mixed code was intended by the application vendor. When a
+program contains both privileged components and sandbox components, security warnings are shown.
+Note that JavaScript code is restricted to the sandbox and could also cause security warnings to be shown. See <a href="manifest.html#caller_allowable">Caller-Allowable-Codebase Attribute</a> for information on the manifest attribute for authorizing JavaScript code. </p>
+<p>The security warnings state that Java has discovered application
+components that could indicate a security concern and recommends
+that you contact the application vendor to ensure that the
+application components have not been tampered with.</p>
+<p>In the dialog, you choose to <strong>Block</strong>, or
+<strong>Don't Block</strong> execution of the application
+components. You can also click the optional <em>More
+Information</em> link.</p>
+<p>Clicking the <strong>Block</strong> button blocks potentially
+unsafe components from running, and the program may terminate.
+Clicking the <strong>Don't Block</strong> button causes the
+application or applet to continue execution with some added
+protections.</p>
+<p>Raising a warning is the default behavior, but there are options
+available to manage how this situation is handled.</p>
+<ul>
+<li>For users and systems administrators, various protection
+options are available. For more information, see <a href=
+"#jcp">Mixed Code Protection Options for Users</a>.</li>
+<li>For developers and deployers, two manifest attributes are
+available. For more information, see <a href="#manifest">Deploying
+Privileged Applications and Applets Securely Without a Mixed Code
+Warning</a>.</li>
+</ul>
+<hr />
+<strong>Note:</strong> If any concepts are unclear, such as how to
+modify a manifest file, or how to sign a JAR file, or how to use a
+deployment configuration file, see <a href="#info">For More
+Information</a> for useful links.
+<hr />
+<h2><a name="jcp" id="jcp">Mixed Code Protection Options for
+Users</a></h2>
+There are two mechanisms for managing how mixed code programs are
+handled.
+<ul>
+<li><b>From the Java Control Panel</b>
+<p>You can manage how mixed code programs are handled via the Java
+Control Panel. There are four levels of control available.</p>
+<p>How to access the Java Control Panel varies for each platform
+and sometimes varies for different releases of a platform. On
+Microsoft Windows, you can bring up the panel via
+<code>Start menu &gt; Control Panel &gt; Java</code>.</p>
+<p>In the Mixed Code section of the Advanced Tab, the first three options enable the software protections, but
+behave a bit differently.</p>
+<ul>
+<li><strong>Enable - show warning if needed</strong><br />
+This is the default setting. When a potential security risk is
+encountered, a warning dialog is raised. Clicking
+<strong>Block</strong> blocks potentially unsafe components from
+running and may terminate the program. When the user clicks
+<strong>Don't Block</strong>, the application or applet continues
+execution with some added protections (packages or resources that
+are later encountered with the same names but have different 
+levels of permissions will not be loaded).</li>
+<li><strong>Enable - hide warning and run with
+protections</strong><br />
+This option suppresses the warning dialog. The code executes as if
+the user had clicked <strong>Don't Block</strong> from the warning
+dialog.</li>
+<li><strong>Enable - hide warning and don't run untrusted
+code</strong><br />
+This option suppresses the warning dialog and behaves as if the
+user had clicked <strong>Block</strong> from the warning
+dialog.</li>
+</ul>
+<p>The final option, <strong>Disable verification</strong>, is not
+recommended. This option completely disables the software from
+checking for a mixture of privileged code and sandbox code, leaving the user to
+run potentially unsafe code with no warning and without the
+additional protections.</p>
+</li>
+<li><b>From the <code>deployment.properties</code> File</b>
+<p>The mixed code protection options can also be set by using the
+<code>deployment.security.mixcode</code> deployment property, as
+described in <a href=
+"../jcp/properties.html#properties">Deployment
+Configuration File and Properties</a>.</p>
+<ul>
+<li><code>deployment.security.mixcode=ENABLE</code>
+<p>This option enables mixed code verification. When a potential
+security risk is encountered, a warning dialog is raised. This is
+the default value for this property.</p>
+</li>
+<li><code>deployment.security.mixcode=HIDE_RUN</code>
+<p>This option suppresses the warning dialog. The code executes as
+if the user had clicked <strong>Don't Block</strong> from the
+warning dialog.</p>
+</li>
+<li><code>deployment.security.mixcode=HIDE_CANCEL</code>
+<p>This option suppresses the warning dialog and behaves as if the
+user had clicked <strong>Block</strong> from the warning
+dialog.</p>
+</li>
+<li><code>deployment.security.mixcode=DISABLE</code>
+<p>This option is not recommended. The software is disabled from
+checking for a mixture of privileged code and sandbox code, leaving the user to
+run potentially unsafe code with no warning and without the
+additional protections.</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<strong>Version note:</strong> To take advantage of these security
+enhancements, users need to install the Java SE or Java for
+Business 6 Update 19 release (or later) and use the new Java
+Plug-in, which is enabled by default. To use an earlier JRE with
+the new Java Plug-in, you need to install the Java for Business 5.0
+Update 24 release (or later) or the Java for Business 1.4.2_26
+release (or later) in order to enable the mixed code security
+enhancement for those release families.<br />
+<strong>Note 1</strong>: Mixed code checking for the 1.4.2 release
+is available only for the Windows platform.<br />
+<strong>Note 2</strong>: For Solaris, the new Java Plug-in requires
+Firefox 3 or later. Netscape 7 and Firefox 2 are not
+supported.<br />
+<strong>Note 3</strong>: For more information on which platforms
+are supported by the new plug-in, see the <a href=
+"http://www.oracle.com/technetwork/java/javase/plugin2-142482.html"
+target="_blank">Release Notes for the Next-Generation Java
+Plug-in</a>.
+<hr />
+<h2><a name="manifest" id="manifest">Deploying Privileged Applications
+and Applets Securely Without a Mixed Code Warning</a></h2>
+<p>This section describes best practices for developers and
+deployers to protect their applications and applets from being
+maliciously re-purposed by replacing trusted components with
+untrusted ones.</p>
+<p>Two JAR manifest attributes are available, as of Java SE 6
+Update 19, for deploying privileged applications and applets. A warning
+dialog is not displayed when one of these manifest attributes is
+included.</p>
+<p>Developers and deployers should check their Java Web
+Start applications and applets to determine if they mix privileged code and
+untrusted code. If users of these applications and applets may
+inadvertently download these applications and applets from rogue
+websites, deploying or re-deploying with one of the following
+attributes should be considered. Existing signed JARs need to be
+re-signed after adding these manifest attributes. Note:
+source code of the classes and resources are not required for
+re-signing with the manifest entries.</p>
+<h3><a name="trusted_only" id=
+"trusted_only"><code>Trusted-Only</code> Attribute</a></h3>
+<p>For applications and applets that do not require untrusted
+components, use the <code>Trusted-Only</code> attribute.
+No warning dialog is displayed and an application or applet
+that loads a JAR file containing this attribute does not load any
+untrusted classes or resources. This attribute prevents a privileged
+application or applet from being re-purposed with untrusted
+components. See <a href="manifest.html#trusted_only">Trusted-Only Attribute</a> for more information. </p>
+
+<h3><a name="trusted_library" id=
+"trusted_library"><code>Trusted-Library</code> Attribute</a></h3>
+<p>For applications and applets that are designed to allow untrusted
+components, use the <code>Trusted-Library</code> attribute. No warning dialog is shown and an application or
+applet can load JAR files containing untrusted classes or
+resources. This attribute prevents components in a privileged 
+application or applet from being re-purposed with untrusted
+components. See <a href="manifest.html#trusted_library">Trusted-Library Attribute</a> for more information about using this attribute. </p>
+<p>The <code>Trusted-Library</code> attribute is used for calls between privileged Java code and sandbox Java code. If you have JavaScript code that calls Java code, use the <a href="manifest.html#caller_allowable">Caller-Allowable-Codebase Attribute</a>. </p>
+<h2><a name="faq" id="faq">Mixed Code FAQ</a></h2>
+<ul>
+<li><strong>Question</strong>: I develop and/or deploy
+applications. How do I know whether I need to be concerned about
+this issue?
+<p><strong>Answer</strong>: If you do not use the <a href=
+"#manifest">manifest entries</a> and you encounter the warning
+dialog when running your privileged application or applet, your program
+contains mixed code and is affected.</p>
+</li>
+<li><a name="testing" id="testing"><strong>Question</strong></a>:
+Is there a test I can run to determine whether I am affected?
+<p><strong>Answer</strong>: Test your Java Web Start applications
+and Java applets against Java SE or Java for Business 6 Update 19
+or later. If you are running earlier release families, you should
+additionally install and test your program under 5.0 Update 24 (or
+later), or 1.4.2_26 (or later), as appropriate. If you see the
+warning dialog, then the Java Web Start application or applet
+contains mixed code.</p>
+</li>
+<li><strong>Question</strong>: What actions can I take?
+<p><strong>Answer</strong>: End users can click the "More
+Information" link before deciding whether to click "Block" or
+"Don't Block" in response to the warning dialog. IT or System
+Administrators can choose from one of the Mixed Code protection
+options and configure enterprise desktops through the respective
+deployment properties described above. Developers and deployers can
+use the manifest entries to protect their applications from
+tampering. No warning dialog will be displayed when one of these
+manifest entries is used.</p>
+</li>
+<li><strong>Question</strong>: What should Java ISVs, OEMs, and
+application vendors do with their code?
+<p><strong>Answer</strong>: Two <a href="#manifest">manifest
+entries</a> are available to application vendors to deploy, or
+re-deploy, their Java Web Start applications and Java applets.</p>
+</li>
+<li><strong>Question</strong>:What versions of Java SE and Java for
+Business are affected?
+<p><strong>Answer</strong>: The following releases from Oracle are
+affected:</p>
+<ul>
+<li>Java SE and Java for Business 6 Update 18 and earlier</li>
+<li>Java for Business 5.0 Update 23 and earlier</li>
+<li>Java for Business 1.4.2_25 and earlier</li>
+</ul>
+</li>
+<li><a name="internet" id="internet"><strong>Question</strong></a>:
+What about Java applets and Java Web Start applications from the
+Internet, do I need to be concerned about those?
+<p><strong>Answer</strong>: Users will see a warning dialog if a
+signed Java Web Start application or Java applet contains mixed
+code regardless of whether it is downloaded from the Internet or
+Intranet.</p>
+</li>
+<li><strong>Question</strong>: What if I am behind a corporate
+firewall?
+<p><strong>Answer</strong>: The mixed code issue applies. See the
+<a href="#internet">question</a> on applets and applications from
+the Internet.</p>
+</li>
+<li><strong>Question</strong>: Is this an issue for Oracle JRockit?
+<p><strong>Answer</strong>: No.</p>
+</li>
+<li><strong>Question</strong>: I am using an implementation of Java
+from another vendor. Are they affected in the same way?
+<p><strong>Answer</strong>: Please contact your vendor for advice
+on their implementation.</p>
+</li>
+<li><strong>Question</strong>: What are the risks to remaining on
+Java SE 6u18 (or earlier) to avoid seeing the warnings?
+<p><strong>Answer</strong>: Java SE 6 Update 19 (or later) contains
+the latest security fixes and Oracle recommends that customers use
+the latest release.</p>
+</li>
+<li><strong>Question</strong>: If I move to 6 Update 19 or later,
+what type of testing do I need to consider?
+<p><strong>Answer</strong>: See the <a href="#testing">question</a>
+on testing. In addition, the release notes for each update release
+documents the latest changes included.</p>
+</li>
+<li><strong>Question</strong>: I am a developer. What are the security exceptions that are added with this enhancement?
+  <p><strong>Answer</strong>: The following
+<code>SecurityException</code> messages are described for
+informational and debugging purposes only. The actual message
+contents may change between different implementations and
+releases.</p>
+<p>These <code>SecurityExceptions</code> are thrown when a JAR file
+contains one of the manifest attributes and the JAR file itself
+contains untrusted components.</p>
+<pre class="codeblock">
+attempted to open sandboxed jar "+ url +" as Trusted-Only
+attempted to open sandboxed jar "+ url +" as Trusted-Library
+</pre>
+The following <code>SecurityException</code> is thrown when a JAR
+file contains the <code>Trusted-Only</code> manifest attribute
+and untrusted components have previously been accessed.
+<pre class="codeblock">
+attempted to open Trusted-Only jar "+ url +" on sandboxed loader
+</pre>
+The following <code>SecurityException</code> is thrown when at
+least one JAR containing the <code>Trusted-Only</code> manifest
+attribute has been opened and a subsequent attempt is made to load
+an untrusted component.
+<pre class="codeblock">
+Trusted-Only loader attempted to load sandboxed resource from "+ url"
+</pre>
+The following two <code>SecurityExceptions</code> are thrown when
+mixed components are first detected and a decision is made to
+disallow mixing. In the first case, everything previously loaded was
+trusted and then an attempt was made to load an untrusted
+component. The second case is the reverse condition.
+<pre class="codeblock">
+trusted loader attempted to load sandboxed resource from "+ url"
+sandboxed loader attempted to load trusted resource from "+ url"
+</pre>
+The following two <code>SecurityExceptions</code> are thrown after
+mixed components had previously been detected and a decision was
+made to allow them to coexist. The exceptions indicate that a
+component name collision (resource name or class package name) was
+detected between trusted and untrusted components and the request
+to load the resource or class was denied.
+<pre class="codeblock">
+"resource \"" + name + "\" does not match trust level of other resources of the same name"
+"class \"" + packageName + "\" does not match trust level of other classes in the same package"
+</pre>
+The following two <code>SecurityExceptions</code> are thrown when
+untrusted components have been previously accessed, an attempt to
+load a trusted component was previously detected, and a decision
+was made to allow mixed components to coexist, and a JAR containing
+trusted components is opened and a component name collision is
+detected between trusted and untrusted components.
+<pre class="codeblock">
+"untrusted resource \"" + name + "\" in class path"
+"untrusted class package \"" + packageName + "\" in class path"
+</pre></li>
+<li><strong>Question</strong>: I have a mixed code Java Web Start
+application which cannot be easily updated to use the
+<code>Trusted-Library</code> manifest attribute. Can I sign the JAR
+files in the sandboxed JNLP without having to change the JNLP to
+request the <code>all-permissions</code> security model?
+<p><strong>Answer</strong>: Yes, with some limitations beginning
+with Java Web Start in Java SE or Java for Business Update 21. The
+sandboxed JAR files must be signed in the same way (same signing
+certificates) as one or more of the trusted JAR files in a JNLP
+file that uses the <code>all-permissions</code> security model, and
+the trusted JAR file must be opened by Java Web Start prior to any
+sandboxed resource being loaded which shares the same signer. This
+means the trusted JAR file must be earlier in Java Web Start's JAR
+search order or it is triggered to load independent of the simple
+search order by use of the JAR indexing feature. In Java Web Start,
+the main application JNLP's JARs are searched first, followed in
+declaration order by any JNLP extensions. JAR files labeled within
+a JNLP as "eager" are searched first, followed by "lazy" JAR files,
+followed by any JAR files labeled as using the "part" feature.</p>
+</li>
+<li><strong>Question</strong>: I have Java on my phone. Is that
+affected by this issue?
+<p><strong>Answer</strong>: No, Java ME is not affected.</p>
+</li>
+</ul>
+<h2><a name="info" id="info">For More Information</a></h2>
+<ul>
+<li><a href="manifest.html">JAR File Manifest Attributes for Security</a> </li>
+<li><a href=
+"http://www.oracle.com/technetwork/java/seccodeguide-139067.html">Secure
+  Coding Guidelines for Java</a></li>
+<li><a href=
+"../jcp/properties.html#properties">Deployment
+Configuration File and Properties</a></li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/jar/modman.html"
+target="_blank">Modifying a Manifest File</a>, a section in
+<a href="http://docs.oracle.com/javase/tutorial/" target=
+"_blank">The Java Tutorial</a>, has information on how to work with
+manifest files.</li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/jar/signing.html"
+target="_blank">Signing JAR Files</a>, a section in <a href=
+"http://docs.oracle.com/javase/tutorial/" target="_blank">The Java
+Tutorial</a>.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

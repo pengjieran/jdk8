@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java 2D</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T13:53:11Z" name="date"/>
+<meta content="This chapter provides information and guidance for troubleshooting some of the most common issues that might be found in the Java 2D API." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java 2D" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38386-01" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Desktop Technologies Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="swing.html">
+                Next</a><hr/><a id="BABCFGDC" name="BABCFGDC"/>
+<h1><span>3</span> Java 2D</h1>
+<p>This chapter provides information and guidance for troubleshooting some of the most common issues that might be found in the Java 2D API.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A999460">"Changing Rendering Pipelines and Their Properties"</a></p>
+</li>
+<li>
+<p><a href="#A1013923">"Generic Performance Issues"</a></p>
+</li>
+<li>
+<p><a href="#A1016927">"Text-Related Issues"</a></p>
+</li>
+<li>
+<p><a href="#A1018541">"Java 2D Printing"</a></p>
+</li>
+</ul>
+<p>For a summary of Java 2D properties, see <a href="java2d-props.html#CIHDJJDF">Appendix A, "Java 2D Properties"</a>.</p>
+<p>See also the <a href="http://www.oracle.com/technetwork/java/index-137037.html">Java 2D FAQ</a>.</p>
+<a id="A999460" name="A999460"/>
+<div>
+<h2>Changing Rendering Pipelines and Their Properties</h2>
+<p>Java 2D uses a set of pipelines, which can be roughly defined as different ways of rendering the primitives. These pipelines are as follows:</p>
+<ul>
+<li>
+<p>X11 pipeline, which is the default for Solaris OS and Linux</p>
+</li>
+<li>
+<p>OpenGL pipeline, which is an alternative on Solaris OS and Linux, as well as Windows</p>
+</li>
+<li>
+<p>DirectDraw/GDI pipeline, which is the default on Windows</p>
+</li>
+<li>
+<p>Direct3D pipeline, which is an alternative on Windows</p>
+</li>
+</ul>
+<p>By choosing a different pipeline, or manipulating the properties of a pipeline, you might be able to determine the cause of the problem, and often find a workaround.</p>
+<p>The following procedure can help you troubleshoot Java 2D issues:</p>
+<ol>
+<li>
+<p>Determine the default pipeline used in your configuration.</p>
+</li>
+<li>
+<p>Either change the pipeline to another one, or modify the properties of the default pipeline.</p>
+</li>
+<li>
+<p>If the problem disappears, you have found a workaround.</p>
+</li>
+<li>
+<p>If the problem persists, try changing another property or pipeline.</p>
+</li>
+</ol>
+<p>This section describes how to change the Java 2D pipelines and their properties for each operating system: UNIX (Solaris OS and Linux), and Windows.</p>
+<p>For the default X11 pipeline on Solaris OS and Linux, the following information is provided:</p>
+<ul>
+<li>
+<p>Properties related to the use of X11 pixmaps</p>
+<ul>
+<li>
+<p>Disabling the use of pixmaps by the X11 pipeline</p>
+</li>
+<li>
+<p>Disabling/forcing the use of shared memory pixmaps by the X11 pipeline</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Use of Shared Memory Extension by the X11 pipeline</p>
+<ul>
+<li>
+<p>Increasing the amount of shared memory available to X server and Java 2D</p>
+</li>
+<li>
+<p>Disabling the use of Shared Memory Extension by the X11 pipeline</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Solaris OS on SPARC: use of DGA in certain configurations</p>
+<ul>
+<li>
+<p>Detecting if the DGA extension is used for rendering to the screen</p>
+</li>
+<li>
+<p>Typical issues caused by the use of DGA</p>
+</li>
+<li>
+<p>Controlling the use of DGA by Java 2D</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Solaris OS on SPARC: changing the default visual used by Java 2D</p>
+</li>
+</ul>
+<p>For the default DirectDraw/GDI pipeline on Windows, the following information is provided:</p>
+<ul>
+<li>
+<p>Disabling the use of DirectDraw</p>
+</li>
+<li>
+<p>Forcing the use of DirectDraw pipeline</p>
+</li>
+<li>
+<p>Disabling the built-in punting mechanism</p>
+</li>
+<li>
+<p>Disabling the use of DirectDraw blit operations</p>
+</li>
+</ul>
+<p>For the alternative Direct3D pipeline on Windows, the following information is provided:</p>
+<ul>
+<li>
+<p>Disabling the Direct3D pipeline</p>
+</li>
+<li>
+<p>Forcing the use of the Direct3D pipeline</p>
+</li>
+<li>
+<p>Diagnosing rendering problems with the Direct3D pipeline</p>
+</li>
+</ul>
+<p>This section also provides information on using the OpenGL pipeline as an alternative pipeline on Solaris OS, Linux, and Windows.</p>
+<div><a id="sthref51" name="sthref51"/>
+<h3>Solaris OS and Linux: Using Default X11 Pipeline</h3>
+<p>On Unix platforms the default pipeline is the X11 pipeline. This pipeline uses the X protocol for rendering to the screen or to certain types of offscreen images, such as <code>VolatileImages</code>, or "compatible" images (images that are created with the <code>GraphicsConfiguration.createCompatibleImage()</code> method). Such types of images can be put into X11 pixmaps for improved performance, especially in the case of the Remote X server.</p>
+<p>In addition, in certain cases Java 2D uses X server extensions, for example, the MIT X shared memory extension, or Direct Graphics Access extension, Double-buffer extension for double-buffering when using the <code>BufferStrategy</code> API.</p>
+<p>An additional pipeline, the OpenGL pipeline, might offer greater performance in some configurations.</p>
+<div><a id="sthref52" name="sthref52"/>
+<h4>Properties Related to the Use of X11 Pixmaps</h4>
+<p>Java 2D by default uses X11 pixmaps for storing or caching certain types of offscreen images. Only the following types of images can be stored in pixmaps:</p>
+<ul>
+<li>
+<p>Opaque images, in which case <code>ColorModel.getTransparency()</code> returns <code>Transparency.OPAQUE</code></p>
+</li>
+<li>
+<p>1-bit transparent images (also known as sprites, <code>Transparency.BITMASK</code>)</p>
+</li>
+</ul>
+<p>The advantage of using pixmaps for storing images is that they can be put into the framebuffer's Video memory at the driver's discretion, which improves the speed at which these pixmaps can be copied to the screen or another pixmap.</p>
+<p>The use of pixmaps typically results in better performance. However, in certain cases, the opposite is true. Such cases typically involve the use of operations which cannot be performed using the X protocol, such as antialiasing, alpha compositing, and transforms that are more complex than simple translation transforms.</p>
+<p>For these operations the X11 pipeline must do the rendering using the built-in software renderer. In most cases this includes reading the contents of the pixmap to a system memory (over the network in the case of remote X server), performing the rendering, and then sending the pixels back to the pixmap. Such operations could result in extremely poor performance, especially if the X server is remote.</p>
+<a id="sthref53" name="sthref53"/>
+<p><b>Disabling the Use of Pixmaps by the X11 Pipeline</b></p>
+<p>To disable the use of pixmaps by Java2D, pass the following property to the Java VM: <code>-Dsun.java2d.pmoffscreen=false</code>.</p>
+<a id="sthref54" name="sthref54"/>
+<p><b>Disabling/Forcing the Use of Shared Memory Pixmaps by the X11 Pipeline</b></p>
+<p>To minimize the effect of such operations requiring reading of pixels from a pixmap on overall performance, the X11 pipeline uses shared memory pixmaps for storing images which are often read from. Note that the shared memory pixmaps can only be used in the case of a local X server.</p>
+<p>The advantage of using shared memory pixmaps is that the pipeline can get direct access to the pixels in the pipeline bypassing the X11 protocol, which results in better performance.</p>
+<p>By default an image is stored in a normal X server pixmap, but it can be later moved to a shared memory pixmap if the pipeline detects excessive reading from such an image. The image can be moved back to a server pixmap if it is copied from often enough.</p>
+<p>The pipeline allows two ways of controlling the use of shared memory pixmaps: either disabling them, or forcing all images to be always stored in shared memory pixmaps.</p>
+<ul>
+<li>
+<p>To disable shared memory pixmaps, set the <code>J2D_PIXMAPS</code> environment variable to <code>server</code>. This is the default in remote X server case.</p>
+</li>
+<li>
+<p>To force all pixmaps to be created in shared memory, set <code>J2D_PIXMAPS</code> to <code>shared</code>.</p>
+</li>
+</ul>
+<p>First try forcing the shared memory pixmaps, as it often improves performance. However, with certain video board/driver configurations it may be necessary to disable the shared memory pixmaps to avoid rendering artifacts or crashes.</p>
+</div>
+
+<div><a id="sthref55" name="sthref55"/>
+<h4>Use of MIT Shared Memory Extension by the X11 Pipeline</h4>
+<p>By default, the Java 2D X11 pipeline uses the MIT Shared Memory Extension (MIT SHM). This extension allows a faster exchange of data between the client (the Java application) and the X server, and this can significantly improve the performance of Java applications.</p>
+<a id="sthref56" name="sthref56"/>
+<p><b>Increasing Shared Memory Available to X Server and Java 2D</b></p>
+<p>On Solaris OS releases 8 and earlier it was sometimes necessary to increase the amount of shared memory available to the system (and to X server in particular) as the default was too low, resulting in poor rendering performance. Increasing the amount of shared memory and shared memory segments can result in better performance.</p>
+<p>To change the default settings on Solaris OS, edit the /etc/system file, changing the <code>shmsys:shminfo_*</code> settings, as in the following example. Note that this is not needed on Solaris 9 OS and newer.</p>
+<pre xml:space="preserve">
+set shmsys:shminfo_shmmax=10000000
+set shmsys:shminfo_shmni=200
+set shmsys:shminfo_shminfo=150
+</pre>
+<p>On Linux this setting can be configured by editing the /proc/sys/kernel/shm* files.</p>
+<a id="sthref57" name="sthref57"/>
+<p><b>Disabling Use of Shared Memory Extension by the X11 Pipeline</b></p>
+<p>In case of problems (such as crashes, or rendering artifacts) with older X servers and Shared Memory Extension, it is useful to be able to disable the extension. To disable the use of MIT SHM, set the <code>J2D_USE_MITSHM</code> environment variable to <code>false</code>.</p>
+</div>
+
+<div><a id="sthref58" name="sthref58"/>
+<h4>Solaris OS on SPARC: Use of DGA in Certain Configurations</h4>
+<p>On SPARC hardware, if the framebuffer supports Sun's DGA (Direct Graphics Access) X server extension, and Java 2D has a corresponding module for accessing the framebuffer, DGA will be used for rendering to the screen.</p>
+<p>All offscreen images will reside in Java heap memory, and Java 2D's software-only rendering pipeline is used for rendering to them. This is different from a typical UNIX configuration, where X11 pixmaps are used for offscreen images.</p>
+<a id="sthref59" name="sthref59"/>
+<p><b>Detecting Use of DGA Extension for Rendering to Screen</b></p>
+<p>To detect if the DGA extension is used for rendering to the screen, run any Java application which does some rendering or displays a GUI, and check if a /tmp/wg* file was created when the application started. Exit the application and verify that the file has been deleted. If this is the case, then on this system Java 2D is using DGA.</p>
+<a id="sthref60" name="sthref60"/>
+<p><b>Typical Issues Caused by Use of DGA</b></p>
+<p>Since DGA allows direct access to the framebuffer's video memory, the typical problems include corruption outside of window bounds, complete system, and X server lock-ups.</p>
+<a id="sthref61" name="sthref61"/>
+<p><b>Controlling Use of DGA by Java 2D</b></p>
+<p>If it is determined that DGA is being used, the first thing to try is to disable it. This can be done by setting the <code>NO_J2D_DGA</code> environment variable to <code>true</code>. This forces the default UNIX path to use only X11 for rendering to the screen, and pixmaps for accelerating offscreen images.</p>
+<p>In some cases it could be beneficial to enable the use of pixmaps, while also using DGA for rendering to the screen. To force the use of pixmaps for accelerating offscreen images, set the following property when starting the application: <code>-Dsun.java2d.pmoffscreen=true</code>.</p>
+</div>
+</div>
+
+<div><a id="sthref62" name="sthref62"/>
+<h3>Solaris OS on SPARC: Changing Default Visual Used by Java 2D</h3>
+<p>On certain video boards on the SPARC platform, more than one visual can be available from the X server. By default Java 2D tries to select the best visual, where "best" is typically a higher-bit depth visual. For example, on some Solaris OS releases the default X11 visual is 8-bit PseudoColor, although 24-bit visual is also available. In such cases Java 2D will select a 24-bit TrueColor visual as the default for Java windows.</p>
+<p>While it is possible to create a Java top-level window with a <code>GraphicsConfiguration</code> object corresponding to a different visual, in some cases it is necessary to make Java use a different default visual instead. This can be done by setting the <code>FORCEDEFVIS</code> environment variable. It can be set to <code>true</code> to force the use of the default X server visual (even if it is not the best one), or it can be set to a hexadecimal number corresponding to the visual ID as reported by tools like <code>xdpyinfo</code>.</p>
+<p>To determine your X server default visual, execute the <code>xdpyinfo</code> command and look at the <code>default visual id</code> field.</p>
+</div>
+
+<div><a id="sthref63" name="sthref63"/>
+<h3>Windows OS: Using Default DirectDraw/GDI Pipeline</h3>
+<p>The default pipeline on the Windows platform is a mixture of the DirectDraw pipeline and the GDI pipeline, where some operations are performed with the DirectDraw pipeline and others with the GDI pipeline. DirectDraw and GDI APIs are used for rendering to accelerated offscreen and onscreen surfaces.</p>
+<p>Starting with the Java SE 6 release, when the application enters full-screen mode, the new Direct3D pipeline can be used, if the drivers satisfy the requirements. Possible issues with the Direct3D pipeline include rendering artifacts, crashes, and performance-related problems.</p>
+<p>An additional pipeline, the OpenGL pipeline, might offer greater performance in some configurations.</p>
+<div><a id="sthref64" name="sthref64"/>
+<h4>Disabling the Use of DirectDraw</h4>
+<p>When DirectDraw is disabled, all operations are performed with GDI. Provide the following flag to disable the use of DirectDraw: <code>-Dsun.java2d.noddraw=true</code>. In this case all offscreen images will be created in the Java heap, and rendered to with the default software pipeline. All onscreen rendering, as well as copies of offscreen images to the screen will be performed using GDI.</p>
+</div>
+
+<div><a id="sthref65" name="sthref65"/>
+<h4>Forcing the Use of DirectDraw Pipeline</h4>
+<p>In case the pipeline was disabled by default for some reason, it can be enabled by providing the <code>-Dsun.java2d.noddraw=false</code> flag to the VM.</p>
+<p>However, typically there was a reason why it was disabled in the first place, so it is better not to force it.</p>
+</div>
+
+<div><a id="sthref66" name="sthref66"/>
+<h4>Disabling the Built-in Punting Mechanism</h4>
+<p>In general, the DirectDraw pipeline attempts to place the offscreen surfaces in the framebuffer's video memory, which provides fast copies from these surfaces to the screen or other accelerated surfaces, as well as hardware accelerated rendering of certain graphics operations.</p>
+<p>However, if the pipeline cannot perform an operation using the DirectDraw API (operations using, for example, alpha compositing, or transforms, or antialiasing), the rendering is performed using the software pipeline. In some cases this means that the pixels of the destination surface, which resides in VRAM, need to be read into system memory, which is a very expensive operation.</p>
+<p>To limit the impact of unaccelerated rendering to VRAM-based surfaces, there exists a punting mechanism, which moves the surface which is detected to be often read from to the system memory. If the surface is found to be copied from often enough, it may be promoted back to the video memory.</p>
+<p>On certain video boards/drivers combinations the system-memory based DirectDraw surfaces are known to cause rendering artifacts and other issues. The DirectDraw pipeline provides a way to disable the punting mechanism so that the system memory surfaces are not used.</p>
+<p>To defeat the built-in surface punting mechanism provide the following flag to the Java VM: <code>-Dsun.java2d.ddforcevram=true</code>.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>This can result in performance degradation, as the software loops may be reading pixels from VRAM on each operation. In this case you may consider disabling the DirectDraw pipeline (see above).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<div><a id="sthref67" name="sthref67"/>
+<h4>Disabling the DirectDraw Blit Operations</h4>
+<p>In a blit operation (Bit Block Transfer), two bitmap patterns are combined. This operation basically corresponds to a call to the <code>Graphics.drawImage()</code> API.</p>
+<p>In some cases it is possible to avoid rendering problems by disabling the DirectDraw blit operations. GDI blits will be used instead. Note that this might result in bad performance. Consider disabling the DirectDraw pipeline instead.</p>
+<p>To disable the use of DirectDraw blit operations, pass the parameter <code>-Dsun.java2d.ddblit=false</code> to the Java VM.</p>
+</div>
+</div>
+
+<div><a id="sthref68" name="sthref68"/>
+<h3>Windows OS: Using Direct3D Pipeline (Full-Screen Mode)</h3>
+<p>Starting with the Java SE 6 release, the Direct3D pipeline uses the Direct3D API for rendering. This pipeline is enabled in full-screen mode by default, if the drivers support the required features and the level of rendering quality.</p>
+<p>With both the Java SE 5 and later releases, it is possible to enable the Direct3D pipeline or to force its use, as described in the subsections below.</p>
+<p>Consider enabling the Direct3D pipeline for your application if it makes heavy use of rendering operations such as alpha compositing, antialiasing, and transforms.</p>
+<p>However, use caution when deciding to enable this pipeline in your application. For example, some built-in video chipsets (which are used in most notebooks) do not perform well using Direct3D, even if they satisfy the quality requirements for Java 2D pipelines.</p>
+<div><a id="sthref69" name="sthref69"/>
+<h4>Disabling the Direct3D Pipeline</h4>
+<p>Some older video boards/drivers combinations are known to cause issues (both rendering and performance) with the Direct3D pipeline. To disable the pipeline in such cases, with Java SE 5 and later releases, pass the parameter <code>-Dsun.java2d.d3d=false</code> to the Java VM, or set the <code>J2D_D3D</code> environment variable to <code>false</code>.</p>
+</div>
+
+<div><a id="sthref70" name="sthref70"/>
+<h4>Forcing the Use of the Direct3D Pipeline</h4>
+<p>With Java SE 5 and later releases, to enable the Direct3D pipeline in both windowed and full-screen mode, use the parameter <code>-Dsun.java2d.d3d=true</code>, or set the <code>J2D_D3D</code> environment variable to <code>true</code>. Note that the pipeline is enabled only if the drivers support minimum required features.</p>
+</div>
+
+<div><a id="sthref71" name="sthref71"/>
+<h4>Diagnosing Rendering Problems with Direct3D Pipeline</h4>
+<p>With the Java SE 6 release, some rendering issues (like missing pixels, garbled rendering) can be diagnosed by forcing different Direct3D rasterizers. Set the <code>J2D_D3D_RASTERIZER</code> environment variable to one of the following: <code>ref</code>, <code>rgb</code>, <code>hal</code>, or <code>tnl</code>.</p>
+<p>Refer to Direct3D documentation for a description of these rasterizers. By default the best rasterizer is chosen based on its advertised capabilities. In particular, the <code>ref</code> rasterizer forces the use of the reference Direct3D rasterizer from Microsoft. If a rendering problem is not reproducible with this rasterizer, then it is very likely to be a video driver bug.</p>
+<p>The <code>rgb</code> rasterizer is available only if the Direct3D SDK is installed. This SDK can be obtained from <a href="http://msdn.microsoft.com/directx/">Microsoft Game Technologies Center</a>.</p>
+<p>For performance or quality problems with text rendering with the Direct3D pipeline, you can force the use of ARGB texture instead of the default Alpha texture for the Direct3D pipeline's glyph cache. To do this, set the <code>J2D_D3D_NOALPHATEXTURE</code> environment variable to <code>true</code>.</p>
+</div>
+</div>
+
+<div><a id="sthref72" name="sthref72"/>
+<h3>Using OpenGL Pipeline (Solaris OS, Linux, and Windows)</h3>
+<p>The OpenGL pipeline was first made available in the J2SE 5.0 release on Solaris OS, Linux, and Windows. This alternate pipeline uses the hardware-accelerated, cross-platform OpenGL API when rendering to <code>VolatileImages</code>, to backbuffers created with <code>BufferStrategy</code> API, and to the screen.</p>
+<p>This pipeline can offer great performance advantages over the default (X11 or GDI/DirectDraw) pipelines for certain applications. Consider enabling the pipeline for your application if it makes heavy use of rendering operations like alpha compositing, antialiasing, and transforms.</p>
+<p>For a complete list of Java 2D operations that are accelerated by the OpenGL pipeline, refer to the article <a href="https://today.java.net/article/2004/11/11/behind-graphics2d-opengl-based-pipeline">Behind the Graphics2D: The OpenGL-based Pipeline</a>.</p>
+<div><a id="sthref73" name="sthref73"/>
+<h4>Enabling the OpenGL Pipeline</h4>
+<p>The OpenGL pipeline is currently disabled by default. To attempt to enable the OpenGL pipeline, provide the following option to the JVM:</p>
+<p><code>-Dsun.java2d.opengl=true</code></p>
+<p>To receive verbose console output about whether the OpenGL pipeline is initialized successfully for a particular screen, set the option to True (note the uppercase "T"):</p>
+<p><code>-Dsun.java2d.opengl=True</code></p>
+</div>
+
+<div><a id="sthref74" name="sthref74"/>
+<h4>Minimum Requirements</h4>
+<p>The OpenGL pipeline will not be enabled if the hardware or drivers do not meet the minimum requirements. If for some reason one of the following requirements is not met, Java 2D will fall back and use the default pipeline (X11 on Solaris/Linux, GDI/DirectDraw on Windows), which means your application will continue to work correctly, but without the OpenGL acceleration.</p>
+<p>The minimum requirements for Solaris OS and Linux are the following:</p>
+<ul>
+<li>
+<p>Hardware accelerated OpenGL/GLX libraries installed and configured properly</p>
+</li>
+<li>
+<p>OpenGL version 1.2 or higher</p>
+</li>
+<li>
+<p>GLX version 1.3 or higher</p>
+</li>
+<li>
+<p>At least one TrueColor visual with an available depth buffer</p>
+</li>
+</ul>
+<p>The minimum requirements for Windows OS are the following:</p>
+<ul>
+<li>
+<p>Hardware accelerated drivers supporting the extensions <code>WGL_ARB_pbuffer</code>, <code>WGL_ARB_render_texture</code>, and <code>WGL_ARB_pixel_format</code></p>
+</li>
+<li>
+<p>OpenGL version 1.2 or higher</p>
+</li>
+<li>
+<p>At least one pixel format with an available depth buffer</p>
+</li>
+</ul>
+</div>
+
+<div><a id="sthref75" name="sthref75"/>
+<h4>Latest OpenGL Drivers</h4>
+<p>Since the OpenGL pipeline relies heavily on the OpenGL API and the underlying graphics hardware and drivers, it is very important to ensure that you have the latest graphics drivers installed on your machine. Drivers can be downloaded from your graphics card manufacturer's web site, as shown in the following table.</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of graphics card manufacturers with their corresponding web sites, supported platforms and some examples of cards that are known to support OpenGL." title="Supported graphics card manufacturers" width="100%">
+<col width="17%"/>
+<col width="26%"/>
+<col width="*"/>
+<col width="29%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t3" valign="bottom">Manufacturer</th>
+<th align="left" id="r1c2-t3" valign="bottom">Web SIte</th>
+<th align="left" id="r1c3-t3" valign="bottom">Platforms</th>
+<th align="left" id="r1c4-t3" valign="bottom">Cards Known to Work</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r2c1-t3">
+<p>ATI</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<p><code><a href="http://ati.com">http://ati.com</a></code></p>
+</td>
+<td align="left" headers="r2c1-t3 r1c3-t3">
+<p>Linux, Windows</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c4-t3">
+<p>Radeon 8500 and above, FireGL series</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r3c1-t3">
+<p>Nvidia</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<p><code><a href="http://nvidia.com">http://nvidia.com</a></code></p>
+</td>
+<td align="left" headers="r3c1-t3 r1c3-t3">
+<p>Solaris OS on x64, Linux, Windows</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c4-t3">
+<p>GeForce 2 series and above, Quadro FX series and above</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r4c1-t3">
+<p>Sun</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<p><code><a href="http://sun.com">http://sun.com</a></code></p>
+</td>
+<td align="left" headers="r4c1-t3 r1c3-t3">
+<p>Solaris OS on SPARC</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c4-t3">
+<p>Expert3D series, XVR-500, XVR-600, XVR-1200, XVR-2500</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r5c1-t3">
+<p>Xi Graphics</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c2-t3">
+<p><code><a href="http://xig.com">http://xig.com</a></code></p>
+</td>
+<td align="left" headers="r5c1-t3 r1c3-t3">
+<p>Solaris OS on x86, Linux</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c4-t3">
+<p>Various (check with Xi Graphics)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div><a id="sthref76" name="sthref76"/>
+<h4>Diagnosing Startup Issues</h4>
+<p>As mentioned above, the OpenGL pipeline might not be enabled on certain machines for various reasons. For example, the drivers might not be properly installed and might report an insufficient version number. Alternatively, your machine might have an older graphics card that does not support the appropriate OpenGL version or extensions.</p>
+<p>In the Java SE 6 and later releases, you can get detailed information about the startup procedures of the OpenGL-based Java 2D pipeline by using the <code>J2D_TRACE_LEVEL</code> environment variable as follows.</p>
+<p>On Windows:</p>
+<pre xml:space="preserve">
+# set J2D_TRACE_LEVEL=4
+# java -Dsun.java2d.opengl=True YourApp
+</pre>
+<p>On Solaris OS and Linux:</p>
+<pre xml:space="preserve">
+# export J2D_TRACE_LEVEL=4
+# java -Dsun.java2d.opengl=True YourApp
+</pre>
+<p>The output will be different depending on your platform and the installed graphics hardware, but it can give you some insight into the reasons why the OpenGL pipeline is not being successfully enabled for your configuration.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>This output is especially useful when filing bug reports intended for the Java 2D team at Sun, as discussed below.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<div><a id="sthref77" name="sthref77"/>
+<h4>Diagnosing Rendering and Performance Issues</h4>
+<p>Since the OpenGL pipeline relies so heavily on the underlying graphics hardware and drivers, it might sometimes be difficult to determine whether rendering or performance issues are being caused by Java 2D or by the OpenGL drivers.</p>
+<p>One feature new to the OpenGL pipeline in the Java SE 6 release is the use of the <code>GL_EXT_framebuffer_object</code> extension, which provides better performance for rendering and reduced VRAM consumption when using <code>VolatileImages</code>. This "FBO" codepath is enabled by default when the OpenGL pipeline is enabled, but only if your graphics hardware and driver support this OpenGL extension. This extension is generally available on Nvidia GeForce/Quadro FX series and newer, and on ATI Radeon 9500 and newer. If you suspect that the "FBO" codepath is causing problems in your application, you can disable it by setting the following system property:</p>
+<p><code>-Dsun.java2d.opengl.fbobject=false</code></p>
+<p>Setting this property will cause Java 2D to fall back on the older "pbuffer-based" codepath.</p>
+<p>If you find that a certain Java 2D operation causes different visual results with the OpenGL pipeline enabled than without, it probably indicates a graphics driver bug. Similarly, if the performance of Java 2D rendering is significantly worse with the OpenGL pipeline enabled than without, it is most likely caused by a driver or hardware problem.</p>
+<p>In either case, file a detailed bug report through the normal bug reporting channels (see <a href="bugreports.html#submitting_bug_reports">"Submitting Bug Reports"</a>). When filing bug reports, be as detailed as possible, and always include the following information:</p>
+<ul>
+<li>
+<p>Operating system (for example, Ubuntu Linux 6.06, Windows XP SP2)</p>
+</li>
+<li>
+<p>Name of graphics hardware manufacturer and device (for example, Nvidia GeForce 2 MX 440)</p>
+</li>
+<li>
+<p>Exact driver version (for example, ATI Catalyst 6.8, Nvidia 91.33)</p>
+</li>
+<li>
+<p>Output when <code>J2D_TRACE_LEVEL=4</code> is specified on the command line (as described in previous section)</p>
+</li>
+<li>
+<p>If on Solaris OS or Linux, the output of the glxinfo command</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<a id="A1013923" name="A1013923"/>
+<div>
+<h2>Generic Performance Issues</h2>
+<p>This section contains the following subsections:</p>
+<ul>
+<li>
+<p><a href="#BABEABHJ">"Hardware Accelerated Rendering Primitives"</a></p>
+</li>
+<li>
+<p><a href="#BABJDFDG">"Using Java 2D Primitive Tracing to Detect and Avoid Non-accelerated Rendering"</a></p>
+</li>
+<li>
+<p><a href="#BABCBIAB">"Causes of Poor Rendering Performance"</a></p>
+</li>
+<li>
+<p><a href="#BABBAHCJ">"Improving Performance of Software-only Rendering"</a></p>
+</li>
+</ul>
+<a id="BABEABHJ" name="BABEABHJ"/>
+<div>
+<h3>Hardware Accelerated Rendering Primitives</h3>
+<p>In order to better understand what could be causing performance problems, take a look at what hardware acceleration means.</p>
+<p>In general, hardware accelerated rendering could be divided into two categories.</p>
+<ul>
+<li>
+<p>Hardware-accelerated rendering to an "accelerated" destination. Examples of rendering destinations which can be hardware-accelerated are <code>VolatileImage</code>, screen, and <code>BufferStrategy</code>. If a destination is accelerated, rendering which goes to such surface may be performed by video hardware. So if you issue a <code>drawRect</code> call, Java 2D redirects this call to the underlying native API (such as GDI, DirectDraw, Direct3D or OpenGL, or X11), which performs the operation using hardware.</p>
+</li>
+<li>
+<p>Caching images in accelerated memory (Video memory or pixmaps) so that they can be copied very fast to another accelerated surface. Such images are known as "managed images."</p>
+</li>
+</ul>
+<p>Ideally, all operations performed to an accelerated surface are hardware-accelerated. In this case the application takes the full advantage that is offered by the platform.</p>
+<p>Unfortunately in many cases the default pipelines are not able to use the hardware for rendering. This can happen due to the pipeline limitations, or the underlying native API. For example, most X servers do not support rendering antialiased primitives, or alpha compositing.</p>
+<p>One cause of performance issues is when operations performed are not hardware-accelerated. Even in cases when a destination surface is accelerated, some primitives may not be.</p>
+<p>It is important to know how to detect the cases when hardware acceleration is not being used. Knowing this may help in improving performance.</p>
+</div>
+
+<a id="BABJDFDG" name="BABJDFDG"/>
+<div>
+<h3>Using Java 2D Primitive Tracing to Detect and Avoid Non-accelerated Rendering</h3>
+<p>To detect a non-accelerated rendering, you can use Java 2D primitive tracing.</p>
+<p>Java 2D has built-in primitive tracing. See the description of the <code>trace</code> property at <a href="http://download.oracle.com/javase/7/docs/technotes/guides/2d/flags.html">System Properties for Java 2D Technology</a>.</p>
+<p>Run your application with <code>-Dsun.java2d.trace=count</code>. When the application exits, a list of primitives and their counts is printed to the console.</p>
+<p>Any time you see a <code>MaskBlit</code> or any of the <code>General*</code> primitives, it typically means that some of your rendering is going through software loops. Here is the output from performing <code>drawImage</code> on a translucent <code>BufferedImage</code> to a <code>VolatileImage</code> on Linux:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.Blit$GeneralMaskBlit::Blit(IntArgb, SrcOverNoEa, "Integer BGR Pixmap")sun.java2d.loops.MaskBlit::MaskBlit(IntArgb, SrcOver, IntBgr)
+</pre>
+<p>Here are some of the common non-accelerated primitives in the default pipelines, and their signatures in the tracing output. Note that most of this tracing was taken on Linux; you may see some differences depending on your platform and configuration.</p>
+<ul>
+<li>
+<p>Translucent images (Images with <code>ColorModel.getTranslucency()</code> returns <code>Translucency.TRANSLUCENT</code>), or with <code>AlphaCompositing</code>. Sample primitive tracing output:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.Blit$GeneralMaskBlit::Blit(IntArgb,SrcOverNoEa, "Integer BGR Pixmap")sun.java2d.loops.MaskBlit::MaskBlit(IntArgb, SrcOver, IntBgr)
+</pre></li>
+<li>
+<p>Use of antialiasing (by setting the antialiasing hint). Sample primitive tracing output:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.MaskFill::MaskFill(AnyColor, Src, IntBgr)
+</pre></li>
+<li>
+<p>Rendering antialiased text (setting the text antialising hint). Sample output can be one of the following:</p>
+<ul>
+<li>
+<pre xml:space="preserve">
+sun.java2d.loops.DrawGlyphListAA::DrawGlyphListAA(OpaqueColor, SrcNoEa, AnyInt)
+</pre></li>
+<li>
+<pre xml:space="preserve">
+sun.java2d.loops.DrawGlyphListLCD::DrawGlyphListLCD(AnyColor, SrcNoEa, IntBgr)
+</pre></li>
+</ul>
+</li>
+<li>
+<p>Alpha compositing, either by rendering with translucent Color (a Color with alpha value which is not <code>0xff</code>), or by setting a non-default <code>AlphaCompositing</code> mode with <code>Graphics2D.setComposite()</code>:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.Blit$GeneralMaskBlit::Blit(IntArgb, SrcOver, IntRgb)sun.java2d.loops.MaskBlit::MaskBlit(IntArgb, SrcOver, IntRgb)
+</pre></li>
+<li>
+<p>Non-trivial transforms (if the transform is more than only translation). Rendering a transformed opaque image to a <code>VolatileImage</code>:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.TransformHelper::TransformHelper(IntBgr, SrcNoEa, IntArgbPre)
+</pre></li>
+<li>
+<p>Rendering a rotated line:</p>
+<pre xml:space="preserve">
+sun.java2d.loops.DrawPath::DrawPath(AnyColor, SrcNoEa, AnyInt)
+</pre></li>
+</ul>
+<p>Run your application with the tracing and make sure you do not use unaccelerated primitives unless they are needed.</p>
+</div>
+
+<a id="BABCBIAB" name="BABCBIAB"/>
+<div>
+<h3>Causes of Poor Rendering Performance</h3>
+<p>Some of the possible causes of poor rendering performance are described in the following subsections:</p>
+<ul>
+<li>
+<p><a href="#BABBIADH">"Mixing Accelerated and Non-accelerated Rendering"</a></p>
+</li>
+<li>
+<p><a href="#BABJJDIH">"Using Non-optimal Rendering Primitives"</a></p>
+</li>
+<li>
+<p><a href="#BABBEIIJ">"Using Heap-based Destination Surface (a <code>BufferedImage</code>)"</a></p>
+</li>
+<li>
+<p><a href="#BABHGICC">"Defeating Built-in Acceleration Mechanisms"</a></p>
+</li>
+</ul>
+<a id="BABBIADH" name="BABBIADH"/>
+<div>
+<h4>Mixing Accelerated and Non-accelerated Rendering</h4>
+<p>A situation when only part of the primitives rendered by an application could be accelerated by the particular pipeline when rendering to an accelerated surface can cause thrashing, because the pipelines will be constantly trying to adjust for better rendering performance but with possibly little success.</p>
+<p>If it is known beforehand that most of the rendering primitives will not be accelerated, it could be better to either render to a <code>BufferedImage</code> and then copy it to the back-buffer or the screen, or switch to a non-hardware accelerated pipeline using one of the flags discussed above.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>This approach may limit your application's ability to take advantage of future improvements in Java 2D's use of hardware acceleration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>For example, if your application is often used in remote X server cases, but it heavily uses antialiasing, alpha compositing, and so forth, the performance can be severely degraded. To avoid this, disable the use of Pixmaps by setting the <code>-Dsun.java2d.pmoffscreen=false</code> property either by passing it to the Java runtime, or by setting it programmatically using the <code>System.setProperty()</code> API. Note that this property must be set prior to any GUI-related operations because it is read only once.</p>
+</div>
+
+<a id="BABJJDIH" name="BABJJDIH"/>
+<div>
+<h4>Using Non-optimal Rendering Primitives</h4>
+<p>It is preferable to use the simplest primitive possible to achieve the desired visual effect.</p>
+<p>For example, use <code>Graphics.drawLine()</code> instead of new <code>Line2D().draw()</code>. The result looks the same. However, the second operation is much more computationally-intensive because it is rendered as a generic shape, which is typically much more expensive to render. Shapes show up in different ways in the primitive tracing, depending on antialiasing settings and the specific pipeline, but most likely they will show up as many <code>*FillSpans</code> or <code>DrawPath</code> primitives.</p>
+<p>Another example of complicated attributes is <code>GradientPaint</code>. Although it may be hardware accelerated by some of the non-default pipelines (such as OpenGL), it is not hardware accelerated by the default pipelines. Therefore, you can restrict the use of <code>GradientPaint</code> if it causes performance problems.</p>
+</div>
+
+<a id="BABBEIIJ" name="BABBEIIJ"/>
+<div>
+<h4>Using Heap-based Destination Surface (a <code>BufferedImage</code>)</h4>
+<p>Rendering to a <code>BufferedImage</code> almost always uses software loops.</p>
+<p>An exception is that on some SPARC systems the VIS instruction set may be used for accelerating certain imaging operations. Refer to <a href="http://www.sun.com/processors/vis/">web site for the VIS Instruction Set</a>.</p>
+<p>To ensure that the rendering has the opportunity of being hardware accelerated, choose a <code>BufferStrategy</code> or a <code>VolatileImage</code> object as the rendering destination.</p>
+</div>
+
+<a id="BABHGICC" name="BABHGICC"/>
+<div>
+<h4>Defeating Built-in Acceleration Mechanisms</h4>
+<p>Java 2D attempts to accelerate certain types of images. Contents of images may be cached in video memory for faster copying to accelerated destinations such as <code>VolatileImages</code>. These mechanisms can be unknowingly defeated by the application, for example, in the following cases:</p>
+<ul>
+<li>
+<p><a href="#BABHJFCI">Getting Direct Access to the Pixels with <code>getDataBuffer()</code></a></p>
+</li>
+<li>
+<p><a href="#BABJBCEF">Rendering to a Sprite Before Every Copy</a></p>
+</li>
+<li>
+<p><a href="#BABEECID">Exhausting Accelerated Memory Resources</a></p>
+</li>
+</ul>
+<a id="BABHJFCI" name="BABHJFCI"/>
+<p><b>Getting Direct Access to the Pixels with <code>getDataBuffer()</code></b></p>
+<p>If an application gets access to <code>BufferedImage</code> pixels by using the <code>getRaster().getDataBuffer()</code> API, Java 2D will not be able to guarantee that the data in the cache is up to date, so it will disable any acceleration attempts of such image.</p>
+<p>There are two ways to avoid this problem:</p>
+<ul>
+<li>
+<p>If possible, do not call <code>getDataBuffer()</code>. Instead, work with <code>WriteableRaster</code>, which can be obtained with the <code>BufferedImage.getRaster()</code> method.</p>
+</li>
+<li>
+<p>If you do need to modify the pixels directly, you can manually cache your image in video memory by maintaining the cached copy of your image in a <code>VolatileImage</code>, and updating the cached data when the original image is touched.</p>
+</li>
+</ul>
+<a id="BABJBCEF" name="BABJBCEF"/>
+<p><b>Rendering to a Sprite Before Every Copy</b></p>
+<p>If an application renders to an image every time before copying it to an accelerated surface (<code>VolatileImage</code>, <code>BufferStrategy</code>), the image cannot take advantage of being cached in accelerated memory. This is because the cached copy has to be updated every time the original image is updated, and therefore only the default system-memory based surface is used, and this means no acceleration.</p>
+<a id="BABEECID" name="BABEECID"/>
+<p><b>Exhausting Accelerated Memory Resources</b></p>
+<p>If the application uses many images, it may exhaust the available accelerated memory. If this is indeed the cause of performance issues for your application, you might need to handle the resources.</p>
+<p>The following API can be used to request the amount of available accelerated memory: <code>GraphicsDevice.getAvailableAcceleratedMemory()</code>.</p>
+<p>In addition, the following API can be used to determine if your image is being accelerated: <code>Image.getCapabilities()</code>.</p>
+<p>If you determined that your application is exhausting the resources, you can handle the problem in the following ways:</p>
+<ul>
+<li>
+<p>Do not hold images you no longer need. For example, if your game advanced to the next level, release all images from the previous levels. You can also release accelerated resources associated with an image by using the <code>Image.flush()</code> API.</p>
+</li>
+<li>
+<p>Use the acceleration priority API <code>Image.getAccelerationPriority()</code> and <code>setAccelerationPriority()</code> to specify the acceleration priority for your images. It is a good idea to make sure that at least your back-buffer is accelerated, so create it first, and with acceleration priority of 1 (default). You can also prohibit certain images from being accelerated if needed by setting the acceleration priority to 0.0.</p>
+</li>
+</ul>
+</div>
+</div>
+
+<a id="BABBAHCJ" name="BABBAHCJ"/>
+<div>
+<h3>Improving Performance of Software-only Rendering</h3>
+<p>If your application relies on software-only rendering (by only rendering to a <code>BufferedImage</code>, or changing the default pipeline to an unaccelerated one), or even if it does mixed rendering, there are certain approaches to improving performance:</p>
+<ul>
+<li>
+<p><a href="#BABIHCJC">"Use of Image Types or Operations With Optimized Support"</a></p>
+</li>
+<li>
+<p><a href="#BABCHIDJ">"Transparency vs Translucency"</a></p>
+</li>
+</ul>
+<a id="BABIHCJC" name="BABIHCJC"/>
+<div>
+<h4>Use of Image Types or Operations With Optimized Support</h4>
+<p>Due to overall platform size constraints, Java 2D has a limited number of optimized routines for converting from one image format to another. In situations where an optimized direct loop can not be found, Java 2D will do the conversion through an intermediate image format (<code>IntArgb</code>). This results in performance degradation.</p>
+<p>Java 2D primitive tracing can be used for detecting such situations.</p>
+<p>For each <code>drawImage</code> call there will be two primitives: the first one converting the image from the source format to an intermediate <code>IntArgb</code> format and the second one converting from intermediate <code>IntArgb</code> to the destination format.</p>
+<p>Here are two ways to avoid such situations:</p>
+<ul>
+<li>
+<p>Use a different image format if possible.</p>
+</li>
+<li>
+<p>Convert your image to an intermediate image of one of the better-supported formats, such as <code>INT_RGB</code> or <code>INT_ARGB</code>. In this way the conversion from the custom image format will happen only once instead of on every copy.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABCHIDJ" name="BABCHIDJ"/>
+<div>
+<h4>Transparency vs Translucency</h4>
+<p>Consider using 1-bit transparent (<code>BITMASK</code>) images for your sprites as opposed to images with full translucency (such as <code>INT_ARGB</code>) if possible.</p>
+<p>Processing images with full alpha is more CPU-intensive.</p>
+<p>You can get a 1-bit transparent image using a call to <code>GraphicsConfiguration.createCompatibleImage(w,h, Transparency.BITMASK)</code>.</p>
+</div>
+</div>
+</div>
+
+<a id="A1016927" name="A1016927"/>
+<div>
+<h2>Text-Related Issues</h2>
+<p>This section describes some issues that can be related to text rendering, included in the following subsections:</p>
+<ul>
+<li>
+<p><a href="#BABIEIDH">"Application Crash During Text Rendering"</a></p>
+</li>
+<li>
+<p><a href="#BABHIHEH">"Differences in Text Appearance"</a></p>
+</li>
+<li>
+<p><a href="#BABHIBBI">"Metrics"</a></p>
+</li>
+</ul>
+<a id="BABIEIDH" name="BABIEIDH"/>
+<div>
+<h3>Application Crash During Text Rendering</h3>
+<p>If an application crashes during text rendering, first check the fatal error log file. See <a href="felog.html#fatal_error_log_vm">"Fatal Error Log"</a> for detailed information about this error log file. If the crash occurred in fontmanager.dll or if <code>fontmanager</code> is present in the stack, then the crash occurred in the font processing code. Here is an example of typical native stack frames (excerpt from the full log file).</p>
+<pre xml:space="preserve">
+Stack: [0x008a0000,0x008f0000),  sp=0x008ef52c,  free space=317k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [ntdll.dll+0x1888f]
+C  [ntdll.dll+0x18238]
+C  [ntdll.dll+0x11c76]
+C  [MSVCR71.dll+0x16b3]
+C  [MSVCR71.dll+0x16db]
+C  [fontmanager.dll+0x21f9a]
+C  [fontmanager.dll+0x22876]
+C  [fontmanager.dll+0x1de40]
+C  [fontmanager.dll+0x1da94]
+C  [fontmanager.dll+0x48abb]
+j  sun.font.FileFont.getGlyphImage(JI)J+0
+j  sun.font.FileFontStrike.getGlyphImagePtrs([I[JI)V+92
+j  sun.font.GlyphList.mapChars(Lsun/java2d/loops/FontInfo;I)Z+37
+j  sun.font.GlyphList.setFromString(Lsun/java2d/loops/FontInfo;Ljava/lang/String;FF)Z+71
+j  sun.java2d.pipe.GlyphListPipe.drawString(Lsun/java2d/SunGraphics2D;Ljava/lang/String;DD)V+148
+j  sun.java2d.SunGraphics2D.drawString(Ljava/lang/String;II)V+60
+j  FontCrasher.tryFont(Ljava/lang/String;)V+138
+j  FontCrasher.main([Ljava/lang/String;)V+20
+v  ~StubRoutines::call_stub
+</pre>
+<p>In this case, a particular font is probably the problem. If so, then removing this font from the system will likely resolve the problem.</p>
+<p>To identify the font file, execute the application with <code>-Dsun.java2d.debugfonts=true</code>. The font that is mentioned last is usually the one that is causing problems. Here is an example of typical output.</p>
+<pre xml:space="preserve">
+INFO: Registered file C:\WINDOWS\Fonts\WINGDING.TTF as font ** TrueType Font: Family=Wingdings
+ Name=Wingdings style=0 fileName=C:\WINDOWS\Fonts\WINGDING.TTF rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file SYMBOL.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager addToFontList
+INFO: Add to Family Symbol, Font Symbol rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager registerFontFile
+INFO: Registered file C:\WINDOWS\Fonts\SYMBOL.TTF as font ** TrueType Font: Family=Symbol
+ Name=Symbol style=0 fileName=C:\WINDOWS\Fonts\SYMBOL.TTF rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager findFont2D
+INFO: Search for font: Dialog
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file ARIALBD.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager addToFontList
+INFO: Add to Family Arial, Font Arial Bold rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager registerFontFile
+INFO: Registered file C:\WINDOWS\Fonts\ARIALBD.TTF as font ** TrueType Font: Family=Arial
+ Name=Arial Bold style=1 fileName=C:\WINDOWS\Fonts\ARIALBD.TTF rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file WINGDING.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file SYMBOL.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager findFont2D
+INFO: Search for font: Dialog
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file ARIAL.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager addToFontList
+INFO: Add to Family Arial, Font Arial rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager registerFontFile
+INFO: Registered file C:\WINDOWS\Fonts\ARIAL.TTF as font ** TrueType Font: Family=Arial
+ Name=Arial style=0 fileName=C:\WINDOWS\Fonts\ARIAL.TTF rank=2
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file WINGDING.TTF
+Aug 16, 2006 10:59:06 PM sun.font.FontManager initialiseDeferredFont
+INFO: Opening deferred font file SYMBOL.TTF
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>In some cases the font that is last mentioned might be in fact innocent. Font names are printed when they are first used and subsequent uses are not shown.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>To verify that this particular font is causing the problem, you can temporarily remove it from your system. You can easily find the file name associated with this particular family name from the above output.</p>
+<p>Another verification approach is to use the Font2DTest tool (demo/jfc/Font2DTest) to test fonts that you suspect. You can specify a particular font size, style, and rasterization mode. If the process of viewing a particular font with Font2DTest causes the JDK to crash, then it is very likely that it is the font that is causing the problems.</p>
+<p>If you found a font causing the JDK to crash, it is very important to report this problem, including the particular font and the operating system, at <code><a href="bugs.sun.com">bugs.sun.com</a></code>. See <a href="bugreports.html#submitting_bug_reports">"Submitting Bug Reports"</a> for more information about reporting bugs.</p>
+</div>
+
+<a id="BABHIHEH" name="BABHIHEH"/>
+<div>
+<h3>Differences in Text Appearance</h3>
+<p>Java has its own font rasterizer, and you can expect some small differences between the appearance of text in a Java application and in a native application.</p>
+<p>One of the most typical sources of these differences is that the antialiasing settings can be different. In particular, a Swing application sometimes ignores the Linux desktop font antialiasing settings.</p>
+<p>There are several likely reasons for this behavior:</p>
+<ul>
+<li>
+<p>Over remote X11 antialiasing is not enabled by default for performance reasons. For information about how to force antialiasing, see the <a href="http://www.oracle.com/technetwork/java/index-137037.html#Font_and_Text_questions">Font and Test questions in the Java 2D FAQ</a>.</p>
+</li>
+<li>
+<p>CJK fonts that use embedded bitmaps may render using the bitmaps instead of subpixel text.</p>
+</li>
+<li>
+<p>Some variants of unsupported desktops do not report their font smoothing settings properly. For example, KDE is unsupported but should generally work; however, some problem seems to prevent JDK from picking up the setting.</p>
+</li>
+</ul>
+<p>The best way to ensure that the configuration is what you expect is to run Font2DTest, explicitly select the font used by the native application, and set other parameters as appropriate. Here is a sample screen from the Font2DTest tool.</p>
+<div><a id="sthref78" name="sthref78"/>
+<p><b><i>Figure 3-1 Sample Screen from Font2DTest Tool</i></b></p>
+<img alt="Description of Figure 3-1 follows" longdesc="img_text/font2dtest.htm" src="img/font2dtest.png" title="Description of Figure 3-1 follows"/><br/>
+<a href="img_text/font2dtest.html" id="sthref79" name="sthref79">Description of "Figure 3-1 Sample Screen from Font2DTest Tool"</a><br/>
+<br/></div>
+
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Tip:</b></p>
+<p>You can input your own string by choosing <b>User Text</b> in the drop-down list labeled <b>Text to use</b>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The size of the font in the Java language is always expressed with 72 dpi. A native OS can use a different screen dpi, and therefore an adjustment needs to be made. Matching Java font size can be calculated as <code>Toolkit.getScreenResolution()</code> divided by 72 multiplied by the size of the native font.</p>
+<p>In all "native" Swing look and feels, such as the Windows look and feel or the GTK look and feel (for Solaris OS and Linux), Swing components perform this adjustment automatically, but if you are running Font2DTest, the text display area will always use 72 dpi.</p>
+<p>On operating systems other than Windows, the general recommendation is to use TrueType fonts instead of Type1 fonts. The easiest way to discover the type of font is to look at the file extension: extensions pfa and pfb indicate Type1 fonts, and ttf, ttc, and tte represent TrueType fonts.</p>
+</div>
+
+<a id="BABHIBBI" name="BABHIBBI"/>
+<div>
+<h3>Metrics</h3>
+<p>If you find that text bounds are different from what you expect, ensure that you are using the appropriate way to calculate them. For example, the height obtained from a <code>FontMetrics</code> is not specific to a particular piece of text and the <code>stringWidth</code> indicates logical advance, which is not the same thing as "width." For more details, refer to the <a href="http://www.oracle.com/technetwork/java/index-137037.html#Font_and_Text_questions">Font and Text questions in the Java 2D FAQ</a>.</p>
+</div>
+</div>
+
+<a id="A1018541" name="A1018541"/>
+<div>
+<h2>Java 2D Printing</h2>
+<p>This section describes some issues that can arise with Java 2D printing and suggests causes and solutions.</p>
+<p>See also the <a href="http://www.oracle.com/technetwork/java/index-137037.html#Printing_questions">Printing questions in the Java 2D FAQ</a>.</p>
+<dl>
+<dd><a id="sthref80" name="sthref80"/></dd>
+<dt>Issue 1On Windows, JRE crashes during printing.</dt>
+<dd>
+<p><b>Cause:</b> The JRE uses Windows printer drivers and they might have problems.</p>
+<p><b>Solution:</b> Upgrade the Windows printer driver for the printer that is being used.</p>
+</dd>
+<dd><a id="sthref81" name="sthref81"/></dd>
+<dt>Issue 2On Windows, the printing seems to be successful, but the job does not print.</dt>
+<dd>
+<p><b>Cause:</b> Some jobs fail to properly spool to the printer.</p>
+<p><b>Solution:</b> In the printer driver properties, disable Advanced Printing Options.</p>
+</dd>
+<dd><a id="sthref82" name="sthref82"/></dd>
+<dt>Issue 3On Windows, the print dialog takes a long time to appear.</dt>
+<dd>
+<p><b>Cause:</b> Applications might cause the JRE to probe all printers, including those that are disconnected.</p>
+<p><b>Solution:</b> Look for disconnected or unreachable network printers and remove them from the list of printers.</p>
+</dd>
+<dd><a id="sthref83" name="sthref83"/></dd>
+<dt>Issue 4On Solaris OS and Linux, <code>PrinterJob.printDialog()</code> shows the error "No services found".</dt>
+<dd>
+<p><b>Cause:</b> The cause is one of the following:</p>
+<ul>
+<li>
+<p>The <code>lpc</code> utility is not in the /usr/sbin directory.</p>
+</li>
+<li>
+<p>The <code>lpstat</code> utility is not in the /usr/sbin directory.</p>
+</li>
+</ul>
+<p><b>Solution:</b> Install <code>lpc</code> and <code>lpstat</code> in the standard location, as mentioned above.</p>
+</dd>
+</dl>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="swing.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

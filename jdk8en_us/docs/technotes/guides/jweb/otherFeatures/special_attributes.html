@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Special Applet Attributes</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Special Applet Attributes</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="../index.html#otherFeatures">Enhancements and Other Features</a> &gt; Special Applet Attributes</p>
+
+<p>Applets have default attributes associated with them. Special
+attributes like <code>image</code> and <code>boxmessage</code> can be associated with applets
+and used for customizing the applet window during downloading of an
+applet. JavaBeans component can also be customized using these
+special attributes.</p>
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#default">Default Appearance of Applets</a></li>
+<li><a href="#specialattributes">Special Attributes of
+Applets</a></li>
+<li><a href="#precedence">Applet Attribute Precedence</a></li>
+<li><a href="#failure">Troubleshooting Scenario</a></li>
+</ul>
+<h2><a name="default" id="default"></a>Default Appearance of
+Applets</h2>
+<p>The default appearence of a Applet when no special attributes
+are used is as follows:</p>
+<ul>
+<li>The Java logo is centered in the applet's space.</li>
+<li>There is a white glow (circle with hazy edge) encircling the
+Java brand.</li>
+<li>The rotating burst animation shows that activity is
+occuring.</li>
+<li>The progress bar is located below the bottom edge of the Java
+brand graphic to show the progress as the applet is
+downloaded.</li>
+<li>Depending on the size of the applet's viewing area the default
+appearance will vary.</li>
+<li>The design of animation will scale to accomodate different
+"width-by-height" combinations.</li>
+<li>When the mouse is moved over the applet's area during the
+loading period, the cursor changes to the normal hypertext cursor
+indicating that this element is an interactive part of the web
+page.</li>
+<li>Clicking/selecting anywhere within the Gray Box will spawn a
+new browser window pointing to the <a href="http://www.java.com/en/">www.java.com</a> web page.</li>
+</ul>
+<h2><a name="specialattributes" id="specialattributes"></a>Special
+Attributes of Applets</h2>
+<h2><code><a name="image" id="image"></a>image</code></h2>
+<p>The <code>image</code> attribute allows you to replace the
+default animation with a custom graphic. The format with the
+standard <code>applet</code> element is:</p>
+<pre style="codeblock">
+&lt;applet ...&gt;
+&lt;param name=&quot;image&quot; value="my_image.gif"&gt;
+&lt;/applet&gt;
+</pre>
+<p>See <a href="../applet/using_tags.html">Using <code>applet</code>,
+<code>object</code> and <code>embed</code> Tags in Java Plug-in</a>
+for how this would be mapped to the <code>object</code> or the
+<code>embed</code> tags.</p>
+<p>If a custom graphic is specified, it should be the same size as
+the area of the applet window. If these sizes do not match, the
+graphic will be placed in the upper left corner of the area
+specified for applet. If it is larger than the applet window, part
+of it will get chopped off. If it is smaller than the applet
+window, white, or whatever color is specified for
+<code>boxbgcolor</code>, will appear around it.</p>
+<p>The image can be either a GIF or JPEG, and it should reside in
+the same directory where other resources for the applet reside;
+i.e., if the applet uses the <code>codebase</code> attribute, then
+this image should be in the <code>codebase</code> directory.</p>
+<p><b><font size="+1">Note:</font></b> The image file should not be
+in a packaged jar file with other applet resources, since the image
+needs to be displayed while downloading resources.</p>
+<p>The status bar of the browser will display "<code>Loading Java
+Applet ...</code>" when the mouse is pointed at the applet
+window.</p>
+<h2><code><a name="boxmessage" id=
+"boxmessage"></a>boxmessage</code></h2>
+<p>With the <code>boxmessage</code> attribute you can customize the
+text displayed in the status bar of the browser. This attribute
+will be in effect when <code>image</code> attribute is used. The
+format for using this with the standard <code>APPLET</code> element
+is:</p>
+<pre style="codeblock">
+&lt;APPLET ...&gt;
+&lt;PARAM name=&quot;boxmessage&quot; value=&quot;&lt;your custom message goes here&gt;&quot;&gt;
+&lt;/APPLET&gt;
+</pre>
+<h2><code><a name="color" id="color"></a>boxbgcolor,
+boxfgcolor</code></h2>
+<p>These attributes can be used to customize colors in the applet
+window.</p>
+<p>These attributes will be in effect when the <code>image</code>
+attribute is used. Custom colors cannot be specified for the
+default appearance of the applet viewing area.</p>
+<p>By default the applet window background color is white. The
+attribute <code><b>boxbgcolor</b></code> can be used to specify a
+different background color. The format for use with the standard
+<code>APPLET</code> element is:</p>
+<pre style="codeblock">
+&lt;APPLET ...&gt;
+&lt;PARAM name=&quot;boxbgcolor&quot; value=&quot;&lt;value&gt;&quot;&gt;
+&lt;/APPLET&gt;
+</pre>
+<p>where <code>&lt;value&gt;</code> may be:</p>
+<ul>
+<li>any <code>Color</code> from <code>java.awt.Color</code>;</li>
+<li><code>r,g,b</code> where <code>r</code>, <code>g</code>, and
+<code>b</code> are integers in the range of <code>0-255</code> that
+would render an opaque standard RGB (sRGB) color in the
+<code>Color</code> constructor <code>Color(int r, int g, int
+b)</code>;</li>
+<li>standard HTML colors: silver, green, maroon, purple, navy,
+teal, and olive; or</li>
+<li>hexadecimal color format</li>
+</ul>
+<p><b>Examples of each item above:</b>
+<code>value=&quot;cyan&quot;</code>,
+<code>value=&quot;111,222,145&quot;</code>,
+<code>value=&quot;silver&quot;</code>,
+<code>value=&quot;#33FF33&quot;</code></p>
+<p>By default the applet window foreground color is black. The
+attribute <code><b>boxfgcolor</b></code> can be used to specify a
+different foreground color. The color values are the same as
+described above. The format for use with the standard
+<code>APPLET</code> element is:</p>
+<pre style="codeblock">
+&lt;APPLET ...&gt;
+&lt;PARAM name=&quot;boxfgcolor&quot; value=&quot;&lt;value&gt;&quot;&gt;
+&lt;/APPLET&gt;
+</pre>
+<h2><a name="precedence" id="precedence"></a>Applet Attribute
+Precedence</h2>
+<p>The order of precedence for these attributes in applets is as
+follows:</p>
+<p>1) If no parameters are provided, the <a href="#default">default
+appearance</a> described above is used.<br />
+2) If a custom graphic is specified via the <code>image</code>
+attribute, then the custom graphic will appear as described above
+under <a href="#image"><code>image</code></a>.<br />
+3) If custom text is provided via the <code>boxmessage</code>
+attribute, then custom text will be displayed as described above
+under <a href="#boxmessage"><code>boxmessage</code></a>.</p>
+<p>With any combination of <code>image</code> and
+<code>boxmessage</code> attributes, custom colors can always be
+provided via the <code>boxbgcolor</code> and
+<code>boxfgcolor</code> attributes.</p>
+<h2><a name="failure" id="failure"></a>Troubleshooting
+Scenario</h2>
+<p>If an applet fails to load the following actions are
+performed:</p>
+<ul>
+<li>The applet window displays error information.</li>
+<li>The applet window has a single pixel border using white for the
+foreground color, and a small "broken" graphic will occupy the
+upper left corner.</li>
+</ul>
+<p>The user can click in the applet window to get a popup menu to
+open one of the following options:</p>
+<ul>
+<li>Open the Java Console</li>
+<li>Open a window with information about the Java VM and Java
+Plug-in.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

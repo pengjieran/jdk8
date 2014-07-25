@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Signing Applets Using RSA Signed Certificates</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Signing Applets Using RSA Certificates</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="security.html">Security</a> &gt; Signing Applets Using RSA Certificates</p>
+
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#signing">Signing Tools</a></li>
+<li><a href="#getting">Getting RSA Certificates</a>
+<ul>
+<li><a href="#getting_jarsigner">Getting Certificates With
+Jarsigner</a></li>
+
+<!-- <li><a href="#getting_netscape">Getting Certificates With Netscape
+Signing Tool</a></li> -->
+
+</ul>
+</li>
+<li><a href="#bundling">Bundling Java Applets as JAR Files</a></li>
+<li><a href="#signing_applets">Signing Java Applets</a>
+<ul>
+<li><a href="#signing_jarsigner">Signing Applets Using
+<code>jarsigner</code></a></li>
+<li><a href="#signing_netscape">Signing Applets Using Netscape
+Signing Tool</a></li>
+</ul>
+</li>
+<li><a href="#converting">Converting Old Netscape-Signed
+Applets</a></li>
+<li><a href="#authenticode">Microsoft Authenticode</a></li>
+<li><a href="#common">Common Problems</a></li>
+</ul>
+<h2><a name="intro" id="intro"></a>Introduction</h2>
+<p>RSA-signed applets are supported to make deployment of signed
+applets easier. However, signing applets through RSA is still
+difficult for most novice applet developers and prevents them from
+taking full advantage of this Java Plug-in feature. This document
+provides step-by-step instructions for signing applets using RSA
+certificates, allowing novice applet developers to sign their
+applets without having to wade through the many complex security
+issues involved.</p>
+<p>Signing applets requires the following :</p>
+<ol>
+<li>Signing tools</li>
+<li>An RSA keypair and a certificate chain for the public keys</li>
+<li>The applet and all its class files, bundled as JAR files</li>
+</ol>
+<h2><a name="signing" id="signing"></a>Signing Tools</h2>
+<p>Java Plug-in supports the format of the following tools for
+signing applets using RSA:</p>
+<ol>
+<li><code>jarsigner</code>: Signing tool shipped as part of the Java
+SDK<br /></li>
+<li><code>signtool</code>: Signing tool provided by Netscape for
+signing applets in Navigator/Communicator. For more details on the
+sign tool and downloading it, see <a href="http://www.mozilla.org/projects/security/pki/nss/tools/">NSS Security Tools</a>.</li>
+</ol>
+<h2><a name="getting" id="getting"></a>Getting RSA
+Certificates</h2>
+<p>RSA certificates may be purchased from a Certificate Authority
+(CA) that supports RSA, such as <a href=
+"http://www.verisign.com">VeriSign</a> and <a href=
+"http://www.thawte.com">Thawte</a>. Some CAs, such as VeriSign,
+implement different protocols for issuing certificates, depending
+on the particular signing tool you are using.</p>
+<h3><a name="getting_jarsigner" id="getting_jarsigner"></a>Getting
+Certificates With Jarsigner</h3>
+<p>Jarsigner is known to work with VeriSign and Thawte certificates
+and may work with Certificate Authorties. To use Jarsigner to sign
+applets using RSA certificates, obtain code signing certificates for Java from <a href=
+"https://www.verisign.com/code-signing/sun-java/index.html">VeriSign</a>, <a href=
+"https://www.thawte.com/code-signing/content-signing-certificates/sun-java/index.html">Thawte</a>, or similar certificates from other CAs. During the process of certificate
+enrollment, you will be asked to provide the certificate signing
+request (CSR). To generate the CSR, follow these steps:</p>
+<ol>
+<li>Use <code>keytool</code> to generate an RSA keypair (using the
+&quot;<code>-genkey -keyalg rsa</code>" options). Make sure your
+distinguished name contains all the components mandated by
+VeriSign/Thawte. For example:
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\keytool -genkey -keyalg rsa -alias MyCert
+Enter keystore password: *********
+What is your first and last name?
+[Unknown]: XXXXXXX YYY
+What is the name of your organizational unit?
+[Unknown]: Example Software
+What is the name of your organization?
+[Unknown]: New Technology Company
+What is the name of your City or Locality?
+[Unknown]: Cupertino
+What is the name of your State or Province?
+[Unknown]: CA
+What is the two-letter country code for this unit?
+[Unknown]: US
+Is &lt;CN=XXXXXXX YYY, OU=Example Software, O=New Technology Company,
+                L=Cupertino, ST=CA, C=US&gt; correct?
+[no]: yes
+
+Enter key password for &lt;MyCert&gt;
+(RETURN if same as keystore password): *********
+</pre></li>
+<li>Use "<code>keytool -certreq</code>" to generate a certification
+signing request. Copy the result and paste it into the
+VeriSign/Thawte webform. For example,&nbsp;
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\keytool -certreq -alias MyCert
+
+Enter keystore password:&nbsp; *********
+-----BEGIN NEW CERTIFICATE REQUEST-----
+MIIBtjCCAR8CAQAwdjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRIwE
+AYDVQQHEwlDdXBlcnRpbm8xGTAXBgNVBAoTEFN1biBNaWNyb3N5c3RlbX
+MxFjAUBgNVBAsTDUphdmEgU29mdHdhcmUxEzARBgNVBAMTClN0YW5sZXk
+gSG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALTgU8PovA4y59eb
+oPjY65BwCSc/zPqtOZKJlaW4WP+UhmebE+T2Mho7P5zXjGf7elo3tV5uI
+3vzgGfnhgpf73EoMow8EJhly4w/YsXKqeJEqqvNogzAD+qUv7Ld6dLOv0
+CO5qvpmBAO6mfaI1XAgx/4xU/6009jVQe0TgIoocB5AgMBAAGgADANBgk
+qhkiG9w0BAQQFAAOBgQAWmLrkifKiUYtd4ykhBtPWSwW/IKkgyfIuNMML
+dF1DH8neSnXf3ZLI32f2yXvs7u3/xn6chnTXh4HYCJoGYOAbB3WNbAoQR
+i6u6TLLOvgv9pMNUo6v1qB0xly1faizjimVYBwLhOenkA3Bw7S8UIVfdv
+84cO9dFUGcr/Pfrl3GtQ==
+-----END NEW CERTIFICATE REQUEST-----
+</pre></li>
+<li>The CA (for example, VeriSign/Thawte) will send you a certificate
+reply (chain) by email. Copy the chain and store it in a file. Use
+"<code>keytool -import</code>" to import the chain into your
+keystore. For example:
+<pre>
+C:\Program Files\Java\jdk1.6.0\bin\keytool -import -alias MyCert -file VSSStanleyNew.cer
+</pre></li>
+<li>Your RSA certificate and its supporting chain have been
+validated and imported into your keystore. You are now ready to use
+<code>jarsigner</code> to sign your JAR file.</li>
+</ol>
+
+<p><strong>Note</strong>:</p>
+<p>You must use the same alias name for all the above steps or no
+alias name, in which case the alias name defaults to "mykey".</p>
+
+<!--
+
+<h3><a name="getting_netscape" id="getting_netscape"></a>Getting
+Certificates With Netscape Signing Tool</h3>
+<p>Most CAs (for example, VeriSign/Thawte) support Netscape Signing Tool.
+To use the Netscape Signing Tool to sign applets using RSA
+certificates, obtain the <a href="https://www.symantec.com/theme.jsp?themeid=verisign-code-signing&inid=vrsn_symc_cs_index">Netscape
+Object Signing</a> certificate from Verisign or the <a href=
+"http://www.thawte.com/">Netscape Object Signing</a> certificate
+from Thawte or similar certificates from other CAs. During the
+process of enrollment, you will be asked for personal/company
+information, since the CA will need to verify your identity before
+issuing a certificate. This process may take from several hours to
+several days.</p>
+<p>Once the RSA certificate is issued, it usually consists of three
+files:</p>
+<ul>
+<li><code>cert7.db</code></li>
+<li><code>key3.db</code></li>
+<li><code>secmod.db</code></li>
+</ul>
+<p>Depending on the CA, the certificate may be issued and stored on
+a floppy diskette, or it may be stored directly in the security
+modules of Netscape Navigator/Communicator. Once you have the
+certificate, you are ready to use the Netscape Signing Tool to sign
+your JAR file.&nbsp;</p>
+
+-->
+
+<h2><a name="bundling" id="bundling"></a>Bundling Java Applets as
+JAR Files</h2>
+
+<p>To use Jarsigner to sign applets with RSA certificates, the
+applets must be bundled as JAR files. The Jar tool (command
+<code>jar ...</code>), which comes wiht the Java SE SDK, can be
+used for that purpose. For example:</p>
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\jar cvf C:\TestApplet.jar .
+added manifest
+adding: TestApplet.class (in = 94208) (out= 20103)(deflated 78%)
+adding: TestHelper.class (in = 16384) (out= 779)(deflated 95%)
+</pre>
+This example creates a JAR file C:\TestApplet.jar, and it contains
+all the files under the current directory and its sub-directories.
+<p>After the JAR file is created, you should verify its content
+using the <code>jar</code> tool again, e.g.,</p>
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\jar tvf TestApplet.jar
+     0 Mon Mar 06 18:02:54 PST 2000 META-INF/
+    68 Mon Mar 06 18:02:54 PST 2000 META-INF/MANIFEST.MF
+ 94208 Wed Mar 10 11:48:52 PST 2000 TestApplet.class
+ 16384 Wed Mar 10 11:48:52 PST 2000 TestHelper.class
+</pre>
+This ensures that the class files are stored with the proper path
+within the JAR file.
+<p>To sign an applet with an RSA certificate using the Netscape
+Signing Tool, the applet must be placed in a directory, e.g.,
+<code>C:\signdir</code>. The Netscape Signing Tool will bundle it
+as JAR file after the signing process.</p>
+<h2><a name="signing_applets" id="signing_applets"></a>Signing Java
+Applets</h2>
+<p>Once you have the RSA certificates, the signing tool and the
+applet's JAR files, you are ready to sign the applets.</p>
+<h3><a name="signing_jarsigner" id="signing_jarsigner"></a>Signing
+Applets Using <code>jarsigner</code></h3>
+<p>To sign applets using <code>jarsigner</code>, follow these
+steps:</p>
+<ol>
+<li>Use <code>jarsigner</code> to sign the JAR file, using the RSA
+credentials in your keystore that were generated in the previous
+steps. Make sure the same alias name is specified. E.g.,
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\jarsigner C:\TestApplet.jar MyCert
+Enter Passphrase for keystore: ********
+</pre></li>
+<li>Use &quot;<code>jarsigner -verify -verbose -certs</code>&quot;
+to verify the jar files
+<pre>
+C:\Program Files\Java\jdk1.8.0\bin\jarsigner -verify -verbose
+                -certs d:\TestApplet.jar
+
+
+         245 Wed Mar 10 11:48:52 PST 2000 META-INF/manifest.mf
+         187 Wed Mar 10 11:48:52 PST 2000 META-INF/MYCERT.SF
+         968 Wed Mar 10 11:48:52 PST 2000 META-INF/MYCERT.RSA
+smk      943 Wed Mar 10 11:48:52 PST 2000 TestApplet.class
+smk      163 Wed Mar 10 11:48:52 PST 2000 TestHelper.class
+
+      X.509, CN=XXXXXXX YYY, OU=Example Software,
+                O=New Technology Company, L=Cupertino,
+                ST=CA, C=US (mycert)
+      X.509, CN=New Technology Company, OU=Java Plug-in QA,
+                O=New Technology Company, L=Cupertino, ST=CA, C=US
+      X.509, EmailAddress=server-certs@thawte.com,
+                CN=Thawte Server CA, OU=Certification
+                Services Division, O=Thawte Consulting cc,
+                L=Cape Town, ST=Western Cape, C=ZA
+
+
+  s = signature was verified
+  m = entry is listed in manifest
+  k = at least one certificate was found in keystore
+  i = at least one certificate was found in identity scope
+
+jar verified.
+</pre></li>
+<li>Your applet has been signed properly. You are now ready to
+deploy your RSA signed applet.</li>
+</ol>
+<h3><a name="signing_netscape" id="signing_netscape"></a>Signing
+Applets Using Netscape Signing Tool</h3>
+<p>To sign applets using signtool, follow these steps:</p>
+<ol>
+<li>Use &quot;<code>signtool -L</code>&quot; to determine the
+certificate nickname that should be used in signing. E.g.,
+<pre>
+C:\signtool13WINNT40\signtool -L -d a:\cert
+using certificate directory: a:\cert
+
+S Certificates
+- ------------
+  AT&amp;T Certificate Services
+  Thawte Personal Premium CA
+  GTE CyberTrust Secure Server CA
+  Verisign/RSA Commercial CA
+  AT&amp;T Directory Services
+  BelSign Secure Server CA
+  BelSign Class 1 CA
+  GTIS/PWGSC, Canada Gov. Web CA
+  Thawte Personal Freemail CA
+  Thawte Server CA
+  GTIS/PWGSC, Canada Gov. Secure CA
+  MCI Mall CA
+  VeriSign Class 3 Primary CA
+  VeriSign Class 4 Primary CA
+  KEYWITNESS, Canada CA
+  BelSign Class 2 CA
+  BelSign Object Publishing CA
+* Sun Microsystems, Inc.
+  VeriSign Class 3 CA - Commercial Content/Software
+                        Publisher - VeriSign, Inc.
+  Verisign/RSA Secure Server CA
+  VeriSign Class 1 Primary CA
+  BBN Certificate Services CA Root 1
+  Thawte Personal Basic CA
+* Sun Microsystems, Inc.'s VeriSign, Inc. ID
+  CertiSign BR
+  VeriSign Class 2 Primary CA
+  Canada Post Corporation CA
+  Integrion CA
+  IBM World Registry CA
+  BelSign Class 3 CA
+  Uptime Group Plc. Class 1 CA
+  Uptime Group Plc. Class 2 CA
+  Thawte Premium Server CA
+  Uptime Group Plc. Class 3 CA
+  GTE CyberTrust Root CA
+  Uptime Group Plc. Class 4 CA
+- ------------
+
+Certificates that can be used to sign objects
+have *'s to their left.
+
+</pre></li>
+<li>Create an empty directory. E.g.,
+<pre>
+mkdir signdir
+</pre></li>
+<li>Put all the applet class files into it.<br />
+<br /></li>
+<li>Use &quot;<code>signtool -Z</code>&quot; to sign the applet.
+E.g.,
+<pre>
+C:\signtool13&gt;signtool -k &quot;Sun Microsystems, Inc.'s VeriSign, Inc. ID&quot;
+        -d a:\cert -Z c:\TestApplet.jar c:\signdir
+using certificate directory: a:\cert
+Generating c:\signdir/META-INF/manifest.mf file..
+--&gt; TestApplet.class
+adding c:\signdir/TestApplet.class to c:\TestApplet.jar...
+        (deflated 57%)
+--&gt; TestHelper.class
+adding c:\signdir/TestHelper.class to c:\TestApplet.jar...
+        (deflated 43%)
+Generating zigbert.sf file..
+adding c:\signdir/META-INF/manifest.mf to c:\TestApplet.jar...
+        (deflated 44%)
+adding c:\signdir/META-INF/zigbert.sf to c:\TestApplet.jar...
+        (deflated 46%)
+adding c:\signdir/META-INF/zigbert.rsa to c:\TestApplet.jar...
+        (deflated 40%)
+tree &quot;c:\signdir&quot; signed successfully
+
+</pre></li>
+<li>Use &quot;<code>signtool -w</code>&quot; to verify the archive.
+E.g.,
+<pre>
+C:\signtool13&gt;signtool -w c:\TestApplet.jar -d a:\cert
+using certificate directory: a:\cert
+
+Signer information:
+
+nickname: Sun Microsystems, Inc.'s VeriSign, Inc. ID
+subject name: C=US, ST=CA, L=Palo Alto, OU=Example Software,
+        CN=Sun Microsystems, OU=Digital ID Class 3 - Netscape
+Object Signing, OU=&quot;www.verisign.com/repository/RPA Incorp.
+        by Ref.,LIAB.LTD(c)99&quot;, OU=VeriSign Trust Network,
+        O=&quot;VeriSign, Inc.&quot;
+issuer name: CN=VeriSign Class 3 CA - Commercial Content/Software
+        Publisher, OU=&quot;www.verisign.com/repository/RPA Incorp.
+        by Ref.,LIAB.LTD(c)98&quot;, OU=VeriSign Trust Network,
+        O=&quot;VeriSign, Inc.&quot;
+</pre></li>
+</ol>
+<p>Your applet has been signed properly. You are now ready to
+deploy your RSA signed applet. See <a href="rsa_deploying.html">How
+to Deploy RSA Signed Applets</a> for deployment information.</p>
+<h2><a name="converting" id="converting"></a>Converting Old
+Netscape-Signed Applets</h2>
+<p>Existing RSA signed applets designed for Netscape may use
+Netscape-specific security APIs. These Netscape-specific APIs are
+not supported in Java Plug-in. Instead, the Plug-in supports the
+standard Java security APIs in both Netscape Navigator and Internet
+Explorer.</p>
+<p>To migrate Netscape-signed applets using the Netscape security
+APIs to run in Java Plug-in:</p>
+<ol>
+<li>Comment or remove all <code>netscape.security<em>.*</em></code>
+related statements from the Java applet.</li>
+<li>Compile and archive the applet as a JAR file.</li>
+<li>Re-sign the JAR file using Object Signing.</li>
+</ol>
+<p>This ensures that an RSA signed applet will run in both Netscape
+Navigator and Internet Explorer with Java Plug-in.</p>
+<h2><a name="authenticode" id="authenticode"></a>Microsoft
+Authenticode</h2>
+Authenticode is a proprietary signing technology used in Microsoft
+Internet Explorer on Win32 for supporting signed applets in IE's
+JVM. Authenticode is not supported in Java Plug-in. Instead, the
+Java Plug-in supports use of RSA signed applets in both IE and
+Netscape.
+<h2><a name="common" id="common"></a>Common Problems</h2>
+
+<p>If the JAR file is not signed properly, if the RSA certificate
+has expired, or if the RSA certificate is a self-generated,
+self-signed certificate, Java Plug-in may fail silently and not pop
+up the security dialog. The applet will be treated as
+unsigned.</p>
+
+<!--
+<p>The Netscape Signing Tool is very particular about JAR file
+format. In Netscape Signing Tool, it expects the MANIFEST file to
+be at the end of the JAR file, whereas Jarsigner puts it at the
+beginning. The standard does not mandate where the MANIFEST file
+should be in the JAR file. Therefore, if you create a JAR file
+using Jar tool, the Netscape Signing Tool may complain about
+&quot;Invalid Jar File Format&quot;. On the other hand, Jarsigner
+is not picky; it can verify a JAR file regardless of whether its
+MANIFEST file is located at the beginning or the end. To avoid this
+problem when using Netscape Signing Tool, you should both generate
+and sign the JAR file through the Netscape Signing Tool.</p>
+
+-->
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

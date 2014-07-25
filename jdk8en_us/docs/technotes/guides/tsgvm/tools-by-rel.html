@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Summary of Tools in This Release</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T13:52:55Z" name="date"/>
+<meta content="This appendix presents a summary of tools available in the current release of the JDK, as well as the changes since the previous release." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Summary of Tools in This Release" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38388-01" name="partnum"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition HotSpot Virtual Machine Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/><a id="CIHDAHBJ" name="CIHDAHBJ"/>
+<h1><span>D</span> Summary of Tools in This Release</h1>
+<p>This appendix presents a summary of tools available in the current release of the JDK, as well as the changes since the previous release.</p>
+<p>All the JDK troubleshooting tools that are described in this document are available in JDK 7 on both Solaris OS and Linux.</p>
+<p>The following JDK troubleshooting tools are also available in JDK 7 on Windows:</p>
+<ul>
+<li>
+<p>HPROF</p>
+</li>
+<li>
+<p>JConsole</p>
+</li>
+<li>
+<p><code>jdb</code></p>
+</li>
+<li>
+<p><code>jhat</code></p>
+</li>
+<li>
+<p><code>jinfo</code></p>
+</li>
+<li>
+<p><code>jmap</code></p>
+</li>
+<li>
+<p><code>jps</code> (not currently available on Windows 98 or Windows ME)</p>
+</li>
+<li>
+<p><code>jrunscript</code></p>
+</li>
+<li>
+<p><code>jstack</code></p>
+</li>
+<li>
+<p><code>jstat</code> (not currently available on Windows 98 or Windows ME)</p>
+</li>
+<li>
+<p><code>jstatd</code> (not currently available on Windows 98 or Windows ME)</p>
+</li>
+<li>
+<p><code>visualgc</code> (not currently available on Windows 98 or Windows ME)</p>
+</li>
+</ul>
+<div><a id="sthref107" name="sthref107"/>
+<h2>Changes to Troubleshooting Tools in JDK 7</h2>
+<p>This is a list of changes to the JDK troubleshooting tools and options from JDK 1.5 to JDK 7.</p>
+<ul>
+<li>
+<p>The Java VisualVM tool is included in JDK releases starting with release 6 update 7.</p>
+</li>
+<li>
+<p>The Heap Analysis Tool (HAT) has been replaced by the new <code>jhat</code> command-line tool. This new tool has the same functionality as HAT, with the following additional enhancements:</p>
+<ul>
+<li>
+<p><code>jhat</code> can parse incomplete and truncated heap dumps.</p>
+</li>
+<li>
+<p><code>jhat</code> can read heap dumps generated on 64-bit systems.</p>
+</li>
+<li>
+<p><code>jhat</code> supports Object Query Language (OQL), which you can use to create your own queries on the heap dump.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The JConsole tool has the following changes:</p>
+<ul>
+<li>
+<p>A new user interface (button) is provided for deadlock detection, including <code>java.util.concurrent</code> locks.</p>
+</li>
+<li>
+<p>The Connection dialog is new.</p>
+</li>
+<li>
+<p>The Overview tab is new.</p>
+</li>
+<li>
+<p>You no longer need to specify the <code>-Dcom.sun.management.jmxremote</code> command-line option when starting the application to be monitored.</p>
+</li>
+<li>
+<p>You can connect to a VM using the attach mechanism.</p>
+</li>
+<li>
+<p>You can pass a flag on the command line to the VM that is running JConsole.</p>
+</li>
+<li>
+<p>The <code>com.sun.management.HotSpotDiagnostic</code> MBean property is new. In the MBean tab, you can use this property to dump heap, get and set VM options, and change management options dynamically.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>jdb</code> tool has the following changes:</p>
+<ul>
+<li>
+<p>Shows return values in method and exit traces.</p>
+</li>
+<li>
+<p>Trace method entry/exit without stopping.</p>
+</li>
+<li>
+<p>The Java Platform Debugger Architecture (JPDA) <code>ProcessAttachingConnector</code> is new.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>jinfo</code> tool has the following changes:</p>
+<ul>
+<li>
+<p>The new <code>jinfo -flag</code> option allows you to dynamically set, unset, and change the values of certain Java VM flags for a specified Java process.</p>
+</li>
+<li>
+<p>The <code>jinfo</code> command is new to Windows, but it only supports the <code>-flag</code> option.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>jmap</code> command has the following changes:</p>
+<ul>
+<li>
+<p>The <code>jmap -finalizerinfo</code> option is new. With this option, the command prints information on objects awaiting finalization.</p>
+</li>
+<li>
+<p>The <code>jmap -permstat</code> option has been updated to print also the number and size of internalized String instances.</p>
+</li>
+<li>
+<p>The <code>jmap -dump:format=b,file=</code><span>filename</span> option is new. With this option, <code>jmap</code> obtains a heap dump from a running process or from a core file and writes it in binary HPROF format to a specified file. This file can then be analyzed with the <code>jhat</code> tool.</p>
+</li>
+<li>
+<p>The <code>jmap -F</code> option is new and is supported on Solaris OS and Linux only. This option forces the use of the Serviceability Agent in case the process does not respond.</p>
+</li>
+<li>
+<p>The <code>jmap -J</code> option is new and is supported on Solaris OS and Linux only. This option passes flags to the VM on which <code>jmap</code> is running.</p>
+</li>
+<li>
+<p>The <code>live</code> sub-option is new for the <code>-histo</code> option. With this sub-option only live objects are counted.</p>
+</li>
+<li>
+<p>The <code>jmap</code> command is new to Windows, but it only supports the <code>-dump:</code><span>dump-options</span> option and the <code>-histo[:live]</code> option.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>jrunscript</code> tool is new.</p>
+</li>
+<li>
+<p>The <code>jstack</code> command has the following changes:</p>
+<ul>
+<li>
+<p>The <code>jstack</code> <span>pid</span> option has been changed to work like remote Control+Break (that is, the output of the thread dump is slightly different, and there is more information on deadlocks and JNI Global References).</p>
+</li>
+<li>
+<p>The <code>jstack -F</code> option is new and is supported on Solaris OS and Linux only. This option forces a thread dump in case the VM is hung.</p>
+</li>
+<li>
+<p>The <code>jstack -l</code> option is new. This option prints information about ownable synchronizers (locks) in the heap.</p>
+</li>
+<li>
+<p>The <code>jstack</code> command is new to Windows, but it only supports the <code>jstack</code> <span>pid</span> option and the <code>jstack -l</code> <span>pid</span> option.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>-XX:OnOutOfMemoryError=</code><span>string</span> option allows you to specify a command or script to be run when an <code>OutOfMemoryError</code> exception is thrown. This is useful for data capture (for example, with <code>jmap</code>).</p>
+</li>
+<li>
+<p>The <code>-XX:+HeapDumpOnOutOfMemoryError</code> command-line option is new as of JDK release 5 update 7. If this option is set and the VM detects a native <code>OutOfMemoryError</code> exception, a heap dump is generated. For more information, see <a href="clopts.html#heapdumpoutofmemoryerror">The <code>-XX:+HeapDumpOnOutOfMemoryError</code> Option</a>.</p>
+</li>
+<li>
+<p>Other new environment variables to help in troubleshooting <code>OutOfMemoryError</code> exceptions are the following:</p>
+<ul>
+<li>
+<p><code>-XX:HeapDumpPath=</code><span>pathname</span></p>
+</li>
+<li>
+<p>-<code>XX:SegmentedHeapDumpThreshold=</code><span>threshold</span></p>
+</li>
+<li>
+<p>-<code>XX:HeapDumpSegmentSize=</code><span>size</span></p>
+</li>
+</ul>
+</li>
+<li>
+<p>The fatal error log has the following changes:</p>
+<ul>
+<li>
+<p>You now have the ability to specify a location for the fatal error log (see <a href="felog.html#A999314">"Location of Fatal Error Log"</a>).</p>
+</li>
+<li>
+<p>There is now a URL at the beginning of the fatal error log for reporting incidents (see <a href="felog.html#A999581">"Header Format"</a>).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The VM now contains two built-in DTrace probe providers: <code>hotspot</code> and <code>hotspot_jni</code>. (Solaris 10 OS only)</p>
+</li>
+<li>
+<p>The <code>fastdebug</code> builds can be useful for testing, diagnosing, and isolating problems. However, they should not be used in production environments.</p>
+</li>
+<li>
+<p>The Control+Break handler has the following changes:</p>
+<ul>
+<li>
+<p>Control+Break now shows the thread state.</p>
+</li>
+<li>
+<p>Control+Break now shows the sizes of the heap areas.</p>
+</li>
+<li>
+<p>With <code>-XX:+PrintConcurrentLocks</code>, Control+Break will also print the list of concurrent locks owned by each thread, as well as detect deadlocks involving both monitor locks and concurrent locks.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The <code>format=b</code> option for HPROF now includes primitive type instance fields and primitive array content in heap dumps.</p>
+</li>
+<li>
+<p>When the <code>java.lang.OutOfMemoryError</code> exception is thrown, a stack trace is now printed also. In addition, when the specific message indicates that the system is almost out of swap space (<i>Out of swap space?</i>), a fatal error log is now generated.</p>
+</li>
+</ul>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

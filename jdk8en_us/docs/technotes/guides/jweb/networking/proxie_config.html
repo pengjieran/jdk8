@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Proxy Configuration</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Proxy Configuration</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="../index.html#networking">Networking</a> &gt; Proxy Configuration</p>
+
+
+<p>The following topics are covered:</p>
+<ul>
+
+<li><a href="#intro">Introduction</a>&nbsp;</li>
+<li><a href="#how">How Java Plug-in and Java Web Start Obtain Proxy Information</a>&nbsp;</li>
+<li><a href="#manual">Manual Proxy Configuration</a>&nbsp;</li>
+<li><a href="#automatic">Automatic Proxy Configuration</a></li>
+<li><code><a href="#ProxySelector">java.net.ProxySelector</a></code> API</li>
+</ul>
+
+<h2><a name="intro" id="intro"></a>Introduction</h2>
+
+<p>For enterprise customers it is important to be able to set up
+secure computing environments within their companies, and proxy
+configuration is an essential part of doing that. Proxy
+configuration acts as a security barrier; it ensures that the proxy
+server monitors all traffic between the Internet and the intranet.
+This is normally an integral part of security enforcement in
+corporate firewalls within intranets. Enterprise customers who want
+to use Java Plug-in to deploy applets, or Java Web Start to run
+applications, on their intranet web pages may also set up proxy
+support. This support is required for Java Plug-in and Java Web
+Start to work in an intranet environment and can be set up through
+the <a href="../jcp/jcp.html">Java Control Panel</a>.</p>
+
+<h2>Java Control Panel</h2>
+
+<p>The Java Control Panel provides four proxy options via the
+<a href="../jcp/jcp.html#network_settings">Network Setting</a>
+subpanel:</p>
+
+<ul>
+<li>Use browser settings</li>
+<li>Use proxy server</li>
+<li>Use automatic proxy configuration script</li>
+<li>Direct connection</li>
+</ul>
+
+<h3>Use browser settings</h3>
+
+<p>If "Use browser settings" is selected, then proxy information is obtained entirely through the browser. To change proxy information, refer to the documentation of your browser:</p>
+
+<ul>
+  <li><strong>Internet Explorer</strong>:
+    <ul><li><a href="http://windows.microsoft.com/en-US/windows7/Change-proxy-server-settings-in-Internet-Explorer">Change proxy server settings in Internet Explorer</a> (Windows 7)</li>
+    <li><a href="http://windows.microsoft.com/en-US/windows-vista/Change-proxy-settings-in-Internet-Explorer">Change proxy settings in Internet Explorer</a> (Windows Vista)</li>
+    <li><a href="http://technet.microsoft.com/en-us/library/cc733158.aspx">Configure Proxy Settings for Internet Explorer</a> (Windows Server 2008 R2)</li>
+    </ul>
+  </li>
+  <li><strong>Firefox</strong>: Change proxy settings in the <a href="https://support.mozilla.org/en-US/kb/Options%20window%20-%20Advanced%20panel">Options window - Advanced panel</a></li>
+  <li><strong>Chrome</strong>: Chrome uses the same connection and proxy settings as Windows; follow the same steps as you would with Internet Explorer</li>
+</ul>
+    
+
+<h3>Use proxy Server</h3>
+<p>If you select "Use proxy server" in the Java Control Panel, you
+have two choices here:</p>
+
+<ol>
+  <li>You can set the Address and the Port for a proxy server with the option to bypass it for local addresses.</li>
+  <li>You can individually set the proxy server for HTTP, Secure, FTP, and Socks connections. You can also provide a list of addresses for which you do not want to use a proxy server.</li>
+</ol>
+
+<h3>Use automatic proxy configuration script</h3>
+<p>If you select "Use automatic proxy configuration script", then
+you must enter the URL for the location of the JavaScript called
+<code>FindProxyForURL(URL url)</code> that returns the proxy server
+to be used for a URL. Support for this script is the same as
+described below under Automatic Proxy Configuration.</p>
+<h3>Direct connection</h3>
+<p>Direct connection does not use a proxy. For certain situations,
+such as when mobile users connect to the company through a modem,
+direct connection to the intranet environment is required, and
+proxies should not be used in these cases.</p>
+
+<h2><a name="how" id="how"></a>How Java Plug-in and Java Web Start Obtain Proxy Information From the Browser</h2>
+
+<p>Because browsers on different platforms store proxy information differently, there is no generic mechanism to obtain proxy information. Here's how proxy information is obtained from Internet Explorer and Firefox on Windows:</p>
+
+<p><strong>Internet Explorer</strong>: Internet Explorer obtains proxy information from the same set of keys in the Windows registry. Java Plug-in and Java Web Start extract this information directly from the registry.</p>
+
+<p><strong>Firefox</strong>: Firefox stores proxy information in a preference file under the user profile directory on the local machine. Firefox also has public APIs available for determining proxy information. Java Plug-in uses these public APIs to obtain the proxy information; Java Web Start obtains the proxy information through reading and parsing the preference file.</p>
+
+<p>Java Plug-in and Java Web Start obtain proxy information at startup time. If you change the proxy settings after Java Plug-in or Java Web Start have started, you may force reloading of the proxy information from the browser through the <a href="../jcp/console.html#debugging">p option in the Java Console</a>. Java Web Start is restarted for each application, so new proxy information will be used automatically on subsequent launches.</p>
+
+<h2><a name="manual" id="manual"></a>Manual Proxy Configuration</h2>
+
+<p>Internet Explorer, Firefox, and Chrome support manual proxy configuration. Users can specify the proxy server and port for each protocol. Users can also specify one proxy server and port for all protocols. To minimize the workload of the proxy server, some sites might bypass the proxy server completely when a machine is connecting to another machine inside the intranet environment. To do this, network administrators and users can specify a proxy server bypass list in the browser's proxy setting</p>
+
+<p><b>Internet Explorer:</b> Java Plug-in and Java Web Start recognize and supports the proxy server and port setting associated with the protocol. IE supports various syntaxes in the proxy server
+bypass list, as follows:</p>
+
+<ul>
+  <li>IP address/hostname only</li>
+  <li>IP address/hostname with wildcard</li>
+  <li>IP address/hostname with protocol</li>
+</ul>
+
+<p>For example, if you specify <tt>"203.0.113.0;*.eng;http://*.com"</tt> in the proxy server
+bypass list, then the browser bypasses the proxy whenever one of
+the following occurs:</p>
+
+<ul>
+<li><tt>"203.0.113.0"</tt> is requested</li>
+<li>the URL hostname ends with <tt>".eng"</tt></li>
+<li>the URL protocol is <tt>http</tt> and the URL hostname ends
+with <tt>".com"</tt></li>
+</ul>
+
+<p>Currently Java Plug-in and Java Web Start support the first two syntaxes in the proxy server bypass list in IE. IE also supports bypassing the proxy server for local (intranet) addresses without using the proxy server bypass list. Java Plug-in and Java Web Start support this option by bypassing the proxy server if the URL hostname is plain; i.e., the hostname contains no dot (<code>.</code>).</p>
+
+<p><b>Firefox:</b> Java Plug-in and Java Web Start recognize and supports the proxy server and port setting associated with the protocol. For example, if you specify <tt>".eng,.sun.com"</tt> in the proxy server bypass list in Firefox, it bypasses the proxy whenever the URL hostname ends with <tt>".eng"</tt> or <tt>".sun.com"</tt>. Java Plug-in and Java Web Start fully support this syntax in the proxy server bypass list in Firefox.</p>
+
+<p>For more information about manual proxy configuration in your browser, consult the user guide for your browser.</p>
+
+<h2><a name="automatic" id="automatic"></a>Automatic Proxy Configuration</h2>
+
+<p>Automatic proxy configuration is supported in the browser by
+setting a particular URL that contains a JavaScript file with
+<tt>.pac</tt> or <tt>.js</tt> extension. This file contains a
+function called <tt>FindProxyForURL</tt> that contains the logic to
+determine which proxy server to use when the browser receives a
+connection request. This function is written by the system
+administrator for the particular intranet environment. When the
+browser starts up, it recognizes the URL of the JavaScript file and
+downloads the file to the local machine using direct connection.
+Then whenever it needs to make a new connection, the browser
+executes the JavaScript function <tt>FindProxyForURL</tt> in the
+file to obtain the proxy information to set up the
+connection.</p>
+
+<h3>Java Plug-in:</h3>
+
+<p><strong>Internet Explorer</strong>: During startup, Java Plug-in downloads the JavaScript file to the local machine using direct
+connection. Then whenever it needs to make a new connection, it
+executes the <code>FindProxyForURL</code> function to obtain the
+proxy information using the JavaScript engine in Internet
+Explorer.</p>
+
+<p><strong>Firefox</strong>: During startup, Java Plug-in downloads the JavaScript file to the local machine using direct connection. Then whenever it needs to make a new connection, it executes the <code>FindProxyForURL</code> function to obtain the proxy information by using the JavaScript engine in Firefox.</p>
+
+<h3>Java Web Start:</h3>
+
+<p><strong>Windows</strong>: During startup, Java Web Start downloads the JavaScript file to the local machine using direct connection. Then whenever it needs to make a new connection, it executes the <code>FindProxyForURL</code> function to obtain the proxy information using the JavaScript engine in Internet Explorer.</p>
+
+<p><strong>Linux/Solaris</strong>: During startup, Java Web Start downloads the JavaScript file to the local machine using direct connection. Then whenever it needs to make a new connection, it will parse the <code>FindProxyForURL</code> function and try its best guess to obtain the proxy information.</p>
+
+<h3>Notes on <tt>FindProxyForURL</tt></h3>
+
+<p>Given a JavaScript engine, the following is applicable to Java Plug-in on all platforms and to Java Web Start on Windows only.</p>
+
+<ol>
+  <li>There are a number of JavaScript <i>helper</i> functions which can be called from the JavaScript function <tt>FindProxyForURL</tt>. Java Plug-in and Java Web Start provide their own implementations of these functions to completely emulate automatic proxy configuration. Regarding the implementation of these helper function, note the following:
+    <ul>
+      <li>Function <tt>dnsResolve</tt> always returns an empty string if the host is not an IP address.</li>
+      <li>Function <tt>isResolvable</tt> always returns false if the host is not an IP address.</li>
+      <li>Function <tt>isInNet</tt> always returns false if the host is not an IP address.</li>
+    </ul>
+  </li>
+  <li>Executing the function <tt>FindProxyForURL</tt> always returns proxy information as a string. Java Plug-in and Java Web Start extract the setting in the following way:
+    <ul>
+      <li>If "<code>DIRECT</code>" is in the string, Java Plug-in and Java Web Start assume direct connection.</li>
+      <li>If "<code>PROXY</code>" is in the string, they use the first proxy setting for the connection.</li>
+      <li>If "<code>SOCKS</code>" is in the string, they use the SOCKS v4 for the connection.</li>
+      <li>Otherwise, the proxy information in the string is incorrect. In this cases, Java Plug-in and Java Web Start assume direct connection.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>For more information about automatic proxy configuration in your browser, consult the user guide for your browser.</p>
+
+<h2><code><a name="ProxySelector" id="ProxySelector"></a>java.net.ProxySelector</code> API</h2>
+
+<p>Developers may sometimes need to determine the proxy configuration of a given host. By knowing the proxy configuration they can write more intelligent code to connect to the host through the proper proxy server. The class <code><a href=
+"../../../../api/java/net/ProxySelector.html">java.net.ProxySelector</a></code> provides configuration support. Here is a simple code example:</p>
+
+<pre>private Proxy findProxy(URI uri)
+{
+     try
+     {
+          ProxySelector selector = ProxySelector.getDefault();
+          List&lt;Proxy&gt; proxyList = selector.select(uri);
+          if (proxyList.size() &gt; 1)
+               return proxyList.get(0);
+     }
+     catch (IllegalArgumentException e)
+     {
+     }
+     return Proxy.NO_PROXY;
+}</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

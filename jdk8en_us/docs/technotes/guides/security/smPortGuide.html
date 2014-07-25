@@ -1,0 +1,1181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Security Managers and the Java SE JDK</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Security Managers and the Java SE JDK</h1>
+
+<br />
+<br />
+<hr />
+<dl>
+<dd><a href="#Introduction"><b>Introduction</b></a></dd>
+<dd><a href="#SecurityModelEv"><b>Security Model
+Evolution</b></a></dd>
+<dd><a href="#SecurityManagerEv"><b>Security Manager
+Evolution</b></a>
+<dl>
+<dd><a href="#SecurityManagerMethods"><b>Security Manager
+Methods</b></a></dd>
+<dd><a href="#SM11"><b>Security Managers in JDK 1.1</b></a></dd>
+<dd><a href="#SM12"><b>Security Managers in the Java SE JDK</b></a>
+<dl>
+<dd><a href="#Installing"><b>Installing
+<code>java.lang.SecurityManager</code> as the Default Security
+Manager</b></a></dd>
+<dd><a href="#CLChanges"><b>Changes to Methods For Class Loaders
+And Class Loader Depth</b></a></dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd><a href="#HowToPort"><b>How to Port 1.1-Style Security
+Managers</b></a></dd>
+<dd><a href="#MethodChanges"><b>SecurityManager Method Changes and
+Override Advice</b></a></dd>
+</dl>
+<br />
+<hr />
+<h2><a name="Introduction" id="Introduction">Introduction</a></h2>
+This document describes changes made to the security manager in the
+JDK that allow it to be used as-is as the default security manager
+in applications.
+<h2><a name="SecurityModelEv" id="SecurityModelEv">Security Model
+Evolution</a></h2>
+In JDK 1.1, local applications and correctly digitally signed
+applets were generally trusted to have full access to vital system
+resources, such as the file system, while unsigned applets were not
+trusted and could access only limited resources. A security manager
+was responsible for determining which resource accesses were
+allowed.
+<p>The Java SE JDK security architecture is policy-based, and
+allows for fine-grained access control. When code is loaded, it is
+assigned "permissions" based on the security policy currently in
+effect. Each permission specifies a permitted access to a
+particular resource, such as "read" and "write" access to a
+specified file or directory, or "connect" access to a given host
+and port. The policy, specifying which permissions are available
+for code from various signers/locations, can be initialized from an
+external configurable policy file. Unless a permission is
+explicitly granted to code, it cannot access the resource that is
+guarded by that permission. These new concepts of permission and
+policy enable the JDK to offer fine-grain, highly configurable,
+flexible, and extensible access control. Such access control can
+now not only be specified for applets, but also for all Java code,
+including applications, beans, and servlets.</p>
+<p>For more information on the Java security architecture, please
+see the <a href="index.html">security documentaton</a>.</p>
+<h2><a name="SecurityManagerEv" id="SecurityManagerEv">Security
+Manager Evolution</a></h2>
+<h2><a name="SecurityManagerMethods" id=
+"SecurityManagerMethods">Security Manager Methods</a></h2>
+<p>The <code>SecurityManager</code> class contains many methods
+with names that begin with the word <code>check</code>. Examples
+are <code>checkRead</code> and <code>checkConnect</code>. Various
+methods in the Java libraries call a <code>check</code> method
+before performing each potentially security-sensitive operation.
+The security manager is thereby given an opportunity to prevent
+completion of the operation by throwing an exception. A security
+manager routine simply returns if the operation is permitted, but
+throws a SecurityException if the operation is not permitted. The
+only exception to this convention is
+<code>checkTopLevelWindow</code>, which returns a boolean
+value.</p>
+<p>The other main type of methods contained in the
+<code>SecurityManager</code> class are those related to class
+loader existence and depth:</p>
+<ul>
+<li>currentClassLoader</li>
+<li>currentLoadedClass</li>
+<li>inClassLoader</li>
+<li>classLoaderDepth</li>
+</ul>
+<h2><a name="SM11" id="SM11">Security Managers in JDK 1.1</a></h2>
+In JDK 1.1, the class <code>java.lang.SecurityManager</code> was an
+abstract class. The default implementations of the security manager
+<code>check</code> methods threw exceptions. The class loader and
+depth-related classes were appropriately implemented, often in
+native code.
+<p>Any application (such as a browser) that wanted to install a
+security manager had to write their own, providing appropriate
+concrete implementations of the methods that threw exceptions by
+default -- primarily the <code>check</code> methods.</p>
+<p>Security managers based on the JDK 1.1 applet security manager
+model typically based access control decisions on two things:</p>
+<ol>
+<li>Whether or not a class with a class loader (i.e., an applet in
+JDK 1.1) was on the stack.</li>
+<li>The class loader depth -- how far down the stack was the most
+recent occurrence of a method from a class defined using a class
+loader.</li>
+</ol>
+<p>These types of decisions were made by calling the
+<code>SecurityManager</code> methods related to class loader
+existence and depth. For example, a typical 1.1-style security
+manager might have a <code>checkExit</code> method like the
+following:</p>
+<pre>
+     public void checkExit(int status) {
+       if (inClassLoader()) {
+        throw new SecurityException(..);
+       } 
+     }
+</pre>
+<p>Such a <code>checkExit</code> method would not allow
+<code>Runtime.exit</code> to be called when any class defined with
+a class loader (an applet) was on the stack. This is an example of
+the first case, checking whether or not a class with a class loader
+is on the stack. An example of the second case (class loader depth)
+would be something like:</p>
+<pre>
+      public void checkCreateClassLoader() {
+         if (classLoaderDepth() == 2) {
+            throw new SecurityException();
+         }
+      }
+</pre>
+<p>This method is saying that the class loader depth can't be 2.
+That is, the method that called the method that called
+<code>checkCreateClassLoader</code> must not be in a class defined
+with a class loader. For example, the constructor for
+<code>java.lang.ClassLoader</code> calls
+<code>checkCreateClassLoader</code>, which means the method that
+calls the constructor for <code>java.lang.ClassLoader</code> must
+not have a class loader. This means applets can't directly create
+class loaders.</p>
+<p>Note that there is a big difference between the two methods,
+even though both attempt to prevent applets from performing
+actions. In the first case, <code>checkExit</code> will throw an
+exception if an applet is anywhere on the stack. That means even
+built-in JDK code can't exit the VM if it was called from an
+applet. In the second case, JDK code is allowed to create a class
+loader, even if it was called by an applet. That is because the
+depth of a class with a class loader is used, and not the fact that
+there is one.</p>
+<h2><a name="SM12" id="SM12">Security Managers in the Java SE
+JDK</a></h2>
+In the JDK, the class <code>java.lang.SecurityManager</code> had a
+number of changes made to it in order to allow it to be used as the
+default security manager for applications. In particular:
+<ul>
+<li>It is no longer an <code>abstract</code> class, and can thus be
+installed as-is.</li>
+<li>Most <code>check</code> methods call a new
+<code>checkPermission</code> method, which by default calls the
+method of the same name (<code>checkPermission</code>) in the new
+<code>AccessController</code> class. Those methods that don't call
+<code>checkPermission</code> have reasonable defaults.</li>
+<li>Methods used in JDK 1.1 to determine if a class loader is on
+the stack and/or to calculate class loader depth have been modified
+in the JDK to ignore system class loaders and security contexts
+that have been granted
+<code>java.security.AllPermission</code>.</li>
+</ul>
+<h2><a name="Installing" id="Installing">Installing
+<code>java.lang.SecurityManager</code> as the Default Security
+Manager</a></h2>
+<p>Since <code>java.lang.SecurityManager</code> is no longer
+abstract, you can install and use it as the default security
+manager. You can do this by setting a system property when
+launching the VM:</p>
+<pre>
+    java -Djava.security.manager YourApp
+</pre>
+Alternatively, your application can install it directly via the
+following line of code:
+<pre>
+    System.setSecurityManager(new SecurityManager());
+</pre>
+You can customize the behavior of the default security manager by
+modifying policy files. See the security guide on <a href=
+"PolicyFiles.html">policy files</a> for more information.
+<h2><a name="CLChanges" id="CLChanges">Changes to Methods For Class
+Loaders And Class Loader Depth</a></h2>
+<p>In the JDK, the <code>SecurityManager</code> methods related to
+class loaders and class loader depth are <i>not</i> called by any
+of the <code>check</code> methods, and they are deprecated. They
+should not be used by any new security managers, and it is
+recommended that their use be eliminated from existing security
+managers as well. However, they are left in for backward
+compatibility and they have been modified in an attempt to enable
+old 1.1-style security managers to still work under the JDK,
+without modification.</p>
+<p>These methods are:</p>
+<ul>
+<li>currentClassLoader</li>
+<li>currentLoadedClass</li>
+<li>inClassLoader</li>
+<li>classLoaderDepth</li>
+</ul>
+<h3>Modification of Class Loader/Depth-related Methods</h3>
+<p>The class loader/depth related methods have all been modified in
+three ways:</p>
+<ol>
+<li>These methods skip system class loaders. A system class loader
+is defined as being a class loader that is equal to the system
+class loader (as returned by
+<code>ClassLoader.getSystemClassLoader</code>) or one of its
+ancestors.
+<p>Since classes loaded by the system class loader include
+application classes (loaded off of <code>CLASSPATH</code>),
+extension classes, and the built-in JDK classes, this modification
+enables these methods to ignore such code.</p>
+<p>Note that if you run an application that installs a custom
+security manager, and that security manager is loaded off of
+<code>CLASSPATH</code> in the JDK, it will have a system class
+loader associated with it. (Application classes did not have a
+class loader in JDK 1.1.) If you were to call a method like
+<code>classLoaderDepth</code> from within the custom security
+manager, and that method were not modified to ignore classes loaded
+by a system class loader, it would always return 0, which would not
+be very useful. Similarly, if class loader methods weren't changed
+to skip system classes and a custom security manager was loaded off
+of <code>CLASSPATH</code>, then this might also open up security
+holes in cases where the security manager is making decisions based
+on, for example, disallowing an operation if "classLoaderDepth() ==
+2". (It should really be "classLoaderDepth() &lt;= 2".)</p>
+</li>
+<li>These methods stop checking after they reach a method on the
+stack that has been marked as "privileged." (See
+java.security.AccessController.doPrivileged() and <a href=
+"doprivileged.html">API for Privileged Blocks</a>.)</li>
+<li>These methods treat security contexts that have been granted
+<code>AllPermission</code> as if there is no class loader on the
+stack.</li>
+</ol>
+<p>As an example of the use of the first two modifications, note
+that there are now places in the JDK that open files, etc., after a
+security manager has been installed. Some 1.1-style security
+managers have a <code>checkRead</code> method that looks like the
+following:</p>
+<pre>
+       public void checkRead(String file) {
+         if (inClassLoader()) {
+          throw new SecurityException(..);
+         } 
+       }
+</pre>
+<p>Without JDK code modifications, such a check run in the JDK
+would cause a security exception to be thrown when the JDK itself
+tries to read a file and there is a class with a non-system class
+loader on the stack. With the new security model, all such JDK code
+that tries to perform an operation that its caller might not be
+allowed to do has a <code>doPrivileged</code> block around it.
+Since <code>inClassLoader</code> just examines the stack up to and
+including the frame containing the "privileged" code, and the code
+at the top of the stack is JDK code, which is loaded by the system
+class loader or one of its ancestors, the
+<code>inClassLoader</code> method will return <code>false</code>,
+allowing the read to occur.</p>
+<h3>Maintenance of Class Loader Depths</h3>
+<p>As noted previously, security managers based on the 1.1 applet
+security manager based some of their access control decisions on
+class loader depth. As an example, the
+<code>checkCreateClassLoader</code> method previously presented is
+repeated here:</p>
+<pre>
+       public void checkCreateClassLoader() {
+          if (classLoaderDepth() == 2) {
+             throw new SecurityException();
+          }
+       }
+</pre>
+In the JDK we have attempted to maintain the stack depth as used in
+1.1-style security managers. For example, the constructor for
+java.security.SecureClassLoader has an explicit call to
+<code>SecurityManager.checkCreateClassLoader</code> even though the
+constructor for its super class (ClassLoader) also does. If the
+check was not placed in the constructor for
+<code>SecureClassLoader</code>, then a 1.1-style security manager
+would allow untrusted code to extend <code>SecureClassLoader</code>
+and construct class loaders, as the class loader depth would always
+be greater than 2.
+<h2><a name="HowToPort" id="HowToPort">How to Port 1.1-Style
+Security Managers</a></h2>
+<p>First and foremost, we highly recommend analyzing all your
+custom security manager methods before running your security
+manager under the JDK. Failure to do so could result in a security
+hole or prevent the proper operation of the JDK. This is due to the
+fragile nature of 1.1-style security managers.</p>
+<p>Where possible, you should just use the default implementation
+of the 1.2 <code>SecurityManager</code>. This helps give users and
+administrators consistent behavior. If this is not possible, then
+you should at least try to call <code>super.checkXXX</code> in your
+<code>checkXXX</code> method before throwing a security exception.
+Doing so will allow the access controller algorithm to be used, and
+will allow the JDK itself to function correctly.</p>
+<p>In the JDK, any existing code that used to call any of the
+<code>SecurityManager check</code> methods continues to do so. For
+new code that requires a security check, calls are made to
+<code>SecurityManager.checkPermission</code> instead of adding a
+new <code>SecurityManager check</code> method. For example, the new
+<code>java.lang.System.setProperty</code> method calls
+<code>checkPermission</code> with a
+<code>java.util.PropertyPermission</code> permission.</p>
+<p>When extending the SecurityManager class and overriding existing
+methods, some care should be taken. For example, if you override
+the <code>checkRead(String file)</code> method so it always throws
+a security exception, then the JDK itself may fail to operate
+properly. That is, if some JDK code needs to open a file (to read a
+properties file, load a JAR file, etc.) then throwing a security
+exception for every read attempt would cause such opens to always
+fail.</p>
+<p><b>In general, you should only override the default methods if
+you intend to <i>loosen</i> security, not to make it stronger. If
+you want to <i>tighten</i> security, you should modify the default
+policy files and/or install a custom
+<code>java.security.Policy</code> object.</b> See the security
+guide on <a href="PolicyFiles.html">policy files</a> for more
+information.</p>
+<p>In general, when overriding security manager methods you should
+place a call to the <code>super.checkXXX</code> method at the point
+where your overridden <code>checkXXX</code> method would throw an
+exception. For example:</p>
+<pre>
+      public class MySecurityManager extends SecurityManager {
+
+        public void checkRead(String file) {
+          if (someCustomSecurityCheckFails()) {
+             super.checkRead(file);
+          }
+        }
+      }
+    
+</pre>
+If your custom security check fails, then
+<code>super.checkRead</code> gets called. The default
+implementation of <code>checkRead</code> invokes
+<code>checkPermission</code>, which by default consults the
+<code>AccessController</code>. By invoking the
+<code>AccessController</code>, system code that has done an
+<code>AccessController.doPrivileged</code> before trying to read a
+file will succeed in reading that file. All other code will be
+subjected to the current policy in effect, and an access control
+exception will be thrown if access to that file has not been
+granted.
+<p>Note, there are some <code>checkXXX</code> methods in which you
+should <i>not</i> call <code>super.checkXXX</code> methods when
+overriding them. That is because the default implementation of
+these methods may not be as strict as the policy you are
+implementing in the overridden method. For example, the default
+<code>checkAccess(ThreadGroup g)</code> method only protects the
+system thread group. If you intend to protect threads in distinct
+thread groups from each other (for example applet thread groups),
+then you would not want to call <code>super.checkAccess</code> at
+the point you would normally throw a security exception, as that
+would defeat the purpose of your customized check. Instead, you
+could place a call to <code>super.checkAccess</code> as the first
+statement in your overridden method.</p>
+<p>For example:</p>
+<pre>
+      public class AppletSecurityManager extends SecurityManager {
+
+        public void checkAccess(ThreadGroup g) {
+          // a call to super will throw an exception if someone
+          // is trying to modify the system thread group
+          super.checkAccess(g);
+          ...
+          // now perform checks based on which applet thread group
+          // the current caller is in to see if they can modify thread group g.
+          ...
+      }
+    
+</pre>
+<p>We describe how to override each method in the following
+section.</p>
+<h2><a name="MethodChanges" id="MethodChanges">SecurityManager
+Method Changes and Override Advice</a></h2>
+This section lists changes made to
+<code>java.lang.SecurityManager</code> methods in the JDK and
+provides suggestions regarding any overrides you may wish to make.
+Please see the Java documentation for the
+<code>SecurityManager</code> class for more information on these
+methods.
+<h3>protected boolean inCheck</h3>
+<p>This field has been deprecated, and any uses of this field
+within the JDK itself have been removed. Instead of using inCheck,
+you should use <code>checkPermission</code> along with
+<code>doPrivileged</code>.</p>
+<h3>public boolean getInCheck();</h3>
+<p>This method has also been deprecated.</p>
+<h3>public SecurityManager();</h3>
+<p>The constructor has been modified to allow multiple
+SecurityManagers to be created, assuming the caller has the
+<code>RuntimePermission("createSecurityManager")</code>
+permission.</p>
+<h3>protected native Class[] getClassContext();</h3>
+<p>No changes. This call can be used to emulate the 1.1 behavior of
+the methods that have been changed in the JDK (
+<code>currentClassLoader</code>, <code>currentLoadedClass</code>,
+<code>classLoaderDepth</code>, <code>inClassLoader</code>).</p>
+<h3>protected ClassLoader currentClassLoader();</h3>
+<p>The typical use of this method in JDK 1.1-style security
+managers was to see if there was a class loader on the stack, and
+if not, treat the code as "trusted" and allow it to do anything.
+This method has been modified in the JDK to allow trusted JDK code
+(actually any code granted
+<code>java.security.AllPermission</code>) that calls
+<code>doPrivileged</code> to be treated as trusted by 1.1-style
+security managers. It has also been modified to skip system class
+loaders. A system class loader is defined as being a class loader
+that is equal to the system class loader (as returned by
+ClassLoader.getSystemClassLoader) or one of its ancestors.</p>
+<p>This method will return <code>null</code> in the following three
+cases:</p>
+<ol>
+<li>All methods on the execution stack are from classes defined
+using the system class loader or one of its ancestors.</li>
+<li>All methods on the execution stack up to the first "privileged"
+caller (see java.security.AccessController.doPrivileged) are from
+classes defined using the system class loader or one of its
+ancestors.</li>
+<li>A call to checkPermission with
+<code>java.security.AllPermission</code> does <b>not</b> result in
+a SecurityException.</li>
+</ol>
+<p>This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>protected Class currentLoadedClass();</h3>
+<p>This method has been modified in the same fashion as
+<code>currentClassLoader</code>, and will return <code>null</code>
+if the current security context has been granted
+<code>AllPermission</code> or all the methods on the stack (up to
+the first privileged caller, if any) are from classes defined using
+the system class loader or one of its ancestors.</p>
+<p>This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>protected int classDepth(String name);</h3>
+<p>No changes in behavior. This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>protected int classLoaderDepth();</h3>
+<p>This method has been modified in the same fashion as
+<code>currentClassLoader</code>, and will return <code>-1</code> if
+the current security context has been granted
+<code>AllPermission</code> or all the methods on the stack (up to
+the first privileged caller, if any) are from classes defined using
+the system class loader or one of its ancestors.</p>
+<p>This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>protected boolean inClass(String name);</h3>
+<p>No changes in behavior. This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>protected boolean inClassLoader();</h3>
+<p>This method returns true if <code>currentClassLoader</code>
+returns a non-null class loader, so it follows the same semantics
+that <code>currentClassLoader</code> does.</p>
+<p>This method has been deprecated. Use
+<code>checkPermission</code> instead.</p>
+<h3>public Object getSecurityContext();</h3>
+<p>This method returns a
+<code>java.security.AccessControlContext</code> object that is
+created with a call to
+<code>java.security.AccessController.getContext</code>. In JDK1.1
+it returned <code>null</code> by default.</p>
+<h3>public void checkPermission(Permission perm);</h3>
+<p>This method is new in the JDK. It calls
+<code>java.security.AccessController.checkPermission</code> with
+the given permission. Internally, the JDK always calls
+<code>SecurityManager.checkPermission</code> instead of calling the
+<code>AccessController</code> directly. This allows people to
+override this method to provide additional functionality such as
+auditing and/or GUI dialogs.</p>
+<h3>public void checkPermission(Permission perm, Object
+context);</h3>
+<p>This method is new in the JDK. If <code>context</code> is an
+instance of <code>AccessControlContext</code> then the
+<code>AccessControlContext.checkPermission</code> method will be
+invoked on the given context with the specified permission.</p>
+<p>If <code>context</code> is not an instance of
+<code>AccessControlContext</code> then a
+<code>SecurityException</code> is thrown.</p>
+<h3>public void checkCreateClassLoader();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("createClassLoader")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkCreateClassLoader</code> should be made at the
+point the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkCreateClassLoader() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkCreateClassLoader();
+      }
+    }
+  }
+</pre>
+<h3>public void checkAccess(Thread t);</h3>
+<p>If the thread argument is a system thread (belongs to the thread
+group with a <code>null</code> parent) then this method calls
+<code>checkPermission</code> with the
+<code>RuntimePermission("modifyThread")</code> permission.</p>
+<p>Applications that want a stricter policy should override this
+method.</p>
+<p>If this method is overridden, then
+<code>super.checkAccess</code> should be called by the first
+statement in the overridden method, or the equivalent security
+check should be placed in the overridden method.</p>
+<p>If this method is overridden, the method that overrides it
+should additionally check to see if the calling thread has the
+<code>RuntimePermission("modifyThread")</code> permission, and if
+so, return silently. This is to ensure that code granted that
+permission (such as the JDK itself) is allowed to manipulate any
+thread.</p>
+<p>For example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkAccess(Thread t) {
+      // a call to super will throw an exception if someone
+      // is trying to modify a system thread
+      super.checkAccess(t);
+      ...
+      if (someCustomSecurityCheckForOtherThreadsFails()) {
+        // if the check fails, instead of throwing an exception,
+        // call checkPermission, which will throw an exception
+        // if need be
+        checkPermission(new RuntimePermission("modifyThread"));  
+      }
+      ...
+    }
+  }
+</pre>
+<h3>public void checkAccess(ThreadGroup g);</h3>
+<p>If the thread group argument is the system thread group (has a
+<code>null</code> parent) then this method calls
+<code>checkPermission</code> with the
+<code>RuntimePermission("modifyThreadGroup")</code> permission.</p>
+<p>Applications that want a stricter policy should override this
+method.</p>
+<p>If this method is overridden, then
+<code>super.checkAccess</code> should be called by the first
+statement in the overridden method, or the equivalent security
+check should be placed in the overridden method.</p>
+<p>If this method is overridden, the method that overrides it
+should additionally check to see if the caller has the
+<code>RuntimePermission("modifyThreadGroup")</code> permission, and
+if so, return silently. This is to ensure that code granted that
+permission (such as the JDK itself) is allowed to manipulate any
+thread group.</p>
+<p>For example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkAccess(ThreadGroup g) {
+      // a call to super will throw an exception if someone
+      // is trying to modify the system thread group
+      super.checkAccess(g);
+      ...
+      if (someCustomSecurityCheckForOtherThreadGroupsFails()) {
+        // if the check fails, instead of throwing an exception,
+        // call checkPermission, which will throw an exception
+        // if need be
+        checkPermission(new RuntimePermission("modifyThreadGroup"));  
+      }
+      ...
+    }
+  }
+</pre>
+<h3>public void checkExit(int status);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("exitVM")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkExit</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkExit(int status) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkExit(status);
+      }
+    }
+  }
+</pre>
+<h3>public void checkExec(String cmd);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with a <code>FilePermission</code>. If
+the <code>cmd</code> is an absolute path (see
+<code>java.io.File.isAbsolute</code>) then it is passed as-is as
+the target for the <code>FilePermission</code>. If <code>cmd</code>
+is not absolute, then the special target "&lt;&lt;ALL
+FILES&gt;&gt;" is used. This target is used because it is difficult
+to determine the actual path of the command that will be executed
+on an individual platform due to things such as environment
+variables, etc.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkExec</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkExec(String cmd) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkExec(cmd);
+      }
+    }
+  }
+</pre>
+<h3>public void checkLink(String lib);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("loadLibrary."+lib)</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkLink</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkLink(String lib) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkLink(lib);
+      }
+    }
+  }
+</pre>
+<h3>public void checkRead(FileDescriptor fd);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("readFileDescriptor")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkRead</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkRead(FileDescriptor fd) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkRead(fd);
+      }
+    }
+  }
+</pre>
+<h3>public void checkRead(String file);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>FilePermission(file,"read")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkRead</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkRead(String file) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkRead(file);
+      }
+    }
+  }
+</pre>
+<h3>public void checkRead(String file, Object context);</h3>
+<p>This method has been modified. If <code>context</code> is an
+instance of <code>AccessControlContext</code> then the
+<code>AccessControlContext.checkPermission</code> method will be
+invoked on the given context with the
+<code>FilePermission(file,"read")</code> permission.</p>
+<p>If <code>context</code> is not an instance of
+<code>AccessControlContext</code> then a
+<code>SecurityException</code> is thrown.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkRead</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkRead(String file, Object context) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkRead(file, context);
+      }
+    }
+  }
+</pre>
+<h3>public void checkWrite(FileDescriptor fd);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("writeFileDescriptor")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkWrite</code> should be made at the point the
+overridden method would normally throw an exception. For
+Example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkWrite(FileDescriptor fd) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkWrite(fd);
+      }
+    }
+  }
+</pre>
+<h3>public void checkWrite(String file);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>FilePermission(file,"write")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkWrite</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkWrite(String file) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkWrite(file);
+      }
+    }
+  }
+</pre>
+<h3>public void checkDelete(String file);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>FilePermission(file,"delete")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkDelete</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkDelete(String file) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkDelete(file);
+      }
+    }
+  }
+</pre>
+<h3>public void checkConnect(String host, int port);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>SocketPermission(host+":"+port,"connect")</code> permission
+if the port is not equal to -1. If the port is equal to -1, then it
+calls <code>checkPermission</code> with the
+<code>SocketPermission(host,"resolve")</code> permission.</p>
+<p>This behavior is consistent with JDK 1.1, where a port equal to
+-1 indicates that an IP address lookup is being performed.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkConnect</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkConnect(String host, int port) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkConnect(host, port);
+      }
+    }
+  }
+</pre>
+<h3>public void checkConnect(String host, int port, Object
+context);</h3>
+<p>This method has been modified. If <code>context</code> is an
+instance of <code>AccessControlContext</code> then the
+<code>AccessControlContext.checkPermission</code> method will be
+invoked on the given context with the
+<code>SocketPermission(host+":"+port,"connect")</code> permission
+if the port is not equal to -1. If the port is equal to -1, then it
+calls <code>checkPermission</code> with the
+<code>SocketPermission(host,"resolve")</code> permission.</p>
+<p>If <code>context</code> is not an instance of
+<code>AccessControlContext</code> then a
+<code>SecurityException</code> is thrown.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkConnect</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkConnect(String host, int port, Object context) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkConnect(host, port, context);
+      }
+    }
+  }
+</pre>
+<h3>public void checkListen(int port)</h3>
+<p>This method has been modified. If port is not 0, it calls
+<code>checkPermission</code> with the
+<code>SocketPermission("localhost:"+port,"listen")</code>. If port
+is zero, it calls <code>checkPermission</code> with
+<code>SocketPermission("localhost:1024-","listen").</code></p>
+<p>If this method is overridden, then a call to
+<code>super.checkListen</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkListen(int port) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkListen(port);
+      }
+    }
+  }
+</pre>
+<h3>public void checkAccept(String host, int port);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>SocketPermission(host+":"+port,"accept")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkAccept</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkAccept(String host, int port) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkAccept(host, port);
+      }
+    }
+  }
+</pre>
+<h3>public void checkMulticast(InetAddress maddr);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>SocketPermission(maddr.getHostAddress(),"accept,connect")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkMulticast</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkMultiCast(InetAddress maddr) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkMultiCast(maddr);
+      }
+    }
+  }
+</pre>
+<h3>public void checkMulticast(InetAddress maddr, byte ttl);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>SocketPermission(maddr.getHostAddress(),"accept,connect")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkMulticast</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkMultiCast(InetAddress maddr, byte ttl) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkMultiCast(maddr, ttl);
+      }
+    }
+  }
+</pre>
+<h3>public void checkPropertiesAccess();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the <code>PropertyPermission("*",
+"read,write")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkPropertiesAccess</code> should be made at the
+point the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkPropertiesAccess() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkPropertiesAccess();
+      }
+    }
+  }
+</pre>
+<h3>public void checkPropertyAccess(String key);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the <code>PropertyPermission(key,
+"read")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkPropertyAccess</code> should be made at the point
+the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkPropertyAccess(String key) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkPropertiesAccess(key);
+      }
+    }
+  }
+</pre>
+<h3>public boolean checkTopLevelWindow(Object window);</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>AWTPermission("showWindowWithoutWarningBanner")</code>
+permission, and returns true if an SecurityException is not thrown,
+otherwise it returns false.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkTopLevelWindow</code> should be made at the point
+the overridden method would normally return false, and the value of
+<code>super.checkTopLevelWindow</code> should be returned. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkTopLevelWindow(Object window) {
+      if (someCustomSecurityCheckFails()) {
+        return super.checkTopLevelWindow(window);
+      } else {
+        return true;
+      }
+    }
+  }
+</pre>
+<h3>public void checkPrintJobAccess();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("queuePrintJob")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkPrintJobAccess</code> should be made at the point
+the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkPrintJobAccess() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkPrintJobAccess();
+      }
+    }
+  }
+</pre>
+<h3>public void checkSystemClipboardAccess();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>AWTPermission("accessClipboard")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkSystemClipboardAccess</code> should be made at the
+point the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkSystemClipboardAccess() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkSystemClipboardAccess();
+      }
+    }
+  }
+</pre>
+<h3>public void checkAwtEventQueueAccess();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>AWTPermission("accessEventQueue")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkAwtEventQueueAccess</code> should be made at the
+point the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkAwtEventQueueAccess() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkAwtEventQueueAccess();
+      }
+    }
+  }
+</pre>
+<h3>public void checkPackageAccess(String pkg);</h3>
+<p>This method has been modified. It first gets a list of
+restricted packages by obtaining a comma-separated list from a call
+to
+<code>java.security.Security.getProperty("package.access")</code>,
+and checks to see if <code>pkg</code> starts with or equals any of
+the restricted packages. If it does, then
+<code>checkPermission</code> gets called with the
+<code>RuntimePermission("accessClassInPackage."+pkg)</code>
+permission.</p>
+<p>If this method is overridden, then
+<code>super.checkPackageAccess</code> should be called as the first
+line in the overridden method. For example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkPackageAccess(String pkg) {
+      super.checkPackageAccess(pkg);
+      ...
+      someCustomSecurityCheck();
+      ...
+    }
+  }
+</pre>
+<h3>public void checkPackageDefinition(String pkg);</h3>
+<p>This method has been modified. It first gets a list of
+restricted packages by obtaining a comma-separated list from a call
+to
+<code>java.security.Security.getProperty("package.definition")</code>,
+and checks to see if <code>pkg</code> starts with or equals any of
+the restricted packages. If it does, then
+<code>checkPermission</code> gets called with the
+<code>RuntimePermission("defineClassInPackage."+pkg)</code>
+permission.</p>
+<p>If this method is overridden, then
+<code>super.checkPackageDefinition</code> should be called as the
+first line in the overridden method. For example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkPackageDefinition(String pkg) {
+      super.checkPackageDefinition(pkg);
+      ...
+      someCustomSecurityCheck();
+      ...
+    }
+  }
+</pre>
+<h3>public void checkSetFactory();</h3>
+<p>This method has been modified to call
+<code>checkPermission</code> with the
+<code>RuntimePermission("setFactory")</code> permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkSetFactory</code> should be made at the point the
+overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkSetFactory() {
+      if (someCustomSecurityCheckFails()) {
+        super.checkSetFactory();
+      }
+    }
+  }
+</pre>
+<h3>public void checkMemberAccess(Class clazz, int which);</h3>
+<p>This method has been modified. The default policy is to allow
+access to PUBLIC members, as well as access to classes that have
+the same class loader as the caller. In all other cases call
+<code>checkPermission</code> with the
+<code>RuntimePermission("accessDeclaredMembers")</code>
+permission.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkMemberAccess</code> cannot be made, as the default
+implementation of <code>checkMemberAccess</code> relies on the code
+being checked being at a stack depth of 4. For example:</p>
+<pre>
+     someCaller[3]
+     java.lang.Class.someReflectionAPI [2]
+     java.lang.Class.checkMemberAccess [1]
+     SecurityManager.checkMemberAccess [0]
+</pre>
+In order to emulate this behavior, you would need to call
+<code>getClassContext</code>, and examine the class loader of the
+class at index 3, just as the default
+<code>checkMemberAccess</code> method does:
+<pre>
+  if (which != Member.PUBLIC) {
+    Class stack[] = getClassContext();
+    /*
+     * stack depth of 4 should be the caller of one of the
+     * methods in java.lang.Class that invoke checkMember
+     * access. The stack should look like:
+     * 
+     * someCaller [3]
+     * java.lang.Class.someReflectionAPI  [2]
+     * java.lang.Class.checkMemberAccess [1]
+     * MySecurityManager.checkMemberAccess [0]
+     *
+     */
+    if ((stack.length&lt;4) || 
+      (stack[3].getClassLoader() != clazz.getClassLoader())) {
+      if (checkMemberAccessPermission == null)
+        checkMemberAccessPermission = 
+          new RuntimePermission("accessDeclaredMembers");
+      checkPermission(checkMemberAccessPermission);
+    }
+  }
+</pre>
+<p>This is the only security manager method in the JDK that is
+still based on a caller's depth. This is to allow a caller to
+reflect on classes from the same class loader it came from.</p>
+<h3>public void checkSecurityAccess(String target);</h3>
+<p>This method has been modified to create a
+<code>SecurityPermission</code> object for the given permission
+target name and calls <code>checkPermission</code> with it.</p>
+<p>If this method is overridden, then a call to
+<code>super.checkSecurityAccess</code> should be made at the point
+the overridden method would normally throw an exception. For
+example:</p>
+<pre>
+  public class MySecurityManager extends SecurityManager {
+
+    public void checkSecurityAccess(String target) {
+      if (someCustomSecurityCheckFails()) {
+        super.checkSecurityAccess(target);
+      }
+    }
+  }
+</pre>
+<h3>public ThreadGroup getThreadGroup();</h3>
+<p>This method has not been changed.</p>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

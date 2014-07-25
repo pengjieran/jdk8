@@ -1,0 +1,618 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Applet Deployment Parameters</title>
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Applet Deployment Parameters</h1>
+<p><a name="PageTop" id="PageTop"></a></p>
+<p><a href="../index.html">Java Rich Internet Applications
+Guide</a> &gt; <a href="applet_dev_guide.html">Applet Developer's
+Guide</a> &gt; Applet Deployment Parameters</p>
+<p>Applets may be deployed by hand-coding the <code>applet</code>,
+<code>object</code> or <code>embed</code> tags with the required
+parameters. This section describes these parameters. However, to
+assure cross browser compatibility, it is recommended that the
+Deployment Toolkit be used to deploy applets. Refer to <a href=
+"../deployment_advice.html" target="_self">Java Rich Internet
+Applications Deployment Advice</a> for information on using the
+Deployment Toolkit and deploying applets using JNLP.</p>
+<p>The following topics are covered:</p>
+<ul>
+<li class="TOC2"><a href="#jnlp_href">Deployment using JNLP</a>
+<ul>
+<li class="TOC3"><a href=
+"#jnlp_href"><code>jnlp_href</code></a></li>
+</ul>
+</li>
+<li><a href="#LOADING_SCREEN" target="_self" class="TOC2">Loading
+Screen</a>
+<ul class="TOC3">
+<li><a href="#BOXBORDER" target=
+"_self"><code>boxborder</code></a></li>
+<li><a href="#CENTERIMAGE" target=
+"_self"><code>centerimage</code></a></li>
+</ul>
+</li>
+<li><a href="#COMMAND_LINE_ARGS" target="_self" class=
+"TOC2">Command-line Arguments</a>
+<ul class="TOC3">
+<li><a href="#java_vm_args" target=
+"_self"><code>java-vm-args</code></a></li>
+<li><a href="#JAVA_ARGUMENTS" target=
+"_self"><code>java_arguments</code></a></li>
+<li><a href="#SEPARATE_JVM" target=
+"_self"><code>separate_jvm</code></a></li>
+</ul>
+</li>
+<li class="TOC2"><a href="#JRE_VERSION" target="_self">JRE Version
+Selection</a>
+<ul>
+<li><a href="#JAVA_VERSION" target="_self" class=
+"TOC3"><code>java_version</code></a></li>
+<li><a href="#CLASSID" target="_self"><code>class-id</code>
+attribute in Internet Explorer</a></li>
+<li><a href="#JPI_VERSION" target="_self"><code>version</code> and
+<code>jpi-version</code> attributes in the Mozilla Browser
+family</a></li>
+</ul>
+</li>
+<li><a href="#CLASS_LOADER_CACHING" target="_self" class=
+"TOC2">Class Loader Caching</a>
+<ul>
+<li><a href="#CLASSLOADER_CACHE" target="_self" class=
+"TOC3"><code>classloader_cache</code></a></li>
+</ul>
+</li>
+<li><a href="#SECURITY" target="_self" class=
+"TOC2">Security</a>
+<ul>
+<li><a href="#PERMISSIONS" target="_self" class=
+"TOC3">permissions</a></li>
+</ul>
+</li>
+<li><a href="#JAVA_CACHE">Java Cache</a>
+<ul>
+<li><a href="#CACHE_ARCHIVE"><code>cache_archive</code></a></li>
+</ul>
+</li>
+</ul>
+<h2><a name="depl_jnlp" id="depl_jnlp"></a>Deployment using
+JNLP</h2>
+<h3><a name="jnlp_href" id=
+"jnlp_href"></a><code>jnlp_href</code></h3>
+<p>The file containing information that the plug-in should use to
+launch the applet.</p>
+<h2><a name="LOADING_SCREEN" id="LOADING_SCREEN">Loading
+Screen</a></h2>
+<p>The Java Plug-in offers better customization of the image that
+is displayed before the applet is loaded. Animated GIFs are now
+supported as the target of the <code>image</code> parameter, as
+described in <a href=
+"../otherFeatures/special_attributes.html">Special Attributes</a>.
+Additionally, the following parameters are supported:</p>
+<h3><code><a name="BOXBORDER" id=
+"BOXBORDER">boxborder</a></code></h3>
+<p>A boolean parameter indicating whether a one-pixel border should
+be drawn around the edge of the applet's area while displaying the
+image shown before the applet is loaded. Defaults to
+<code>true</code>. We recommend setting this value to
+<code>false</code>, in particular when using an animated GIF as the
+loading image, to avoid the possibility of flicker.</p>
+<h3><code><a name="CENTERIMAGE" id=
+"CENTERIMAGE">centerimage</a></code></h3>
+<p>A boolean parameter indicating whether the loading image should
+be centered within the area of the applet instead of originating at
+the upper left corner. Defaults to <code>false</code>.</p>
+<p>Example using the <code>boxborder</code> and
+<code>centerimage</code> parameters:</p>
+<pre class="codeblock">
+   &lt;APPLET archive="large_archive.jar"
+                   code="MyApplet"
+                   width="300" height="300"&gt;
+          &lt;!-- Use an animated GIF as an indeterminate progress bar
+                   while the applet is loading --&gt;
+          &lt;PARAM NAME="image" VALUE="animated_gif.gif"&gt;
+          &lt;!-- Turn off the box border for better blending with the
+                   surrounding web page --&gt;
+          <b>&lt;PARAM NAME="boxborder" VALUE="false"&gt;</b>
+          &lt;!-- Center the image in the applet's area --&gt;
+          <b>&lt;PARAM NAME="centerimage" VALUE="true"&gt;</b>
+        &lt;/APPLET&gt;
+        
+</pre>
+<h2><a name="COMMAND_LINE_ARGS" id="COMMAND_LINE_ARGS">Command-line
+Arguments</a></h2>
+<h3><code><a name="java_vm_args" id=
+"java_vm_args">java-vm-args</a></code></h3>
+<p>Specifies an additional set of standard and non-standard virtual
+machine arguments that the application prefers the JNLP client to
+use when launching Java. When both <code>java_arguments</code> and
+<code>java-vm-args</code> are present, the
+<code>java-vm-args</code> arguments take precedence.</p>
+<h3><code><a name="JAVA_ARGUMENTS" id=
+"JAVA_ARGUMENTS">java_arguments</a></code></h3>
+<p>Specifies JVM command-line arguments to be used when executing
+this applet instance. Nearly all JVM command-line arguments are
+supported, though there are certain rules and restrictions. When
+both <code>java_arguments</code> and <code>java-vm-args</code> are
+present, the <code>java-vm-args</code> arguments take
+precedence.</p>
+<p>The <code>java_arguments</code> option is primarily for the
+purpose of avoiding a client Java VM relaunch during applet
+startup. As a good practice, if both <code>java_arguments</code>
+and <code>java-vm-args</code> are specified, they should contain
+the same values.</p>
+<p><u>Examples Illustrating the Relationship Between
+<code>java_arguments</code> and <code>java-vm-args</code></u></p>
+<p><b>Scenario 1:</b>: Both parameters are defined and their values
+are different.</p>
+<pre>
+java_arguments = -Xmx256m
+java-vm-args = -verbose
+</pre>
+<p>Expected behavior on all platforms: <code>-verbose</code><br />
+The JVM first launches using the value specified by the
+<code>java_arguments</code> tag. The client JVM detects the
+mismatch and relaunches with <code>-verbose</code> only. A warning
+is printed to the Java console.</p>
+<p><b>Scenario 2</b>: Both parameters are defined, and the values
+specified in <code>java-vm-args</code> are a subset of those
+specified in <code>java_arguments</code>.</p>
+<pre>
+java_argument = -Xmx256m -verbose
+java-vm-args = -verbose
+</pre>
+<p>Expected behavior on all platforms: <code>-verbose</code><br />
+The JVM first launches with the full set of arguments as specified
+by <code>java_arguments</code>. The client JVM detects the
+mismatch, and relaunches the smaller set of argument as specified
+by <code>java-vm-args</code> only. A warning about the parameter
+mismatch is printed in the Java console.</p>
+<p><b>Scenario 3</b>: The <code>java_arguments</code> tag is
+defined in the HTML file, but the <code>java-vm-args</code> tag is
+<em>not</em> defined in the JNLP file.</p>
+<pre>
+java_arguments = -Xmx256m
+java-vm-args = [not defined]
+</pre>
+<p>Expected behavior on all platforms: <code>[no jvm
+params]</code><br />
+The JVM first launches with the values specified in
+<code>java_arguments</code>. The client JVM detects the mismatch
+and relaunches the JVM with no params. A warning about the
+parameter mismatch is printed in the Java console.</p>
+<p><b>Scenario 4</b>: The <code>java_arguments</code> tag is not
+defined in the HTML file, but the <code>java-vm-args</code> tag
+<em>is</em> defined in the JNLP file.</p>
+<pre>
+java_arguments = [not defined]
+java-vm-args = -Xmx256m
+</pre>
+<p>Expected behavior on all platforms: <code>-Xmx256m</code><br />
+The JVM first launches with no JVM arguments, as there are none
+specified in the <code>java_arguments</code> tag. The client JVM
+detects the mismatch and relaunches the JVM using the values
+specified in <code>java-vm-args</code>.</p>
+<p><u>Other Examples</u></p>
+<ol>
+<li>Specifying a larger-than-default maximum heap size:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_arguments" value="-Xmx128m"&gt;</b>
+&lt;/APPLET&gt;
+  
+</pre></li>
+<li>Specifying a non-default heap size and a Java 2D hardware
+acceleration option typically used for applets using <a href=
+"http://www.opengl.org/">OpenGL</a> via <a href=
+"http://jogamp.org/jogl/www/">Java Binding for the OpenGL API
+(JOGL)</a>:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_arguments" value="-Xmx256m -Dsun.java2d.noddraw=true"&gt;</b>
+&lt;/APPLET&gt;
+     
+</pre></li>
+<li>Enabling verbose output of the garbage collector, and the
+assertion facility in the Java programming language:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_arguments" value="-verbose:gc -ea:MyApplet"&gt;</b>
+&lt;/APPLET&gt;
+  
+</pre></li>
+</ol>
+<p>A set of "secure" JVM command-line arguments and system
+properties is defined in the <a href=
+"../../javaws/developersguide/syntax.html#resources">JNLP File
+Syntax</a> section of the <a href=
+"../../javaws/developersguide/contents.html">Java Web Start
+Developers' Guide</a>. In the Java Plug-in, as long as all of the
+JVM command-line arguments specified via the
+<code>java_arguments</code> parameter are secure, then the applet,
+or any classes it loads, may run without permissions.</p>
+<p>Insecure JVM command-line arguments (in other words, those not
+on the secure list) may also be specified via the
+<code>java_arguments</code> parameter. In this case, there is the
+potential for a security risk, so the Java Plug-In enforces the
+rule that <em>no unsigned classes may be loaded</em>. In other
+words, only trusted code, for which the user has accepted the
+security dialog, may be loaded by such a JVM instance. If an
+attempt is made to load an unsigned or untrusted class in a JVM
+instance for which insecure system properties have been specified,
+a <code>ClassNotFoundException</code> will be thrown indicating
+that the given class could not be loaded because it was not
+signed.</p>
+<p>There are relatively few restrictions on what command-line
+arguments may be passed via the <code>java_arguments</code>
+parameter. In general, the <code>-Xbootclasspath</code> argument is
+forbidden, as well as any command-line argument used to specify a
+path, such as <code>-classpath</code> or <code>-jar</code>. All
+other command-line arguments, present and future, should be
+supported, with the caveat about secure and insecure command-line
+arguments described above.</p>
+<p>The command-line arguments passed via the
+<code>java_arguments</code> parameter are added to any specified
+via the Java Runtime Environment Settings dialog in the Java Control
+Panel. The command-line arguments from the control panel are used
+for all JVM instances of the version for which they are specified;
+the <code>java_arguments</code> parameters do not completely
+replace them.</p>
+<p>When JVM command-line arguments are specified, it is likely that
+the Java Plug-in will need to launch another JVM instance in order
+to satisfy them. In other words, it is unlikely that a preexisting
+JVM instance will have been started with the correct set of
+command-line arguments to satisfy the request. The rules for
+exactly when a new JVM instance is launched to start a given applet
+are deliberately left unspecified and may need to change in
+subsequent releases. Here is a rough set of guidelines for the
+sharing and creation of new JVM instances:</p>
+<ul>
+<li>If the command-line arguments used to start a preexisting JVM
+instance are a superset of the requested arguments, the preexisting
+JVM instance will be used.</li>
+<li>If a JVM instance is launched for the "default" set of
+command-line arguments (i.e., those specified in the Java Control
+Panel, with no <code>java_arguments</code> specified), then this
+JVM instance will <em>never</em> be used to launch any applet that
+has even one command-line argument specified via
+<code>java_arguments</code>.</li>
+<li><code>-Xmx</code> is handled specially: if a preexisting JVM
+instance was started with for example <code>-Xmx256m</code> via
+<code>java_arguments</code>, and a new applet requests
+<code>-Xmx128m</code>, then new applet will very likely be run in
+the preexisting JVM instance. In other words, <code>-Xmx</code>
+specifications are matched with a greater-than-or-equal test.</li>
+</ul>
+<p>There is no way to "name" a JVM instance used to launch a
+particular applet and "force" subsequent applets into that JVM
+instance.</p>
+<p>See the section on the <code><a href=
+"#SEPARATE_JVM">separate_jvm</a></code> parameter to isolate a
+particular applet in its own JVM instance, separate from all other
+applets.</p>
+<h3><code><a name="SEPARATE_JVM" id=
+"SEPARATE_JVM">separate_jvm</a></code></h3>
+<p>A boolean parameter specifying that a particular applet should
+run in its own JVM instance. This supports certain powerful desktop
+applets which can not tolerate any interference from other applets
+running in the same JVM and potentially consuming heap space or
+other resources.</p>
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    &lt;PARAM name="java_arguments" value="..."&gt;
+    <b>&lt;PARAM name="separate_jvm" value="true"&gt;</b>
+&lt;/APPLET&gt;
+</pre>
+<h2><a name="JRE_VERSION" id="JRE_VERSION">JRE Version
+Selection</a></h2>
+<h3><code><a name="JAVA_VERSION" id=
+"JAVA_VERSION">java_version</a></code></h3>
+<p>Specifies a JRE version upon which to launch a particular
+applet.</p>
+<p><u>Examples</u></p>
+<ol>
+<li>Specifying a particular JRE version for a particular applet:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_version" value="1.5.0_09"&gt;</b>
+&lt;/APPLET&gt;
+  
+</pre></li>
+<li>Requesting any JRE in a particular family for a particular
+applet:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_version" value="1.5*"&gt;</b>
+&lt;/APPLET&gt;
+</pre></li>
+<li>Specifying a JRE from a particular family or any later family:
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="java_version" value="1.5+"&gt;</b>
+&lt;/APPLET&gt;
+</pre></li>
+</ol>
+<h3><a name="CLASSID" id="CLASSID"><code>classid</code> Attribute
+in Internet Explorer</a></h3>
+<p>The Internet Explorer browser uses the <code>classid</code>
+attribute of the <code>&lt;object&gt;</code> tag to indicate how
+the content of that tag should be displayed. The
+<code>classid</code> attribute can be used in conjunction with the
+<code>codebase</code> attribute to automatically download and
+install a particular JRE version if none is currently available on
+the system (see <a href="using_tags.html">classid usage</a>). The
+family CLSID concept was introduced more recently to provide a way
+to select an arbitrary JRE in a given family. (See <a href=
+"http://www.oracle.com/technetwork/java/javase/family-clsid-140615.html">
+Deploying Java Applets With Family JRE Versions in Java Plug-in for
+Internet Explorer</a> for more information.)</p>
+<p>Not all of the classid options described in earlier
+documentation work in conjunction with the Java Plug-In to both
+select, and potentially automatically download and install, a
+particular JRE version. This section describes what works in
+conjunction with the Java Plug-in, and what backward compatibility
+mechanisms are in place.</p>
+<h4><a name="CLASSID_RECOMMENDED_USAGE" id=
+"CLASSID_RECOMMENDED_USAGE">Recommended Usage</a></h4>
+<p>The recommended usage of the classid attribute is in conjunction
+with the <code>java_version</code> parameter described above. The
+dynamic classid, which always points to the latest installed JRE
+version, should be specified in the <code>&lt;object&gt;</code> tag
+in order to indicate that the latest version of the Java Plug-In,
+with multiple JRE support, should be used. The
+<code>java_version</code> parameter should then be used to specify
+the version of the JRE to use to run the applet.</p>
+<p>Example of recommended usage:</p>
+<pre class="codeblock">
+  &lt;object 
+    <b>classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"</b>
+    <b>codebase="http://www.example.com/out-of-proc-plugin-url-placeholder.exe#1,6,0,10"</b>
+    width="200" height="200"&gt;
+      &lt;param name="code" value="MyApplet"&gt;
+      <b>&lt;param name="java_version" value="1.5*"&gt;</b>
+  &lt;/object&gt;
+</pre>
+<p>Note that, at the current time, Oracle is not providing a new
+CLSID to describe the Java Plug-In, but instead overloading the
+usage of the dynamic classid. This means that if a previous version
+of the JRE is already installed which does not have multiple JRE
+version support in the Java Plug-In, the Java Plug-In will not be
+automatically downloaded and installed, since a handler for that
+classid is already available. The result will be that the version
+selection via the <code>java_version</code> parameter will be
+ignored. The decision to not provide a new classid may be revisited
+in the future. For the time being, Oracle expects that
+sophisticated developers requiring multiple JRE version selection
+and automatic download of the Java Plug-In will either document
+that their users must install and configure the Java Plug-In in
+order to properly run their content, or will have administrative
+control over the client computers, as is common in many
+enterprises.</p>
+<h4><a name="CLASSID_BACKWARD_COMPATIBILITY" id=
+"CLASSID_BACKWARD_COMPATIBILITY">Backward Compatibility</a></h4>
+<p>To ease the transition for developers already using the classid
+attribute, two backward compatibility mechanisms have been
+introduced: the ability to use a classid to select either a
+specific JRE version, or an arbitrary JRE in a given family. In
+both cases, the expectation is that both the Java Plug-In, and the
+target JRE version for the applet, are already installed and
+configured. In conjunction with these backward compatibility
+mechanisms, auto-downloading of any JRE, either the one supplying
+the Java Plug-In or the one to be used to run the applet, is not
+supported.</p>
+<p>Note that these backward compatibility mechanisms may be removed
+in a future release. Oracle recommends transitioning existing
+content to the new mechanisms described previously.</p>
+<p>Selecting a particular JRE version (1.5.0_11) for an individual
+applet:</p>
+<pre class="codeblock">
+  &lt;object 
+    <b>classid="clsid:CAFEEFAC-0015-0000-0011-ABCDEFFEDCBA"</b>
+    width="200" height="200"&gt;
+      &lt;param name="code" value="MyApplet"&gt;
+  &lt;/object&gt;
+</pre>
+<p>Selecting the latest JRE from a particular family (1.5) using
+the family CLSID:</p>
+<pre class="codeblock">
+  &lt;object 
+    <b>classid="clsid:CAFEEFAC-0015-0000-FFFF-ABCDEFFEDCBA"</b>
+    width="200" height="200"&gt;
+      &lt;param name="code" value="MyApplet"&gt;
+  &lt;/object&gt;
+</pre>
+<p>Note that attempts to download older versions of the JRE using
+the <code>codebase</code> parameter will be ignored, because these
+classids are registered on the system to point to more recent
+versions of the DLLs during the installation process of the Java
+Plug-In. Note also that the use of the <code>java_version</code>
+parameter in conjunction with these classids is not supported.
+Specifying both the <code>java_version</code> parameter as well as
+either a static or family classid will result in undefined
+behavior.</p>
+<h3><a name="JPI_VERSION" id="JPI_VERSION"><code>version</code> and
+<code>jpi-version</code> attributes in the Mozilla Browser
+Family</a></h3>
+<p>The Mozilla browser family uses the MIME type in the
+<code>&lt;embed&gt;</code> tag to indicate how the content of that
+tag should be displayed. The <code>&lt;embed&gt;</code> tag also
+supports automatic downloading of a particular version of the
+JRE.</p>
+<p>Previous versions of the Java Plug-In used the
+<code>version</code> and <code>jpi-version</code> portions of the
+<code>application/x-java-applet</code> MIME type to perform JRE
+version selection. Not all of these mechanisms described in earlier
+documentation work in conjunction with the Java Plug-In to both
+select, and potentially automatically download and install, a
+particular JRE version. This section describes what works in
+conjunction with the Java Plug-in, and what backward compatibility
+mechanisms are in place.</p>
+<h4><a name="JPI_VERSION_RECOMMENDED_USAGE" id=
+"JPI_VERSION_RECOMMENDED_USAGE">Recommended Usage</a></h4>
+<p>The recommended usage of the <code>&lt;embed&gt;</code> tag is
+to not specify any <code>version</code> or <code>jpi-version</code>
+in the MIME type of the applet. Instead, use the
+<code>java_version</code> parameter to choose a particular JRE
+version upon which to run the applet. If no previous Java version
+is installed, auto-download of the Java Plug-In can be enabled
+using the <code>pluginspage</code> parameter:</p>
+<pre class="codeblock">
+  &lt;embed code="MyApplet"
+    <b>type="application/x-java-applet"</b>
+    <b>pluginspage="http://www.example.com/out-of-proc-plugin-url-placeholder.xpi"</b>
+    width="200" height="200"&gt;
+    <b>java_version="1.5*"</b>
+  &lt;/embed&gt;
+</pre>
+<p>Note that, at the current time, Oracle is not providing a new
+MIME type to describe the Java Plug-In, but instead overloading the
+usage of the <code>application/x-java-applet</code> MIME type. This
+means that if a previous version of the JRE is already installed
+which does not have multiple JRE version support in the Java
+Plug-In, the Java Plug-In will not be automatically downloaded and
+installed, since a plugin supporting that MIME type is already
+available. The result will be that the version selection via the
+<code>java_version</code> parameter will be ignored. The decision
+to not provide a new MIME type may be revisited in the future. For
+the time being, Oracle expects that sophisticated developers
+requiring multiple JRE version selection and automatic download of
+the Java Plug-In will either document that their users must install
+and configure the Java Plug-In in order to properly run their
+content, or will have administrative control over the client s, as
+is common in many enterprises.</p>
+<h4><a name="JPI_VERSION_BACKWARD_COMPATIBILITY" id=
+"JPI_VERSION_BACKWARD_COMPATIBILITY">Backward
+Compatibility</a></h4>
+<p>To ease the transition for developers already using the
+<code>version</code> and <code>jpi-version</code> portions of the
+MIME type, a limited degree of backward compatibility is supported
+in the Java Plug-In. Specifically, the <code>version</code>
+attribute is supported to request an arbitrary JRE in a given
+family or any later family. <b>Using the <code>jpi-version</code>
+attribute to select a particular JRE version is no longer
+supported. Its use is strongly discouraged since it may disrupt
+correct operation of the Java Plug-In.</b></p>
+<p>Note that this backward compatibility mechanism may be removed
+in a future release. Oracle recommends transitioning existing
+content to the mechanisms described previously.</p>
+<p>To use the <code>version</code> attribute to require the 1.5 JRE
+or a later one:</p>
+<pre class="codeblock">
+  &lt;embed code="MyApplet"
+    <b>type="application/x-java-applet;version=1.5"</b>
+    width="200" height="200"&gt;
+  &lt;/embed&gt;
+</pre>
+<p>Note that the semantics of the <code>version</code> attribute
+imply that the above tag is equivalent to using the
+<code>java_version</code> parameter with a value of
+<code>1.5+</code>. Since this Java Plug-In is delivered with Java
+SE 6 update 10, which is a later version than 5.0, this version
+request essentially has no effect.</p>
+<p>Note also that combining the <code>version</code> attribute with
+the <code>java_version</code> parameter is not supported.
+Specifying both the <code>java_version</code> parameter as well as
+a <code>version</code> attribute will result in undefined
+behavior.</p>
+<h2><a name="CLASS_LOADER_CACHING" id="CLASS_LOADER_CACHING">Class
+Loader Caching</a></h2>
+<h3><code><a name="CLASSLOADER_CACHE" id=
+"CLASSLOADER_CACHE">classloader_cache</a></code></h3>
+<p>The Java Plug-in provides a way to opt out of the use of the
+class loader cache on an applet by applet basis.</p>
+<pre class="codeblock">
+&lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+    <b>&lt;PARAM name="classloader_cache" value="false"&gt;</b>
+&lt;/APPLET&gt;
+</pre>
+<p>The default value of the <code>classloader_cache</code>
+parameter is <code>true</code>; class loader caching is enabled by
+default.</p>
+<h2><a name="SECURITY" id="SECURITY">Security</a></h2>
+<h3><code><a name="PERMISSIONS" id="PERMISSIONS">permissions</a></code></h3>
+<p>Specifies the level of permissions that the applet needs to run. The following 
+values are valid:</p>
+<ul>
+<li><code>sandbox</code> - The applet runs in the security sandbox.</li>
+<li><code>all-permissions</code> - The applet requires access to resources on the 
+user's system.</li>
+<li><code>default</code> - The level of permissions is determined by the <code>Permissions</code> attribute in the manifest for the main JAR file. </li>
+</ul>
+<pre class="codeblock">
+  &lt;APPLET archive="my_applet.jar" code="MyApplet" width="300" height="300"&gt;
+     <b>&lt;PARAM name="permissions" value="sandbox" /&gt;</b>
+  &lt;/APPLET&gt;
+</pre>
+<p>If this parameter is omitted, <code>default</code> is assumed. If the parameter is present and not set to <code>default</code>, the value must match the value of the <code>Permissions</code> attribute in the manifest for any JAR file that has the <code>Permissions</code> attribute, otherwise the applet is blocked. </p>
+<h2><a name="JAVA_CACHE" id="JAVA_CACHE">Java Cache</a></h2>
+<p>Files you use in Java applications are stored in a special
+folder for quick execution later; this folder is also called the
+Java cache. The subpanel <a href=
+"../jcp/jcp.html#temporary">Temporary Internet Files</a> in the
+<a href="../jcp/jcp.html#general">General</a> panel in the <a href=
+"../jcp/jcp.html">Java Control Panel</a> enables you to view which
+files are stored in the Java cache and control how much disk space
+it can take up in your computer.</p>
+<h3><code><a name="CACHE_ARCHIVE" id=
+"CACHE_ARCHIVE">cache_archive</a></code></h3>
+<p>The <tt>cache_archive</tt> attribute contains a list of the
+files to be cached:</p>
+<pre class="codeblock">
+&lt;param name="cache_archive" VALUE="a.jar,b.jar,c.jar"&gt;
+</pre>
+<p>Like the <tt>archive</tt> attribute in the <tt>applet</tt> tag,
+the list of jar files in the <tt>cache_archive</tt> attribute do
+not contain the full URL, but are always downloaded from the
+<tt>codebase</tt> specified in the <tt>embed</tt>/<tt>object</tt>
+tag.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

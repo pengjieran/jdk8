@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Applet Status And Event Handlers</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Applet Status And Event Handlers</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; <a href="applet_dev_guide.html">Applet Developer's Guide</a> &gt; Applet Status and Event Handlers</p>
+
+<p>Beginning in the Java SE 7 release, you can check the value of
+the <code>status</code> variable of an applet while it is being
+initialized. This check is non-blocking and immediately returns the
+status of the applet. You can explicitly check the status of the
+applet while it is loading and perform relevant actions or register
+event handlers that will automatically be invoked during various
+stages of applet initialization. The applet should be deployed with
+the <code>java_status_events</code> parameter set to
+<code>true</code> in order to use this functionality. See the
+<a href=
+"http://docs.oracle.com/javase/tutorial/deployment/applet/appletStatus.html">
+Handling Initialization Status With Event Handlers</a> topic in the
+Java Tutorials for step by step instructions and an example.</p>
+<h2>Applet Status</h2>
+<p>The following table displays the meaning of values returned by
+the <code>status</code> method of the applet.</p>
+<table summary="Applet status values and meaning" border="1">
+<caption>Applet Status Values and Meaning</caption>
+<tr>
+<th id="h1">Applet Status</th>
+<th id="h2">Applet Status Variable Value</th>
+<th id="h3">Meaning</th>
+</tr>
+<tr>
+<td headers="h1">LOADING</td>
+<td headers="h2">1</td>
+<td headers="h3">Applet is loading</td>
+</tr>
+<tr>
+<td headers="h1">READY</td>
+<td headers="h2">2</td>
+<td headers="h3">Applet has loaded completely and is ready to receive JavaScript
+calls</td>
+</tr>
+<tr>
+<td headers="h1">ERROR</td>
+<td headers="h2">3</td>
+<td headers="h3">Error while loading applet</td>
+</tr>
+</table>
+<h2>Applet Event Handlers</h2>
+<p>You can register event handlers for various events. The Java
+Plug-in software will invoke these event handlers at various stages
+of the applet loading process. The following table describes applet
+events for which event handlers can be registered.</p>
+<table summary="applet events" border="1">
+<caption>Applet Events</caption>
+<tr>
+<th id="h101">Applet Event</th>
+<th id="h102">When Event Occurs</th>
+</tr>
+<tr>
+<td headers="h101">onLoad</td>
+<td headers="h102">Occurs when applet status is READY. Applet has finished loading
+and is ready to receive JavaScript calls</td>
+</tr>
+<tr>
+<td headers="h101">onStop</td>
+<td headers="h102">Occurs when applet has stopped</td>
+</tr>
+<tr>
+<td headers="h101">onError</td>
+<td headers="h102">Occurs when applet status is ERROR. An error has occurred while
+loading the applet</td>
+</tr>
+</table>
+<p>You can register or determine an event handler in the JavaScript
+code of a web page as shown in the following code snippets.</p>
+<pre class="codeblock">
+// use an anonymous function
+applet.onLoad(function() {
+  //event handler for ready state
+}
+
+// use a regular function
+function onLoadHandler() {
+  // event handler for ready state
+}
+
+// Use method form
+applet.onLoad(onLoadHandler);
+
+// Use attribute form
+applet.onLoad = onLoadHandler;
+
+// get current event handler
+var handler = applet.onLoad
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

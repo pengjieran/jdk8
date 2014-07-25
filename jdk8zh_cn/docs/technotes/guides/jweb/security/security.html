@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Security</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Security</h1>
+
+<p><a href="../index.html">Java Rich Internet Applications Guide</a> &gt; Security</p>
+
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#policy">Policy Files and Permissions</a></li>
+<li><a href="#property">Property Files and Certificates</a></li>
+<li><a href="#dialogs">Security Dialogs</a> </li>
+<li><a href="#more">More Information</a></li>
+</ul>
+<h2><a name="policy" id="policy"></a>Policy Files and
+Permissions</h2>
+<p>Java applications and applets deployed using Java Web Start and
+Java Plug-in are by default run in a secure sandbox that defines
+the set of permissions that code in an untrusted application is
+granted.</p>
+<p>The standard java policy files can be used to enhance the
+permissions granted to untrusted applications. In addition to
+<code>$JRE_HOME/lib/security/java.policy</code> and
+<code>$USER_HOME/.java.policy</code> (used by all java programs),
+applications and applets loaded by Java Web Start and Java Plug-in
+load two additional policy files, whose location can be configured
+by the deployment configuration properties:
+<code>deployment.user.security.policy</code> and
+<code>deployment.system.security.policy</code>.</p>
+<p>The default sandbox, combined with the permissions granted by
+these policy files, if they exist, determine the permissions
+granted to untrusted code.</p>
+<p>One other policy file, whose location is determined by the
+deployment configuration property
+<code>deployment.security.trusted.policy</code>, can be used to
+restrict the permissions granted to trusted code. With this
+property unset (default), trusted code will be granted the
+<code>AllPermission</code> permission. With this property set,
+trusted code will be granted only the permissions granted to
+untrusted code, plus any other permissions granted by the policy
+file pointed to by this property.</p>
+<h2><a name="property" id="property"></a>Property Files and
+Certificates</h2>
+<p>The deployment configuration also has several properties that
+determine how and if code can be trusted. Normally, any signed JAR
+file in Java Plug-in, and any set of signed JAR files in Java Web
+Start that are listed in a jnlp file requesting the
+<code>AllPermission</code> permission, will be granted trust by the
+user after the certificate chains have been verified and shown to
+the user in a security dialog.</p>
+<p>The deployment configuration property
+<code>deployment.user.security.trusted.certs</code> points to a
+certificate store that contains the certificates already accepted
+by the user.</p>
+<p>The deployment configuration property
+<code>deployment.system.security.trusted.certs</code> can be
+configured to point to a certificate store of certificates
+pre-accepted by the system administrator.</p>
+<p>If a JAR file (in Java Plug-in) or set of JAR files in a jnlp
+file requesting the <code>AllPermission</code> permission (in Java
+Web Start) is signed by a certificate that is in one of these
+stores, it will be trusted.</p>
+<p>The deployment configuration property
+<code>deployment.security.askgrantdialog.show</code> can control if
+the user is permitted to grant trust to new code signed with new
+certificates, and the deployment configuration property
+<code>deployment.security.askgrantdialog.notinca</code> can further
+be used to control if the user is permitted to grant trust to code
+signed by certificates whose root certificate is not in one of the
+Root Certificate Authority certificate stores (see below).</p>
+<h2><a name="dialogs" id="dialogs"></a>Security Dialogs</h2>
+<p>If the above two properties allow it, and the code is signed
+with certificate chains that can be properly validated, the users are then prompted to grant trust
+to the code. See <a href="securityDialogs.html">Security Dialogs</a> for information on the prompts shown. </p>
+<p>The Root Certificate Authority certificate stores are the union of the certificate stores in the files pointed
+to by the properties: <code>deployment.user.security.cacerts</code>
+and <code>deployment.system.security.cacerts</code>. By default
+<code>deployment.system.security.cacerts</code> points to the
+<code>cacerts</code> file in the <code>jre/lib/security</code>
+directory. <code>deployment.user.security.cacerts</code> points to
+a file that contains any additional <code>cacerts</code> imported
+into it using the Certificates dialog in the Security tab of the
+Java Control Panel.</p>
+<p>One final setting can be used to customize the user experience
+in Java Web Start. By default the sandbox does not include the
+<code>AWTPermission</code>
+<code>showWindowWithoutWarningBanner</code>. Without this
+permission, all top-level windows will contain the awt banner
+&quot;Java Application Window&quot; or &quot;Java Applet
+Window&quot;. The deployment configuration property
+<code>deployment.security.sandbox.awtwarningwindow</code> can be
+used to add this permission to untrusted code.</p>
+<h2><a name="more" id="more"></a>More Information</h2>
+<ul>
+    <li><a href="deployment_flow.html">Rich Internet Application Deployment Process</a></li>
+    <li><a href="keystores.html">Browser Keystores</a></li>
+     <li><a href="mixed_code.html">Mixing Signed and Unsigned Code Ensuring Application and Applet Security</a></li>
+     <li><a href="signedJNLP.html">Signing JAR Files with a JNLP Template</a></li>
+     <li><a href="rsa_how.html">Verification of RSA Signed Applets in Java Plug-in</a></li>
+     <li><a href="rsa_signing.html">Signing Applets Using RSA Certificates</a></li>
+     <li><a href="rsa_deploying.html">Deploying RSA-Signed Applets in Java Plug-in</a></li>
+     <li><a href="no_redeploy.html">Preventing RIAs from Being Repurposed </a></li>
+     <li><a href="securityDialogs.html">Security Dialogs</a></li>
+     <li><a href="deployment_rules.html">Deployment Rule Set</a></li>
+<li>For a detailed discussion of properties, see <a href=
+"../jcp/properties.html">Deployment Configuration File and
+Properties</a></li>
+<li>For details about security in the Java Control Panel, see the
+<a href="../jcp/jcp.html#security">Security</a> section in the <a href=
+"../jcp/jcp.html">Java Control Panel</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java SE Runtime Environment Update Scenarios</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-20T14:54:20Z" name="date"/>
+<meta content="This page describes various scenarios that demonstrate the behavior of the JRE update process." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java SE Runtime Environment Update Scenarios" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38207-02" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_installer_options.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="windows_patch_static.html">
+                Next</a><hr/><a id="CIHEIJAB" name="CIHEIJAB"/>
+<h1><span>18</span> Java SE Runtime Environment Update Scenarios</h1>
+<p>This page describes various scenarios that demonstrate the behavior of the JRE update process.</p>
+<p>The page contains these topics:</p>
+<ul>
+<li>
+<p><a href="#F1096936">"Updating patch-in-place JRE"</a></p>
+</li>
+<li>
+<p><a href="#A1097120">"Installing patch-in-place JRE when static JRE is present"</a></p>
+</li>
+<li>
+<p><a href="#A1097205">"Installing static JRE when earlier patch-in-place JRE is present"</a></p>
+</li>
+<li>
+<p><a href="#A1097329">"Installing earlier patch-in-place JRE when later patch-in-place JRE is present, then reinstalling earlier patch-in-place JRE"</a></p>
+</li>
+<li>
+<p><a href="#A1097412">"Installing static JRE when same JRE version of patch-in-place JRE is present"</a></p>
+</li>
+<li>
+<p><a href="#A1097482">"Attempting to install patch-in-place JRE when same JRE version of static JRE is present"</a></p>
+</li>
+<li>
+<p><a href="#A1097541">"Installing earlier patch-in-place JRE when later static JRE is already present"</a></p>
+</li>
+<li>
+<p><a href="#A1097621">"Installing earlier patch-in-place JRE when later static JRE is already present"</a></p>
+</li>
+<li>
+<p><a href="#A1097697">"Applying consecutive patches"</a></p>
+</li>
+<li>
+<p><a href="#A1097756">"Applying intermediate patches"</a></p>
+</li>
+<li>
+<p><a href="#A1097815">"Installing later patch-in-place version using Windows Offline Installer"</a></p>
+</li>
+<li>
+<p><a href="#A1097883">"Reinstalling static JRE when earlier patch-in-place JRE installed"</a></p>
+</li>
+<li>
+<p><a href="#A1097971">"Reinstalling static JRE without explicitly installing as static"</a></p>
+</li>
+</ul>
+<p>Java SE Runtime Environment (JRE) can be installed in patch-in-place or static modes. See <a href="windows_patch_static.html#CIHBDEID">"Patch-in-Place and Static JRE Installation"</a> for more information about these modes.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>Software versions, such as Java SE 8 Update 18, are represented in this page by an abbreviation analogous to 8u18.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a id="F1096936" name="F1096936"/>
+<div>
+<h2>Updating patch-in-place JRE</h2>
+<p>This is the most likely scenario.</p>
+<ol>
+<li>
+<p>The user installs JRE 8u18 as a patch-in-place JRE by default into the directory <code>C:\Program Files\Java\jre8</code>.</p>
+</li>
+<li>
+<p>The user gets prompted by Java Update to update to JRE 8u18.</p>
+</li>
+<li>
+<p>The user agrees and goes through the Java Update process.</p>
+</li>
+<li>
+<p>Java Update recognizes that the JRE 8u17 was installed as a patch-in-place JRE, and can therefore just patch-in-place to 8u18.</p>
+</li>
+<li>
+<p>Now only the 8u18 patch-in-place JRE resides in <code>C:\Program Files\Java\jre8</code>. JRE 8u17 no longer exists in the computer.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097120" name="A1097120"/>
+<div>
+<h2>Installing patch-in-place JRE when static JRE is present</h2>
+<ol>
+<li>
+<p>The user installs a static JRE 8u17 into the directory <code>C:\Program Files\Java\jre1.8.0_17</code>.</p>
+</li>
+<li>
+<p>The user gets prompted by Java Update to update to JRE 8u18.</p>
+</li>
+<li>
+<p>The user agrees and goes through the Java Update process.</p>
+</li>
+<li>
+<p>Java update ignores the previous static installation of JRE 8u17, and downloads a full copy of patch8in-place JRE 8u18, which is installed into <code>C:\Program Files\Java\jre8</code>.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has both a static JRE 8u17 in <code>C:\Program Files\Java\jre1.8.0_17</code>, and a patch-in-place JRE 8u18 in <code>C:\Program Files\Java\jre8</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097205" name="A1097205"/>
+<div>
+<h2>Installing static JRE when earlier patch-in-place JRE is present</h2>
+<ol>
+<li>
+<p>The user installs a patch-in-place JRE 8u17 into the directory <code>C:\Program Files\Java\jre8</code>.</p>
+</li>
+<li>
+<p>The user then installs a static JRE 8u18.</p>
+</li>
+<li>
+<p>The JRE 8u18 static installer ignores the existence of the patch-in-place JRE 8u17, and downloads a full copy of JRE 8u18, which is installed into <code>C:\Program Files\Java\jre1.8.0_18</code>.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has a patch-in-place JRE 8u17 in <code>C:\Program Files\Java\jre8</code>, and a static JRE 8u18 in <code>C:\Program Files\Java\jre1.8.0_18</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097329" name="A1097329"/>
+<div>
+<h2>Installing earlier patch-in-place JRE when later patch-in-place JRE is present, then reinstalling earlier patch-in-place JRE</h2>
+<ol>
+<li>
+<p>The user installs patch-in-place JRE 8u18 in <code>C:\Program Files\Java\jre8</code>.</p>
+</li>
+<li>
+<p>The user runs the JRE 8u17 <code>iftw.exe</code> installer in the default patch-in-place mode (<code>iftw</code> stands for install from the web).</p>
+</li>
+<li>
+<p>The JRE 8u17 installer detects that a later patch-in-place JRE that is present and switches to static mode.</p>
+</li>
+<li>
+<p>The user now has both a patch-in-place JRE 8u18 in <code>C:\Program Files\Java\jre8</code>, and a static JRE 8u17 in <code>C:\Program Files\Java\jre1.8.0_17</code>.</p>
+</li>
+<li>
+<p>The user runs the 8u17 <code>iftw.exe</code> installer in the default patch-in-place mode.</p>
+</li>
+<li>
+<p>8u17 installer detects that 8u17 is already installed as static JRE and switches to static mode. In static mode, the installer prompts the user to reinstall. If the user selects yes, the static JRE 8u17 is uninstalled and reinstalled.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has both a patch-in-place copy of 8u18 in <code>C:\Program Files\Java\jre8</code>, and a copy of 8u17 JRE in <code>C:\Program Files\Java\jre1.8.0_17</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097412" name="A1097412"/>
+<div>
+<h2>Installing static JRE when same JRE version of patch-in-place JRE is present</h2>
+<ol>
+<li>
+<p>The user installs the patch-in-place JRE 8u17.</p>
+</li>
+<li>
+<p>The user runs the static JRE 8u17 installer.</p>
+</li>
+<li>
+<p>The Installer will uninstall the patch-in-place JRE 8u17 and install a static JRE 8u17. An entire download of the JRE 8u17 will take place.</p>
+</li>
+<li>
+<p>The user will be left with 8u17 static JRE at <code>C:\Program Files\Java\jre1.8.0_17</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097482" name="A1097482"/>
+<div>
+<h2>Attempting to install patch-in-place JRE when same JRE version of static JRE is present</h2>
+<ol>
+<li>
+<p>The user installs the static JRE 8u18.</p>
+</li>
+<li>
+<p>The user downloads and runs the patch-in-place JRE 8u18 installer.</p>
+</li>
+<li>
+<p>The installer will launch the static JRE 8u18 Microsoft Windows Installer (MSI) and the user will be prompted if he or she wants to reinstall.</p>
+</li>
+<li>
+<p>The user agrees to reinstall.</p>
+</li>
+<li>
+<p>The user will be left with a static JRE 8u18.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097541" name="A1097541"/>
+<div>
+<h2>Installing earlier patch-in-place JRE when later static JRE is already present</h2>
+<ol>
+<li>
+<p>The user installs static JRE 8u18 into <code>C:\Program Files\Java\jre1.8.0_18</code></p>
+</li>
+<li>
+<p>The user runs the JRE 8u17 <code>iftw.exe</code> installer in the default patch-in-place mode.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has both a static JRE 8u18 in <code>C:\Program Files\Java\jre1.8.0_18</code>, and a patch-in-place JRE 8u17.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097621" name="A1097621"/>
+<div>
+<h2>Installing earlier patch-in-place JRE when later static JRE is already present</h2>
+<ol>
+<li>
+<p>The user installs static JRE 8u18 into <code>C:\Program Files\Java\jre1.8.0_18</code></p>
+</li>
+<li>
+<p>The user runs the JRE 8u17 <code>iftw.exe</code> installer in the default patch-in-place mode.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has both a static JRE 8u18 in <code>C:\Program Files\Java\jre1.8.0_18</code>, and a patch-in-place JRE 8u17.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097697" name="A1097697"/>
+<div>
+<h2>Applying consecutive patches</h2>
+<ol>
+<li>
+<p>The user installs the patch-in-place JRE 8u16 (using the Windows Online or Offline Installer).</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u17 using the Windows Online Installer.</p>
+</li>
+<li>
+<p>The JRE 8u16 is patched in place to JRE 8u17.</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u18 using the Windows Online Installer.</p>
+</li>
+<li>
+<p>The JRE 8u17 is patched in place to the JRE 8u18.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097756" name="A1097756"/>
+<div>
+<h2>Applying intermediate patches</h2>
+<ol>
+<li>
+<p>The user installs patch-in-place JRE 8u15 (using the Windows Online or Offline Installer).</p>
+</li>
+<li>
+<p>The user installs patch-in-place JRE 8u17 using the Windows Online Installer.</p>
+</li>
+<li>
+<p>The JRE 8u15 is patched in place to the JRE 8u17.</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u18 using the Windows Online Installer.</p>
+</li>
+<li>
+<p>The JRE 8u17 is patched in place to the JRE 8u18.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097815" name="A1097815"/>
+<div>
+<h2>Installing later patch-in-place version using Windows Offline Installer</h2>
+<ol>
+<li>
+<p>The user installs the patch-in-place JRE 8u17 (using the Windows Online or Offline installer).</p>
+</li>
+<li>
+<p>The user downloads the JRE 8u18 Windows Offline Installer.</p>
+</li>
+<li>
+<p>The user runs the JRE 8u18 Offline Installer in the default patch-in-place mode.</p>
+</li>
+<li>
+<p>The JRE 8u17 is uninstalled and the patch-in-place JRE 8u18 is installed.</p>
+</li>
+<li>
+<p>The user will be left with a patch-in-place JRE 8u18.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097883" name="A1097883"/>
+<div>
+<h2>Reinstalling static JRE when earlier patch-in-place JRE installed</h2>
+<ol>
+<li>
+<p>The user installs patch-in-place JRE 8u17 (using online or offline installer).</p>
+</li>
+<li>
+<p>The user installs static JRE 8u18 (using online or offline installer).</p>
+</li>
+<li>
+<p>The user launches patch-in-place JRE 8u18 installer (online or offline).</p>
+</li>
+<li>
+<p>The 8u18 installer detects that static JRE 8u18 already exists and switches to static mode. In static mode, the install prompts to reinstall. If the user selects yes, static JRE 8u18 is uninstalled and reinstalled.</p>
+</li>
+<li>
+<p>After the installation is finished, the user now has both a patch-in-place copy of patch-in-place JRE 8u17 in <code>C:\Program Files\Java\jre8</code>, and a copy of static JRE 8u18 in <code>C:\Program Files\Java\jre1.8.0_18</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097971" name="A1097971"/>
+<div>
+<h2>Reinstalling static JRE without explicitly installing as static</h2>
+<ol>
+<li>
+<p>The user installs the patch-in-place JRE 8u18 (using the Windows Online or Offline Installer).</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u17 in default mode (using the Windows Online or Offline Installer). The static JRE 8u17 is installed. The user now has the static JRE 8u17 and the patch-in-place JRE 8u18.</p>
+</li>
+<li>
+<p>The user uninstalls the patch-in-place JRE 8u18. The user now has the static JRE 8u17.</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u16 (using the Windows Online or Offline Installer). The user now has the patch-in-place JRE 8u16 and the static JRE 8u17.</p>
+</li>
+<li>
+<p>The user installs the patch-in-place JRE 8u17 (using the Windows Online or Offline Installer).</p>
+</li>
+<li>
+<p>The JRE 8u17 installer detects that the static JRE 8u17 is already installed. The installer switches to static mode. In static mode, the installer prompts the user to reinstall. If the user selects yes, the static JRE 8u17 is uninstalled and reinstalled.</p>
+</li>
+<li>
+<p>After the installation is finished, there are a patch-in-place JRE 8u16 in the directory <code>C:\Program Files\Java\jre8</code>, and a static JRE 8u17 in the directory <code>C:\Program Files\Java\jre1.8.0_17</code>.</p>
+</li>
+</ol>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_installer_options.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="windows_patch_static.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

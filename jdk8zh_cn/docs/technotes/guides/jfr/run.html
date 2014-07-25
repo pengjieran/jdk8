@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Running Java Flight Recorder</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Version 1.0.23 Build 1" name="generator"/>
+<meta content="2014-02-03T11:24:54Z" name="date"/>
+<meta content="This chapter describes how you can run Java Flight Recorder." name="description"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Running Java Flight Recorder" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E28976-01" name="partnum"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Flight Recorder Runtime Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="about.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="comline.html">
+                Next</a><hr/><a id="CHDEHEAC" name="CHDEHEAC"/><a id="JFRRT164" name="JFRRT164"/>
+<h1><span>2</span> Running Java Flight Recorder</h1>
+<p>This chapter describes how you can run Java Flight Recorder.</p>
+<p>You can run multiple recordings concurrently and configure each recording using different settings; in particular, you can configure different recordings to capture different sets of events. However, in order to make the internal logic of Java Flight Recorder as streamlined as possible, the resulting recording always contains the union of all events for all recordings active at that time. This means that if more than one recording is running, you might end up with more information in the recording than you wanted. This can be confusing but has no other negative implications.</p>
+<p>The easiest and most intuitive way to use JFR is through the Flight Recorder plugin that is integrated into Java Mission Control. This plugin enables access to JFR functionality through an intuitive GUI. For more information about using the JMC client to control JFR, see the Flight Recorder Plugin section of the Java Mission Control help.</p>
+<p>This chapter explains more advanced ways of running and managing JFR recordings and contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDIDCHG">Section 2.1, "Using the Command Line"</a></p>
+</li>
+<li>
+<p><a href="#A1118227">Section 2.2, "Using Diagnostic Command"</a></p>
+</li>
+<li>
+<p><a href="#CHDCHAFF">Section 2.3, "Configuring Recordings"</a></p>
+</li>
+<li>
+<p><a href="#CHDICEAE">Section 2.4, "Creating Recordings Automatically"</a></p>
+</li>
+<li>
+<p><a href="#A1118624">Section 2.5, "Security"</a></p>
+</li>
+<li>
+<p><a href="#A1092559">Section 2.6, "Troubleshooting"</a></p>
+</li>
+</ul>
+<a id="CHDIDCHG" name="CHDIDCHG"/>
+<div>
+<h2><span>2.1</span> Using the Command Line</h2>
+<p>You can start and configure a recording from the command line using the <code>-XX:StartFlightRecording</code> option of the <code>java</code> command, when starting the application. To enable the use of JFR, specify the <code>-XX:+FlightRecorder</code> option. Because JFR is a commercial feature, you also have to specify the <code>-XX:+UnlockCommercialFeatures</code> option. The following example illustrates how to run the <code>MyApp</code> application and immediately start a 60-second recording which will be saved to a file named <code>myrecording.jfr</code>:</p>
+<pre xml:space="preserve">
+java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=duration=60s,filename=myrecording.jfr MyApp
+</pre>
+<p>To configure JFR, you can use the <code>-XX:FlightRecorderOptions</code> option. For more information, see <a href="comline.html#BABHIICD">Appendix A, "Command-Line Options"</a>.</p>
+</div>
+
+<a id="A1118227" name="A1118227"/>
+<div>
+<h2><span>2.2</span> Using Diagnostic Command</h2>
+<p>You can also control recordings by using Java-specific diagnostic commands. For a more detailed description of Diagnostic Commands, see <a href="comline.html#BABBGJCF">Appendix A, "Diagnostic Command Reference"</a>.</p>
+<p>The simplest way to execute a diagnostic command is to use the <code>jcmd</code> tool (located in the Java installation directory). To issue a command, you have to pass the process identifier of the JVM (or the name of the main class) and the actual command as arguments to <code>jcmd</code>. For example, to start a 60-second recording on the running Java process with the identifier 5368 and save it to <code>myrecording.jfr</code> in the current directory, use the following:</p>
+<pre xml:space="preserve">
+jcmd 5368 JFR.start duration=60s filename=myrecording.jfr
+</pre>
+<p>To see a list of all running Java processes, run the <code>jcmd</code> command without any arguments. To see a complete list of commands available to a runnning Java application, specify <code>help</code> as the diagnostic command after the process identificator (or the name of the main class). The commands relevant to Java Flight Recorder are:</p>
+<ul>
+<li>
+<p><code>JFR.start</code></p>
+<p>Start a recording.</p>
+</li>
+<li>
+<p><code>JFR.check</code></p>
+<p>Check the status of all recordings running for the specified process, including the recording identification number, file name, duration, and so on.</p>
+</li>
+<li>
+<p><code>JFR.stop</code></p>
+<p>Stop a recording with a specific identification number (by default, recording 1 is stopped).</p>
+</li>
+<li>
+<p><code>JFR.dump</code></p>
+<p>Dump the data collected so far by the recording with a specific identification number (by default, data from recording 1 is dumped).</p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<p>These commands are available only if the Java application was started with the Java Flight Recorder enabled, that is, using the following options:</p>
+<pre xml:space="preserve">
+-XX:+UnlockCommercialFeatures -XX:+FlightRecorder
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="CHDCHAFF" name="CHDCHAFF"/>
+<div>
+<h2><span>2.3</span> Configuring Recordings</h2>
+<p>You can configure an explicit recording in a number of other ways. These techniques work the same regardless of how you start a recording (that is, either by using the command-line approach or by using diagnostic commands).</p>
+<a id="CHDCJHGF" name="CHDCJHGF"/>
+<div>
+<h3><span>2.3.1</span> Setting Maximum Size and Age</h3>
+<p>You can configure an explicit recording to have a maximum size or age by using the following parameters:</p>
+<ul>
+<li>
+<pre xml:space="preserve">
+maxsize=<i>size</i>
+</pre>
+<p>Append the letter <code>k</code> or <code>K</code> to indicate kilobytes, <code>m</code> or <code>M</code> to indicate megabytes, <code>g</code> or <code>G</code> to indicate gigabytes, or do not specify any suffix to set the size in bytes.</p>
+</li>
+<li>
+<pre xml:space="preserve">
+maxage=<i>age</i>
+</pre>
+<p>Append the letter <code>s</code> to indicate seconds, <code>m</code> to indicate minutes, <code>h</code> to indicate hours, or <code>d</code> to indicate days.</p>
+</li>
+</ul>
+<p>If both a size limit and an age are specified, the data is deleted when either limit is reached.</p>
+</div>
+
+<a id="CHDHBCDE" name="CHDHBCDE"/>
+<div>
+<h3><span>2.3.2</span> Setting the Delay</h3>
+<p>When scheduling a recording. you might want to add a delay before the recording is actually started; for example, when running from the command line, you might want the application to boot or reach a steady state before starting the recording. To achieve this, use the <code>delay</code> parameter:</p>
+<pre xml:space="preserve">
+delay=<i>delay</i>
+</pre>
+<p>Append the letter <code>s</code> to indicate seconds, <code>m</code> to indicate minutes, <code>h</code> to indicate hours, or <code>d</code> to indicate days.</p>
+</div>
+
+<a id="CHDGJDGH" name="CHDGJDGH"/>
+<div>
+<h3><span>2.3.3</span> Setting Compression</h3>
+<p>Although the recording file format is very compact, you can compress it further by adding it to a ZIP archive. To enable compression, use the following parameter:</p>
+<pre xml:space="preserve">
+compress=true
+</pre>
+<p>Note that CPU resources are required for the compression, which can negatively impact performance.</p>
+</div>
+</div>
+
+<a id="CHDICEAE" name="CHDICEAE"/>
+<div>
+<h2><span>2.4</span> Creating Recordings Automatically</h2>
+<p>When running with a default recording you can configure Java Flight Recorder to automatically save the current in-memory recording data to a file whenever certain conditions occur. If a disk repository is used, the current information in the disk repository will also be included.</p>
+<a id="CHDFFBBB" name="CHDFFBBB"/>
+<div>
+<h3><span>2.4.1</span> Creating a Recording On Exit</h3>
+<p>To save the recording data to the specified path every time the JVM exits, start your application with the following option:</p>
+<pre xml:space="preserve">
+-XX:FlightRecorderOptions=defaultrecording=true,dumponexit=true,dumponexitpath=<i>path</i>
+</pre>
+<p>Set <i>path</i> to the location where the recording should be saved. If you specify a directory, a file with the date and time as the name is created in that directory. If you specify a file name, that name is used. If you do not specify a path, the recording will be saved in the current directory.</p>
+</div>
+
+<a id="CHDJGAHG" name="CHDJGAHG"/>
+<div>
+<h3><span>2.4.2</span> Creating a Recording Using Triggers</h3>
+<p>You can use the Console in Java Mission Control to set <i>triggers</i>. A trigger is a rule that executes an action whenever a condition specified by the rule is true. For example, you can create a rule that triggers a flight recording to commence whenever the heap size exceeds 100 MB. Triggers in Java Mission Control can use any property exposed through a JMX MBean as the input to the rule. They can launch many other actions than just Flight Recorder dumps.</p>
+<p>Define triggers on the <b>Triggers</b> tab of the JMX Console. For more information on how to create triggers, see the Java Mission Control help.</p>
+</div>
+</div>
+
+<a id="A1118624" name="A1118624"/>
+<div>
+<h2><span>2.5</span> Security</h2>
+<p>Java Flight Recorder is intended only for diagnostic purposes. The recording file can potentially contain confidential information such as Java command-line options and environment variables. Use extreme care when you store or transfer the recording files as you would do with diagnostic core files or heap dumps.</p>
+<p><a href="#BABHIGGE">Table 2-1</a> describes security permissions for various methods of using JFR.</p>
+<div><a id="sthref10" name="sthref10"/><a id="BABHIGGE" name="BABHIGGE"/>
+<p>Table 2-1 Security Permissions</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This is a two-column table. The left-hand column lists the type of command and the right-hand column describes the se urity premissions for the associated command type." title="Security Permissions" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t3" valign="bottom">Method</th>
+<th align="left" id="r1c2-t3" valign="bottom">Security</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r2c1-t3">
+<p>Command line</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<p>Anyone with access to the command line of the Java process must be trusted.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r3c1-t3">
+<p>Diagnostic commands</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<p>Only the owner of the Java process can use <code>jcmd</code> to control the process.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r4c1-t3">
+<p>Java Mission Control Client</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<p>Java Mission Control Client uses JMX to access the JVM.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<a id="A1092559" name="A1092559"/>
+<div>
+<h2><span>2.6</span> Troubleshooting</h2>
+<p>You can collect a significant amount of diagnostic information from Java Flight Recorder by starting the JVM with one of the following options:</p>
+<ul>
+<li>
+<p><code>-XX:FlightRecorderOptions=loglevel=debug</code></p>
+</li>
+<li>
+<p><code>-XX:FlightRecorderOptions=loglevel=trace</code>.</p>
+</li>
+</ul>
+<p>For more information about the <code>-XX:FlightRecorderOptions</code> option, see the <i>Oracle JRockit Command Line Reference</i> at<br/>
+<code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html</a></code> (UNIX)<br/>
+<code><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html</a></code> (Windows)</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="about.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="comline.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2014, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>
