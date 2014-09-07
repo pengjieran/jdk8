@@ -430,7 +430,8 @@
 <tr class="altColor">
 <td class="colFirst"><a href="../../java/lang/Character.UnicodeScript.html" title="enum in java.lang">Character.UnicodeScript</a></td>
 <td class="colLast">
-<div class="block">A family of character subsets representing the character scripts
+<div class="block">定义在<a href="http://www.unicode.org/reports/tr24/">
+ <i>Unicode Standard Annex #24: Script Names</i></a>中的代表字符叫笨蛋额字符集的成员.<br>A family of character subsets representing the character scripts
  defined in the <a href="http://www.unicode.org/reports/tr24/">
  <i>Unicode Standard Annex #24: Script Names</i></a>.</div>
 </td>
@@ -438,13 +439,13 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../java/lang/ProcessBuilder.Redirect.Type.html" title="enum in java.lang">ProcessBuilder.Redirect.Type</a></td>
 <td class="colLast">
-<div class="block">The type of a <a href="../../java/lang/ProcessBuilder.Redirect.html" title="class in java.lang"><code>ProcessBuilder.Redirect</code></a>.</div>
+<div class="block">一种<a href="../../java/lang/ProcessBuilder.Redirect.html" title="class in java.lang"><code>ProcessBuilder.Redirect</code></a>的类型.<br>The type of a <a href="../../java/lang/ProcessBuilder.Redirect.html" title="class in java.lang"><code>ProcessBuilder.Redirect</code></a>.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../java/lang/Thread.State.html" title="enum in java.lang">Thread.State</a></td>
 <td class="colLast">
-<div class="block">A thread state.</div>
+<div class="block">线程状态.<br>A thread state.</div>
 </td>
 </tr>
 </tbody>
@@ -452,10 +453,10 @@
 </li>
 <li class="blockList">
 <table class="typeSummary" border="0" cellpadding="3" cellspacing="0" summary="Exception Summary table, listing exceptions, and an explanation">
-<caption><span>Exception Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>异常概述</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Exception</th>
-<th class="colLast" scope="col">Description</th>
+<th class="colFirst" scope="col">异常</th>
+<th class="colLast" scope="col">描述</th>
 </tr>
 <tbody>
 <tr class="altColor">
@@ -467,7 +468,7 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../java/lang/ArrayIndexOutOfBoundsException.html" title="class in java.lang">ArrayIndexOutOfBoundsException</a></td>
 <td class="colLast">
-<div class="block">Thrown to indicate that an array has been accessed with an
+<div class="block">当数组接受了一个非法的下标时该异常将会抛出.<br>Thrown to indicate that an array has been accessed with an
  illegal index.</div>
 </td>
 </tr>
@@ -481,14 +482,14 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../java/lang/ClassCastException.html" title="class in java.lang">ClassCastException</a></td>
 <td class="colLast">
-<div class="block">Thrown to indicate that the code has attempted to cast an object
+<div class="block">当代码试图将一个对象转换为非该对象的子类的实例的时候该异常将会抛出.<br>Thrown to indicate that the code has attempted to cast an object
  to a subclass of which it is not an instance.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../java/lang/ClassNotFoundException.html" title="class in java.lang">ClassNotFoundException</a></td>
 <td class="colLast">
-<div class="block">Thrown when an application tries to load in a class through its
+<div class="block">当应用尝试通过<code>Class</code>的forName方法去加载一个类的时候该异常会抛出.<br>Thrown when an application tries to load in a class through its
  string name using:
  
  The <code>forName</code> method in class <code>Class</code>.</div>
@@ -497,7 +498,7 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../java/lang/CloneNotSupportedException.html" title="class in java.lang">CloneNotSupportedException</a></td>
 <td class="colLast">
-<div class="block">Thrown to indicate that the <code>clone</code> method in class
+<div class="block">当<code>clone</code>方法在<code>Object</code>类中克隆一个对象，但是该对象的类没有实现<code>Cloneable</code>接口的时候，该异常会抛出.<br>Thrown to indicate that the <code>clone</code> method in class
  <code>Object</code> has been called to clone an object, but that
  the object's class does not implement the <code>Cloneable</code>
  interface.</div>
