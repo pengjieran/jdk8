@@ -459,16 +459,14 @@ implements <a href="../../java/io/Serializable.html" title="interface in java.io
 <h4>valueOf</h4>
 <pre>public static&nbsp;<a href="../../java/lang/Boolean.html" title="class in java.lang">Boolean</a>&nbsp;valueOf(boolean&nbsp;b)</pre>
 <div class="block">返回一个包装了<code>boolean</code>基本类型值的<code>Boolean</code>实例.  如果指定的<code>boolean</code> 值是<code>true</code>, 该方法返回<code>Boolean.TRUE</code>;
- if it is <code>false</code>, this method returns <code>Boolean.FALSE</code>.
- If a new <code>Boolean</code> instance is not required, this method
- should generally be used in preference to the constructor
- <a href="../../java/lang/Boolean.html#Boolean-boolean-"><code>Boolean(boolean)</code></a>, as this method is likely to yield
- significantly better space and time performance.</div>
+ 如果指定的是<code>false</code>, 该方法返回<code>Boolean.FALSE</code>.
+ 如果没有提供创建<code>Boolean</code>实例的无参构造器,该方法会偏向于使用
+ <a href="../../java/lang/Boolean.html#Boolean-boolean-"><code>Boolean(boolean)</code></a>构造器, 以求能够达到更好的时间和空间效率.</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>b</code> - a boolean value.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <code>Boolean</code> instance representing <code>b</code>.</dd>
+<dt><span class="paramLabel">参数:</span></dt>
+<dd><code>b</code> - 一个boolean值.</dd>
+<dt><span class="returnLabel">返回值:</span></dt>
+<dd>一个<code>Boolean</code>实例的引用<code>b</code>.</dd>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.4</dd>
 </dl>
